@@ -19,3 +19,4 @@ Thumbs.db
 
 /dist/
 /*.egg-info
+.idea
