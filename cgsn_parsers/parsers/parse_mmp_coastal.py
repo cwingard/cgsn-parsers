@@ -97,7 +97,7 @@ CODES = {
     'AVG_TEMPERATURE': 12,
     'TOP_PRESSURE': 13,
     'BOTTOM_PRESSURE': 14,
-    'PRESSURE_RATE_ZERO': 15,
+    'RATE_ZERO': 15,
     'STOP_NULL': 16,
     'FLASH_CARD_FULL': 17,
     'FILE_SYSTEM_FULL': 18,
@@ -299,7 +299,7 @@ class Parser(object):
                 # direction of travel.
                 sans = ASANS_MATCHER.match(line)
                 if sans:
-                    if (self.data.profile.start_depth - self.data.profile.stop_depth) > 0:
+                    if (self.data.profile.start_depth - self.data.profile.end_depth) > 0:
                         self._beams = [3, 1, 2, 4, 0]
                     else:
                         self._beams = [3, 2, 3, 4, 0]
@@ -370,7 +370,7 @@ class Parser(object):
 if __name__ == '__main__':
     # load the input arguments
     args = inputs()
-    efile = os.path.abspath(args.efile)
+    efile = os.path.abspath(args.infile)
     cfile = os.path.join(os.path.dirname(efile), re.sub('E', 'C', os.path.basename(efile)))
     afile = os.path.join(os.path.dirname(efile), re.sub('E', 'A', os.path.basename(efile)))
     outfile = os.path.abspath(args.outfile)
