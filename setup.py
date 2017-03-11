@@ -21,7 +21,6 @@ setup(name='cgsn_parsers',
     license = 'MIT',
     packages = ['cgsn_parsers'],
     install_requires = [
-        'argparse >= 1.3.0',
         'munch >= 2.1.0',
         'numpy >= 1.9.2',
         'pytz >= 2016.10'

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Read the raw, telemetered MMP data files for the Coastal Profiler Moorings
-# and create parsed datasets available in TXT files for further processing and
+# and create parsed data sets available in TXT and JSON files for further processing and
 # review. Utilizes the mmp_unpack utility created by Jeff O'Brien of WHOI. Traps
 # files that fail to process using a timeout control. Files that fail to process
 # are tagged with a .failed on the end of the file name to help indicate a problem.
@@ -27,6 +27,10 @@ fi
 
 # set the unpacker and a limit of 5 seconds for processing (takes less than a second normally)
 UNPACK="/usr/bin/timeout 5 /webdata/cgsn/omc/oms/bin/mmp_unpack"
+
+# setup the python parser used for creating the JSON formatted file
+BIN="/home/cgsnmo/dev/cgsn-parsers/cgsn_parsers/parsers"
+PYTHON="/home/cgsnmo/anaconda3/envs/py27/bin/python"
 
 # Process the profiler data, using the E files as the key.
 for file in $RAW/E*.DAT; do
@@ -92,6 +96,12 @@ for file in $RAW/E*.DAT; do
                 /bin/mv $vel $vel.failed
             fi
         fi
+
+        ### And now we can create our JSON formatted file
+        infile=$PROC/${out%.DAT}.TXT
+        outfile=${infile/E/P}
+        outfile=${outfile%.TXT}.json
+        $PYTHON -m $BIN/parse_mmp_coastal -i $infile -o $outfile
     fi
 done
 
