@@ -184,7 +184,7 @@ class Parser(ParserCommon):
         # parse the diagnostics packet
         data = self._parse_aquadopp_packet(diagnostics)
         if not data:
-            print "diagnostics data packet failed to parse"
+            print("diagnostics data packet failed to parse")
             return
 
         # Assign the VELPT data to the named parameters
@@ -218,13 +218,13 @@ class Parser(ParserCommon):
 
         # Check the size, some packets report erroneous sizes for some reason.
         if size * 2 != 36:
-            print "Incorrect packet size"
-            print "header data packet failed to parse"
+            print("Incorrect packet size")
+            print("header data packet failed to parse")
             return
 
         # Check the checksums...
         if check != self._calc_checksum(size * 2, header):
-            print "Checksum mismatch"
+            print("Checksum mismatch")
             return
 
         self.data.header.records_to_follow.append(records)
@@ -241,7 +241,7 @@ class Parser(ParserCommon):
         # parse the velocity packet
         data = self._parse_aquadopp_packet(velocity)
         if not data:
-            print "Velocity data packet failed to parse"
+            print("Velocity data packet failed to parse")
             return
 
         # Assign the VELPT data to the named parameters
@@ -276,12 +276,12 @@ class Parser(ParserCommon):
 
         # Check the size, some packets report erroneous sizes for some reason.
         if size * 2 != 42:
-            print "Incorrect packet size"
+            print("Incorrect packet size")
             return []
 
         # Check the checksums...
         if check != self._calc_checksum(size * 2, packet):
-            print "Checksum mismatch"
+            print("Checksum mismatch")
             return []
 
         # calculate an epoch timestamp from the time array, first converting

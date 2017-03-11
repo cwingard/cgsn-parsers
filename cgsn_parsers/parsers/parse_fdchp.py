@@ -127,7 +127,7 @@ class Parser(ParserCommon):
         # rest of the data is in a (mostly) comma separated string, so ... need
         # to use filter and a split that looks for both commas and spaces
         # (sloppy programming by the developer of the instrument).
-        data = filter(None, re.split(r',|\s', match.group(2)))
+        data = [_f for _f in re.split(r',|\s', match.group(2)) if _f]
 
         # index through the list of parameter names and assign the data
         cnt = 0
