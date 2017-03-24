@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_vel3d
 @file cgsn_parsers/parsers/parse_vel3d.py
 @author Christopher Wingard
 @brief Parses VEL3D binary data files logged external to the unit.
-'''
+"""
 import os
 import re
 
@@ -28,9 +28,9 @@ HEADER_MATCHER = re.compile(HEADER_REGEX, re.DOTALL)
 
 
 class ParameterNames(object):
-    '''
+    """
     Nortek Vector binary data file contents
-    '''
+    """
     def __init__(self):
         # Vector Velocity Data Header
         self._header = [
@@ -70,11 +70,11 @@ class ParameterNames(object):
     # Create the initial dictionary object from the velocity, system and
     # header data types.
     def create_dict(self):
-        '''
+        """
         Create a Bunch class object to store the parameter names for the Nortek
         Vector (aka VEL3D), with the data organized hierarchically by the
         data type.
-        '''
+        """
         bunch = Bunch()
         bunch.header = Bunch()
         bunch.system = Bunch()
@@ -109,11 +109,11 @@ class Parser(ParserCommon):
         self.raw = None
 
     def parse_header(self):
-        '''
+        """
         Iterate through the record markers (defined via the regex expression
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
-        '''
+        """
         # find all the header data packets
         record_marker = [m.start() for m in HEADER_MATCHER.finditer(self.raw)]
 
@@ -130,11 +130,11 @@ class Parser(ParserCommon):
             record_marker.pop(0)
 
     def parse_velocity(self):
-        '''
+        """
         Iterate through the record markers (defined via the regex expression
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
-        '''
+        """
         # find all the velocity and system data packets
         system_marker = [m.start() for m in SYSTEM_MATCHER.finditer(self.raw)]
         velocity_marker = [m.start() for m in VELOCITY_MATCHER.finditer(self.raw)]
@@ -188,10 +188,10 @@ class Parser(ParserCommon):
             system_marker.pop(0)
 
     def _build_parsed_header(self, header):
-        '''
+        """
         Extract the data from the relevant byte groupings and assign to
         elements of the data dictionary.
-        '''
+        """
         # unpack the header packet
         (_, _, size, minute, second, day, hour, year, month, records,
          noise1, noise2, noise3, _, corr1, corr2, corr3,
@@ -233,10 +233,10 @@ class Parser(ParserCommon):
         return True
 
     def _build_parsed_system(self, system):
-        '''
+        """
         Extract the data from the relevant byte groupings and assign to
         elements of the data dictionary.
-        '''
+        """
         # unpack the system packet
         (_, _, size, minute, second, day, hour, year, month,
          battery, speed, heading, pitch, roll, temp, error, status,
@@ -282,10 +282,10 @@ class Parser(ParserCommon):
         return True
 
     def _build_parsed_velocity(self, velocity):
-        '''
+        """
         Extract the data from the relevant byte groupings and assign to
         elements of the data dictionary.
-        '''
+        """
         # parse the velocity packet
         (_, _, _, count, pMSB, _, pLSW, _, vel1, vel2, vel3, amp1, amp2, amp3,
          cor1, cor2, cor3, check) = unpack('<6B2H3h6BH', velocity)
@@ -331,11 +331,11 @@ class Parser(ParserCommon):
         return checksum
 
     def _convert_bcd(self, cBCD):
-        '''
+        """
         Convert the BCD values to integers
 
         From the Nortek System Integrator Manual, March 2014
-        '''
+        """
         cBCD = min([cBCD, 0x99])
         c = (cBCD & 0x0f)
         c += 10 * (cBCD >> 4)

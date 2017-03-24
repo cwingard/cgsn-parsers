@@ -22,7 +22,7 @@ TESTDATA_CTDBP_TYPE3 = path.join(path.dirname(__file__), 'ctdbp/20161110.ctdbp3.
 
 @attr('parse')
 class TestParsingUnit(unittest.TestCase):
-    '''
+    """
     OOI Endurance and Pioneer moorings use the Sea-Bird Electronics 16Plus V2
     CTDs, on the Buoy, NSIF and MFN instrument frames, configured in one of 3
     ways. All units are set to report conductivity, temperature and pressure in
@@ -49,12 +49,12 @@ class TestParsingUnit(unittest.TestCase):
 
     This test class will parse and compare the outputs from all three types of
     CTDBPs to confirm the parser functions as expected.
-    '''
+    """
     def setUp(self):
-        '''
+        """
         Using sample data files, initialize the Parser objects for each of the
         3 CTDBP types and set the expected output arrays.
-        '''
+        """
         # initialize Parser objects for the CTDBP types defined above.
         self.ctdbp_type1 = Parser(TESTDATA_CTDBP_TYPE1, 1)
         self.ctdbp_type2 = Parser(TESTDATA_CTDBP_TYPE2, 2)
@@ -136,9 +136,9 @@ class TestParsingUnit(unittest.TestCase):
             [14.1303,  3.78248,    0.969, 1897, 129, 75]])
 
     def test_parse_ctdbp_type1(self):
-        '''
+        """
         Test parsing of a Type 1 CTDBP (no DOSTA or FLORT)
-        '''
+        """
         self.ctdbp_type1.load_ascii()
         self.ctdbp_type1.parse_data()
         parsed = self.ctdbp_type1.data.toDict()
@@ -148,9 +148,9 @@ class TestParsingUnit(unittest.TestCase):
         np.testing.assert_array_equal(parsed['pressure'][:18], self.type1_expected[:, 2])
 
     def test_parse_ctdbp_type2(self):
-        '''
+        """
         Test parsing of a Type 2 CTDBP (with DOSTA)
-        '''
+        """
         self.ctdbp_type2.load_ascii()
         self.ctdbp_type2.parse_data()
         parsed = self.ctdbp_type2.data.toDict()
@@ -161,9 +161,9 @@ class TestParsingUnit(unittest.TestCase):
         np.testing.assert_array_equal(parsed['oxygen_concentration'], self.type2_expected[:, 3])
 
     def test_parse_ctdbp_type3(self):
-        '''
+        """
         Test parsing of a Type 3 CTDBP (with FLORT)
-        '''
+        """
         self.ctdbp_type3.load_ascii()
         self.ctdbp_type3.parse_data()
         parsed = self.ctdbp_type3.data.toDict()
