@@ -76,7 +76,7 @@ class ParserCommon(object):
         Create a buffered data object by opening the data file and reading in
         the contents
         """
-        with open(self.infile, 'r') as fid:
+        with open(self.infile, 'r', encoding="latin-1") as fid:
             self.raw = fid.readlines()
 
     def load_binary(self):

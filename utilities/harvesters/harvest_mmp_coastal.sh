@@ -29,8 +29,7 @@ fi
 UNPACK="/usr/bin/timeout 5 /webdata/cgsn/omc/oms/bin/mmp_unpack"
 
 # setup the python parser used for creating the JSON formatted file
-BIN="/home/cgsnmo/dev/cgsn-parsers/cgsn_parsers/parsers"
-PYTHON="/home/cgsnmo/anaconda3/envs/py27/bin/python"
+PYTHON="/home/cgsnmo/anaconda3/envs/ooi/bin/python"
 
 # Process the profiler data, using the E files as the key.
 for file in $RAW/E*.DAT; do
@@ -101,7 +100,8 @@ for file in $RAW/E*.DAT; do
         infile=$PROC/${out%.DAT}.TXT
         outfile=${infile/E/P}
         outfile=${outfile%.TXT}.json
-        $PYTHON -m $BIN/parse_mmp_coastal -i $infile -o $outfile
+        cd /home/cgsnmo/dev/cgsn-parsers
+        $PYTHON -m cgsn_parsers.parsers.parse_mmp_coastal -i $infile -o $outfile
     fi
 done
 
