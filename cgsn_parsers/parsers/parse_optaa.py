@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_optaa
 @file cgsn_parsers/parsers/parse_optaa.py
 @author Russell Desiderio with edits from Christopher Wingard
 @brief Parses OPTAA data logged by the custom built WHOI data loggers.
-'''
+"""
 import os
 import re
+import numpy as np
 from struct import unpack
 
-# Import common utilites and base classes
+# Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon, logfilename_to_epoch, inputs, LOGFILENAME_TIMESTAMP
 
 # Regex pattern for the start of a binary OPTAA (ac-s) data packet
@@ -91,7 +92,7 @@ class Parser(ParserCommon):
                 # set the record length for the packets, as well as the number 
                 # of wavelengths and time zero for the file.
                 record_length = unpack('>H', self.raw[start+4:start+6])[0]
-                nwave = unpack('>B', self.raw[start+31])[0]
+                nwave = unpack('>B', self.raw[start+31:start+32])[0]
                 if nwave != (record_length - 32) / 8:
                     raise Exception('optaa data packet: record length does not match number of wavelengths.')
 
@@ -114,7 +115,7 @@ class Parser(ParserCommon):
         of the data dictionary.
         """
         # Assign the optaa data to the named parameters
-        self.data.serial_number.append(unpack('>I', '\x00' + packet[9:12])[0])
+        self.data.serial_number.append(unpack('>I', b'\x00' + packet[9:12])[0])
         self.data.a_reference_dark.append(unpack('>H', packet[12:14])[0])
         self.data.pressure_raw.append(unpack('>H', packet[14:16])[0])
         self.data.a_signal_dark.append(unpack('>H', packet[16:18])[0])
@@ -122,12 +123,12 @@ class Parser(ParserCommon):
         self.data.internal_temp_raw.append(unpack('>H', packet[20:22])[0])
         self.data.c_reference_dark.append(unpack('>H', packet[22:24])[0])
         self.data.c_signal_dark.append(unpack('>H', packet[24:26])[0])
-        elapsed_run_time = unpack('>I',packet[26:30])[0]
+        elapsed_run_time = unpack('>I', packet[26:30])[0]
         self.data.elapsed_run_time.append(elapsed_run_time)
         time = epts + (elapsed_run_time - time_zero) / 1000.
         self.data.time.append(time)
-        self.data.num_wavelengths.append(unpack('>B', packet[31])[0])
-        optical_data = unpack(('>' +  str(4 * nwave) + 'H'), packet[32:32 + 2 * 4 * nwave])
+        self.data.num_wavelengths.append(unpack('>B', packet[31:32])[0])
+        optical_data = unpack(('>' + str(4 * nwave) + 'H'), packet[32:32 + 2 * 4 * nwave])
         self.data.c_reference_raw.append(optical_data[0::4])
         self.data.a_reference_raw.append(optical_data[1::4])
         self.data.c_signal_raw.append(optical_data[2::4])
@@ -140,14 +141,15 @@ class Parser(ParserCommon):
         # time_zero, from there:
         #   time = epoch_time - time_zero + elapsed_run_time
 
-    def _acs_checksum_agreement(self, packet):
+    @staticmethod
+    def _acs_checksum_agreement(packet):
         # sum integer representations of the 1-byte characters
         checksum = 0
         for byte in packet[:-3]:
-            checksum += ord(byte)
+            checksum += byte
             
         # reduce checksum to 2 significant bytes
-        checksum = checksum & 65535  # or np.mod(checksum, 65536) could be used
+        checksum %= 65536
 
         # compare the calculated and reported checksum values
         return checksum == unpack('>H', packet[-3:-1])[0]

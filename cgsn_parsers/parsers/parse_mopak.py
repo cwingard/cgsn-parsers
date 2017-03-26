@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_mopak
 @file cgsn_parsers/parsers/parse_mopak.py
 @author Christopher Wingard
 @brief Parses MOPAK data logged by the custom built WHOI data loggers.
-'''
+"""
 import os
 import re
 
@@ -37,19 +37,19 @@ _parameter_names_mopak = [
 
 
 class Parser(ParserCommon):
-    '''
+    """
     A Parser subclass that calls the Parser base class, adds the mopak specific
     methods to parse the data, and extracts the mopak data records from the DCL
     daily log files.
-    '''
+    """
     def __init__(self, infile):
         self.initialize(infile, _parameter_names_mopak)
 
     def parse_data(self):
-        '''
+        """
         Iterate through packets to parse the data into a pre-defined
         dictionary object created using the Bunch class.
-        '''
+        """
         # determine epoch start time from characters in the log file name; the
         # date_time in this filename marks when the file was created...that's
         # actually kind of a problem for the inshore surface moorings, but it
@@ -81,10 +81,10 @@ class Parser(ParserCommon):
             record_marker.pop(0)
 
     def _build_parsed_values(self, packet, epts):
-        '''
+        """
         Extract the data from the relevant byte groupings and assign to
         elements of the data dictionary.
-        '''
+        """
         # unpack the packet
         (_, accx, accy, accz, angx, angy, angz,
          magx, magy, magz, timer, check) = MOPAK.unpack(packet)
@@ -114,14 +114,15 @@ class Parser(ParserCommon):
         self.data.timer.append(timer / 62500.)
         return True
 
-    def _calc_checksum(self, packet):
+    @staticmethod
+    def _calc_checksum(packet):
         # add integer representations of the 1-byte characters
         checksum = 0
         for byte in packet:
-            checksum += ord(byte)
+            checksum += byte
 
         # reduce checksum to 2 significant bytes
-        checksum = checksum & 65535
+        checksum &= 65535
         return checksum
 
 if __name__ == '__main__':

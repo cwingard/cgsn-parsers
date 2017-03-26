@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_pco2w
 @file cgsn_parsers/parsers/parse_pco2w.py
 @author Christopher Wingard
 @brief Parses PCO2W data logged by the custom built WHOI data loggers.
-'''
+"""
 import os
 import re
 
@@ -48,12 +48,13 @@ class Parser(ParserCommon):
         self.initialize(infile, _parameter_names_pco2w)
 
     def parse_data(self):
-        '''
+        """
         Iterate through the record markers (defined via the regex expression
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
-        '''
-        record_marker = [m.start() for m in REGEX.finditer(self.raw)]
+        """
+        raw = ''.join(self.raw)
+        record_marker = [m.start() for m in REGEX.finditer(raw)]
 
         # if we have found record markers, work through the data
         while record_marker:
@@ -64,10 +65,10 @@ class Parser(ParserCommon):
                 stop = record_marker[1]
             else:
                 # stopping point is the end of the file
-                stop = len(self.raw)
+                stop = len(raw)
 
             # now create the initial sample string
-            sample = self.raw[start:stop]
+            sample = raw[start:stop]
             match = REGEX.match(sample)
 
             # pull out of the sample string the DCL timestamps and a cleaned sample string
@@ -123,7 +124,7 @@ if __name__ == '__main__':
     pco2w = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    pco2w.load_binary()     # not really binary, but this creates on object that is easy to parse
+    pco2w.load_ascii()
     pco2w.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON

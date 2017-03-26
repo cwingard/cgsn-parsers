@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_adcp
 @file cgsn_parsers/parsers/parse_adcp.py
 @author Christopher Wingard
@@ -13,7 +13,7 @@ Release notes:
     California, San Diego as part of the Ocean Observatories Initiative
     CyberInfrastructure team. See https://github.com/ooici/marine-integrations/blob/
     f9371e42341e1cb9363df84e8980ed063f0c0a95/mi/instrument/teledyne/particles.py
-'''
+"""
 import os
 import re
 
@@ -23,24 +23,26 @@ from struct import unpack
 
 # Import common utilites and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, NEWLINE
+from cgsn_parsers.parsers.common import dcl_to_epoch, inputs
 
 # Regex set to find the start of a PD0 packet (DCL timestamp and the first 6
 # bytes of the header data). Using the first 6 bytes of the packet is a more
 # explicit regex than just the 0x7f7f marker the manual specifies, eliminating
 # false positive matches.
+DCL_TIMESTAMP = b'(\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})'
+NEWLINE = b'(?:\r\n|\n)?'
 PATTERN = (
-    DCL_TIMESTAMP + r'\s+' +
-    r'(7F7F)([0-9A-F]{4})(00)(06|07)' +
-    r'([0-9A-F]+)' + NEWLINE
+    DCL_TIMESTAMP + b'\s+' +
+    b'(7F7F)([0-9A-F]{4})(00)(06|07)' +
+    b'([0-9A-F]+)' + NEWLINE
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
 
 class ParameterNames(object):
-    '''
+    """
     Teledyne RDI WorkHorse PD0 formatted data files
-    '''
+    """
     def __init__(self):
         # Header Data
         self._header = [
@@ -193,11 +195,11 @@ class ParameterNames(object):
     # assume that velocity, correlation, intensity and percent data is present
     # as the default.
     def create_dict(self):
-        '''
+        """
         Create a Bunch class object to store the parameter names for the
         Workhorse ADCP pd0 data files, with the data organized hierarchically
         by the data type.
-        '''
+        """
         bunch = Bunch()
         bunch.time = []
         bunch.header = Bunch()
@@ -247,29 +249,27 @@ class Parser(ParserCommon):
         self.raw = None
 
     def parse_data(self):
-        '''
+        """
         Iterate through the record markers (defined via the regex expression
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
-        '''
-        for line in self.raw:
-            match = REGEX.match(line)
-            if match:
-                self._build_parsed_values(match)
+        """
+        for match in REGEX.findall(self.raw):
+            self._build_parsed_values(match)
 
     # Parse the ADCP ensembles, building a full, parsed record
     def _build_parsed_values(self, match):
         """
         Start by parsing the beginning portion of the ensemble (Header Data)
         """
-        # build the ensemble string from match.group(2) through to the end.
-        length = unpack("<H", unhexlify(match.group(3)))[0]
-        ensemble = unhexlify(''.join(match.groups()[1:]))
+        # build the ensemble string from match group(2) through to the end.
+        length = unpack("<H", unhexlify(match[2]))[0]
+        ensemble = unhexlify(b''.join(match[1:]))
 
         # Calculate the checksum
-        total = int(0)
+        total = 0
         for i in range(0, length):
-            total += int(ord(ensemble[i]))
+            total += ensemble[i]
 
         checksum = total & 65535    # bitwise and with 65535 or mod vs 65536
         if checksum != unpack("<H", ensemble[length: length+2])[0]:
@@ -278,7 +278,7 @@ class Parser(ParserCommon):
         (header_id, data_source_id, num_bytes, spare, num_data_types) = \
             unpack('<2BH2B', ensemble[0:6])
 
-        self.data.time.append(dcl_to_epoch(match.group(1)))
+        self.data.time.append(dcl_to_epoch(match[0].decode('utf-8')))
         self.data.header.num_bytes.append(num_bytes)
         self.data.header.num_data_types.append(num_data_types)
 
@@ -522,7 +522,7 @@ class Parser(ParserCommon):
 
         @throws Exception If there is a problem with sample creation
         """
-        N = (len(chunk) - 2) / 2 / 4
+        N = (len(chunk) - 2) // 2 // 4
         offset = 0
 
         velocity_data_id = unpack("<H", chunk[0:2])[0]
@@ -552,7 +552,7 @@ class Parser(ParserCommon):
 
         @throws Exception If there is a problem with sample creation
         """
-        N = (len(chunk) - 2) / 4
+        N = (len(chunk) - 2) // 4
         offset = 0
 
         correlation_magnitude_id = unpack("<H", chunk[0:2])[0]
@@ -582,7 +582,7 @@ class Parser(ParserCommon):
 
         @throws Exception If there is a problem with sample creation
         """
-        N = (len(chunk) - 2) / 4
+        N = (len(chunk) - 2) // 4
         offset = 0
 
         echo_intensity_id = unpack("<H", chunk[0:2])[0]
@@ -612,7 +612,7 @@ class Parser(ParserCommon):
 
         @throws Exception If there is a problem with sample creation
         """
-        N = (len(chunk) - 2) / 4
+        N = (len(chunk) - 2) // 4
         offset = 0
 
         percent_good_id = unpack("<H", chunk[0:2])[0]
@@ -647,7 +647,7 @@ if __name__ == '__main__':
     adcp = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    adcp.load_ascii()
+    adcp.load_binary()
     adcp.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON

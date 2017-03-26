@@ -121,7 +121,7 @@ class Parser(ParserCommon):
             self.data.variance_reference.append(float(data[16]))
             self.data.seawater_dark.append(float(data[17]))
             self.data.spectal_average.append(float(data[18]))
-            self.data.channel_measurements.append(map(int, data[19:]))
+            self.data.channel_measurements.append(list(map(int, data[19:])))
 
 if __name__ == '__main__':
     # load the input arguments

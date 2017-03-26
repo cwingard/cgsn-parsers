@@ -88,43 +88,43 @@ class Parser(ParserCommon):
         nfreq = int(data[3])
         strt = 4
         stop = strt + nfreq
-        nbins = map(int, data[strt:stop])
+        nbins = list(map(int, data[strt:stop]))
         self.data.number_bins.append(nbins)
 
         # minimum values per frequency
         strt = stop
         stop = strt + nfreq
-        self.data.minimum_values.append(map(int, data[strt:stop]))
+        self.data.minimum_values.append(list(map(int, data[strt:stop])))
 
         # tilts, battery and temperature (no pressure sensor)
         strt = stop
         self.data.burst_date_string.append(str(data[strt]))
-        self.data.tilts.append(map(float, data[strt+1:strt+3]))
+        self.data.tilts.append(list(map(float, data[strt+1:strt+3])))
         self.data.battery_voltage.append(float(data[strt+3]))
         self.data.temperature.append(float(data[strt+4]))
 
         # frequency #1
         strt += 7
         freq = [int(data[strt])]
-        self.data.profiles_freq1.append(map(int, data[strt+1:strt+1+nbins[0]]))
+        self.data.profiles_freq1.append(list(map(int, data[strt+1:strt+1+nbins[0]])))
 
         # frequency #2
         if nfreq >= 2:
             strt += 2 + nbins[0]
             freq.append(int(data[strt]))
-            self.data.profiles_freq2.append(map(int, data[strt+1:strt+1+nbins[1]]))
+            self.data.profiles_freq2.append(list(map(int, data[strt+1:strt+1+nbins[1]])))
 
         # frequency #3
         if nfreq >= 3:
             strt += 2 + nbins[1]
             freq.append(int(data[strt]))
-            self.data.profiles_freq3.append(map(int, data[strt+1:strt+1+nbins[2]]))
+            self.data.profiles_freq3.append(list(map(int, data[strt+1:strt+1+nbins[2]])))
 
         # frequency #4
         if nfreq == 4:
             strt += 2 + nbins[2]
             freq.append(int(data[strt]))
-            self.data.profiles_freq4.append(map(int, data[strt+1:strt+1+nbins[3]]))
+            self.data.profiles_freq4.append(list(map(int, data[strt+1:strt+1+nbins[3]])))
 
         self.data.frequencies.append(freq)
 

@@ -21,17 +21,17 @@ TESTDATA = path.join(path.dirname(__file__), 'metbk/metbk.test.dat')
 
 @attr('parse')
 class TestParsingUnit(unittest.TestCase):
-    '''
+    """
     OOI Endurance and Pioneer moorings use a custom built system from WHOI to
     log data from a suite of meterological instruments with the data output
     once a minute. The test data used below comes from a few different log
     files, combined together to capture the diffent cases where missing data
     is identified by either a NaN, Na or N.
-    '''
+    """
     def setUp(self):
-        '''
+        """
         Load and parse the test METBK data and set the expected output array.
-        '''
+        """
         # initialize Parser objects for the metbk types defined above.
         self.metbk = Parser(TESTDATA)
 
@@ -48,9 +48,9 @@ class TestParsingUnit(unittest.TestCase):
             [1020.94, np.nan, np.nan, 338.6, 13.97, 9.132, 3.0997, np.nan,  -4.57,   4.06]])
 
     def test_parse_metbk(self):
-        '''
+        """
         Test parsing of the METBK data
-        '''
+        """
         self.metbk.load_ascii()
         self.metbk.parse_data()
         parsed = self.metbk.data.toDict()

@@ -22,8 +22,7 @@ FILE=`/bin/basename $5`
 # Set the default directory paths
 RAW="/webdata/cgsn/data/raw"
 PARSED="/webdata/cgsn/data/proc"
-BIN="/home/cgsnmo/dev/cgsn-parsers/cgsn_parsers/parsers"
-PYTHON="/home/cgsnmo/anaconda3/envs/py27/bin/python"
+PYTHON="/home/cgsnmo/anaconda3/envs/ooi/bin/python"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$HYD/$FILE"
@@ -34,5 +33,6 @@ fi
 
 # Parse the file
 if [ -e $IN ]; then
-    $PYTHON -m $BIN/parse_hydgn -i $IN -o $OUT
+    cd /home/cgsnmo/dev/cgsn-parsers
+    $PYTHON -m cgsn_parsers.parsers.parse_hydgn -i $IN -o $OUT
 fi

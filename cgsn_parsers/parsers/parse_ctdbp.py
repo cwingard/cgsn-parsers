@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_ctdbp
 @file cgsn_parsers/parsers/parse_ctdbp.py
 @author Christopher Wingard
 @brief Parses the 3 variants of CTDBP data logged by the custom built WHOI data loggers.
-'''
+"""
 import os
 import re
 
@@ -72,11 +72,11 @@ class Parser(ParserCommon):
         self.ctd_type = ctd_type
 
     def parse_data(self):
-        '''
+        """
         Iterate through the record lines (defined via the regex expression
         above) in the data object, and parse the data into a pre-defined
         dictionary object created using the Bunch class.
-        '''
+        """
         if self.ctd_type == 1:
             REGEX = re.compile(CTDBP1, re.DOTALL)
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_velpt
 @file cgsn_parsers/parsers/parse_velpt.py
 @author Christopher Wingard
 @brief Parses VELPT binary data files logged external to the unit.
-'''
+"""
 import os
 import re
 
@@ -15,7 +15,7 @@ from datetime import datetime
 from pytz import timezone
 from struct import unpack
 
-# Import common utilites and base classes
+# Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon, inputs
 
 # Regex pattern for a binary VELPT data packet;
@@ -28,9 +28,9 @@ DIAGNOSTICS_MATCHER = re.compile(DIAGNOSTICS_REGEX, re.DOTALL)
 
 
 class ParameterNames(object):
-    '''
+    """
     Nortek Aquadopp binary data file contents
-    '''
+    """
     def __init__(self):
         # Diagnostics Header Data
         self._header = [
@@ -66,11 +66,11 @@ class ParameterNames(object):
     # Create the initial dictionary object from the velocity, diagnostics and
     # diagnostics data header data types.
     def create_dict(self):
-        '''
+        """
         Create a Bunch class object to store the parameter names for the Nortek
         Aquadopp (aka VELPT), with the data organized hierarchically by the
         data type.
-        '''
+        """
         bunch = Bunch()
         bunch.header = Bunch()
         bunch.diagnostics = Bunch()
@@ -102,11 +102,11 @@ class Parser(ParserCommon):
         self.raw = None
 
     def parse_velocity(self):
-        '''
+        """
         Iterate through the record markers (defined via the regex expression
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
-        '''
+        """
         # find all the velocity data packets
         record_marker = [m.start() for m in VELOCITY_MATCHER.finditer(self.raw)]
 
@@ -123,11 +123,11 @@ class Parser(ParserCommon):
             record_marker.pop(0)
 
     def parse_diagnostics(self):
-        '''
+        """
         Iterate through the record markers (defined via the regex expression
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
-        '''
+        """
         # find all the diagnostics data header packets
         header_marker = [m.start() for m in HEADER_MATCHER.finditer(self.raw)]
         diagnostics_marker = [m.start() for m in DIAGNOSTICS_MATCHER.finditer(self.raw)]
@@ -177,14 +177,14 @@ class Parser(ParserCommon):
             header_marker.pop(0)
 
     def _build_parsed_diagnostics(self, diagnostics):
-        '''
+        """
         Extract the data from the relevant byte groupings and assign to
         elements of the data dictionary.
-        '''
+        """
         # parse the diagnostics packet
         data = self._parse_aquadopp_packet(diagnostics)
         if not data:
-            print "diagnostics data packet failed to parse"
+            print("diagnostics data packet failed to parse")
             return
 
         # Assign the VELPT data to the named parameters
@@ -207,10 +207,10 @@ class Parser(ParserCommon):
         self.data.diagnostics.amplitude_beam3.append(data[16])
 
     def _build_parsed_header(self, header):
-        '''
+        """
         Extract the data from the relevant byte groupings and assign to
         elements of the data dictionary.
-        '''
+        """
         # unpack the velocity packet
         (_, _, size, records, cell, noise1, noise2, noise3, noise4,
          proc1, proc2, proc3, proc4, dist1, dist2, dist3, dist4,
@@ -218,13 +218,13 @@ class Parser(ParserCommon):
 
         # Check the size, some packets report erroneous sizes for some reason.
         if size * 2 != 36:
-            print "Incorrect packet size"
-            print "header data packet failed to parse"
+            print("Incorrect packet size")
+            print("header data packet failed to parse")
             return
 
         # Check the checksums...
         if check != self._calc_checksum(size * 2, header):
-            print "Checksum mismatch"
+            print("Checksum mismatch")
             return
 
         self.data.header.records_to_follow.append(records)
@@ -234,14 +234,14 @@ class Parser(ParserCommon):
         self.data.header.beam_distances.append([dist1, dist2, dist3, dist4])
 
     def _build_parsed_velocity(self, velocity):
-        '''
+        """
         Extract the data from the relevant byte groupings and assign to
         elements of the data dictionary.
-        '''
+        """
         # parse the velocity packet
         data = self._parse_aquadopp_packet(velocity)
         if not data:
-            print "Velocity data packet failed to parse"
+            print("Velocity data packet failed to parse")
             return
 
         # Assign the VELPT data to the named parameters
@@ -264,10 +264,10 @@ class Parser(ParserCommon):
         self.data.velocity.amplitude_beam3.append(data[16])
 
     def _parse_aquadopp_packet(self, packet):
-        '''
+        """
         Unpack the Aquadopp velocity data packet. Same structure is used for
         both the velocity (0xA501) and diagnostics (0xA580) packets.
-        '''
+        """
         # unpack the velocity packet
         (_, _, size, minute, second, day, hour, year, month,
          error, _, battery, speed, heading, pitch, roll, pMSB,
@@ -276,12 +276,12 @@ class Parser(ParserCommon):
 
         # Check the size, some packets report erroneous sizes for some reason.
         if size * 2 != 42:
-            print "Incorrect packet size"
+            print("Incorrect packet size")
             return []
 
-        # Check the checksums...
+        # Check the checksum...
         if check != self._calc_checksum(size * 2, packet):
-            print "Checksum mismatch"
+            print("Checksum mismatch")
             return []
 
         # calculate an epoch timestamp from the time array, first converting
@@ -324,12 +324,13 @@ class Parser(ParserCommon):
         checksum = base % 65536
         return checksum
 
-    def _convert_bcd(self, cBCD):
-        '''
+    @staticmethod
+    def _convert_bcd(cBCD):
+        """
         Convert the BCD values to integers
 
         From the Nortek System Integrator Manual, March 2014
-        '''
+        """
         cBCD = min([cBCD, 0x99])
         c = (cBCD & 0x0f)
         c += 10 * (cBCD >> 4)

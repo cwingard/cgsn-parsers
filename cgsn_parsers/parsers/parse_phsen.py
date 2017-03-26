@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_phsen
 @file cgsn_parsers/parsers/parse_phsen.py
 @author Christopher Wingard
 @brief Parses PHSEN data logged by the custom built WHOI data loggers.
-'''
+"""
 import os
 import re
 
-# Import common utilites and base classes
+# Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP
 
@@ -46,12 +46,13 @@ class Parser(ParserCommon):
         self.initialize(infile, _parameter_names_phsen)
 
     def parse_data(self):
-        '''
+        """
         Iterate through the record markers (defined via the regex expression
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
-        '''
-        record_marker = [m.start() for m in REGEX_START.finditer(self.raw)]
+        """
+        raw = ''.join(self.raw)
+        record_marker = [m.start() for m in REGEX_START.finditer(raw)]
 
         # if we have found record markers, work through the data
         while record_marker:
@@ -62,10 +63,10 @@ class Parser(ParserCommon):
                 stop = record_marker[1]
             else:
                 # stopping point is the end of the file
-                stop = len(self.raw)
+                stop = len(raw)
 
             # now create the sample string
-            sample = self.raw[start:stop]
+            sample = raw[start:stop]
 
             # pull out of the sample string the DCL timestamp
             timestamp = REGEX_START.match(sample).group(1)
@@ -130,7 +131,7 @@ if __name__ == '__main__':
     phsen = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    phsen.load_binary()     # not really binary, but this creates on object that is easy to parse
+    phsen.load_ascii()
     phsen.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON
