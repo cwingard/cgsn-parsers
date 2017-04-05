@@ -16,8 +16,8 @@ DEPLOY=${2^^}
 TIME="-$3 day"
 FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
 
-RAW="/webdata/cgsn/data/raw"
-HARVEST="/home/cgsnmo/dev/cgsn-parsers/utilities/harvesters"
+RAW="/home/ooiuser/data/raw"
+HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
 
 # Set some instrument names and processing flags based on the platform name
 case "$PLATFORM" in

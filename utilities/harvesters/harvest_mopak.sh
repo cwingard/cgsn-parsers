@@ -19,9 +19,9 @@ DCL=${3,,}
 FILE=`/bin/basename $4`
 
 # Set the default directory paths
-RAW="/webdata/cgsn/data/raw"
-PARSED="/webdata/cgsn/data/proc"
-PYTHON="/home/cgsnmo/anaconda3/envs/ooi/bin/python"
+RAW="/home/ooiuser/data/raw"
+PARSED="/home/ooiuser/data/proc"
+PYTHON="/home/ooiuser/bin/conda/bin/python"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/mopak/$FILE"
@@ -32,6 +32,6 @@ fi
 
 # Parse the file
 if [ -e $IN ]; then
-    cd /home/cgsnmo/dev/cgsn-parsers
+    cd /home/ooiuser/code/cgsn-parsers
     $PYTHON -m cgsn_parsers.parsers.parse_mopak -i $IN -o $OUT
 fi

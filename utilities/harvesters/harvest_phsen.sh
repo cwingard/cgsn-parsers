@@ -20,9 +20,9 @@ PHSEN=${4,,}
 FILE=`/bin/basename $5`
 
 # Set the default directory paths
-RAW="/webdata/cgsn/data/raw"
-PARSED="/webdata/cgsn/data/proc"
-PYTHON="/home/cgsnmo/anaconda3/envs/ooi/bin/python"
+RAW="/home/ooiuser/data/raw"
+PARSED="/home/ooiuser/data/proc"
+PYTHON="/home/ooiuser/bin/conda/bin/python"
 
 # Setup the input and output filenames as well as the absolute paths
 if [ $DCL = "dcl35" ]; then
@@ -38,6 +38,6 @@ fi
 
 # Parse the file
 if [ -e $IN ]; then
-    cd /home/cgsnmo/dev/cgsn-parsers
+    cd /home/ooiuser/code/cgsn-parsers
     $PYTHON -m cgsn_parsers.parsers.parse_phsen -i $IN -o $OUT
 fi
