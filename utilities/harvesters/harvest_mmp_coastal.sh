@@ -29,7 +29,7 @@ fi
 UNPACK="/usr/bin/timeout 5 /webdata/cgsn/omc/oms/bin/mmp_unpack"
 
 # setup the python parser used for creating the JSON formatted file
-PYTHON="/home/ooiuser/bin/conda/bin/python"
+PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Process the profiler data, using the E files as the key.
 for file in $RAW/E*.DAT; do

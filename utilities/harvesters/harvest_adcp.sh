@@ -22,7 +22,7 @@ FILE=`/bin/basename $5`
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/proc"
-PYTHON="/home/ooiuser/bin/conda/bin/python"
+PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 if [ $DCL = "dcl26" ]; then

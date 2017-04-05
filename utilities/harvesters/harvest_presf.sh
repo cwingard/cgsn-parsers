@@ -20,7 +20,7 @@ FILE=`/bin/basename $3`
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/proc"
-PYTHON="/home/ooiuser/bin/conda/bin/python"
+PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/dcl35/presf/$FILE"
