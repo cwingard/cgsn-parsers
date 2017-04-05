@@ -18,8 +18,8 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 
 # Set input and output directories
-RAW="/webdata/cgsn/data/raw/$PLATFORM/$DEPLOY/imm/mmp"
-PROC="/webdata/cgsn/data/proc/$PLATFORM/$DEPLOY/imm/mmp"
+RAW="/home/ooiuser/data/raw/$PLATFORM/$DEPLOY/imm/mmp"
+PROC="/home/ooiuser/data/proc/$PLATFORM/$DEPLOY/imm/mmp"
 if [ ! -d $PROC ]; then
     # Make the output directory, if it doesn't exist
     /bin/mkdir -p $PROC
@@ -29,7 +29,7 @@ fi
 UNPACK="/usr/bin/timeout 5 /webdata/cgsn/omc/oms/bin/mmp_unpack"
 
 # setup the python parser used for creating the JSON formatted file
-PYTHON="/home/cgsnmo/anaconda3/envs/ooi/bin/python"
+PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Process the profiler data, using the E files as the key.
 for file in $RAW/E*.DAT; do
@@ -100,7 +100,7 @@ for file in $RAW/E*.DAT; do
         infile=$PROC/${out%.DAT}.TXT
         outfile=${infile/E/P}
         outfile=${outfile%.TXT}.json
-        cd /home/cgsnmo/dev/cgsn-parsers
+        cd /home/ooiuser/code/cgsn-parsers
         $PYTHON -m cgsn_parsers.parsers.parse_mmp_coastal -i $infile -o $outfile
     fi
 done
