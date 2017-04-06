@@ -38,9 +38,7 @@ PATTERN = (
     r'p1\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
     r'p2\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
     r'p3\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
-    r'p4\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
     r'p5\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
-    r'p6\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
     r'p7\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
     r'([0-9a-f]{4})' + NEWLINE
 )
@@ -83,7 +81,7 @@ _parameter_names_superv = [
     'wake_time_count',
     'wake_power_count',
     'esw_power_state',
-    'dsl_power_state'
+    'dsl_power_state',
     'error_flags2',
     'port1_power_state',
     'port1_voltage',
@@ -97,18 +95,10 @@ _parameter_names_superv = [
     'port3_voltage',
     'port3_current',
     'port3_error_flag',
-    'port4_power_state',
-    'port4_voltage',
-    'port4_current',
-    'port4_error_flag',
     'port5_power_state',
     'port5_voltage',
     'port5_current',
     'port5_error_flag',
-    'port6_power_state',
-    'port6_voltage',
-    'port6_current',
-    'port6_error_flag',
     'port7_power_state',
     'port7_voltage',
     'port7_current',
@@ -134,7 +124,6 @@ class Parser(ParserCommon):
         for line in self.raw:
             match = REGEX.match(line)
             if match:
-                print(match.groups())
                 self._build_parsed_values(match)
 
     def _build_parsed_values(self, match):
@@ -151,7 +140,7 @@ class Parser(ParserCommon):
         # Assign the remaining data to the named parameters
         self.data.main_voltage.append(float(match.group(2)))
         self.data.main_current.append(float(match.group(3)))
-        self.data.error_flags1.append(str(match.group(4), 16))
+        self.data.error_flags1.append(str(match.group(4)))
 
         self.data.temperature1.append(float(match.group(5)))
         self.data.temperature2.append(float(match.group(6)))
@@ -180,7 +169,7 @@ class Parser(ParserCommon):
         self.data.iridium_current.append(float(match.group(23)))
         self.data.iridium_error_flag.append(int(match.group(24)))
 
-        self.data.fwwf_power_state.append(int(match.group(25), 16))
+        self.data.fwwf_power_state.append(int(match.group(25)))
         self.data.fwwf_voltage.append(float(match.group(26)))
         self.data.fwwf_current.append(float(match.group(27)))
         self.data.fwwf_power_flag.append(int(match.group(28)))
@@ -196,11 +185,11 @@ class Parser(ParserCommon):
         self.data.wake_time_count.append(float(match.group(34)))
         self.data.wake_power_count.append(int(match.group(35)))
 
-        self.data.esw_power_state.append(int(match.group(36), 16))
+        self.data.esw_power_state.append(int(match.group(36)))
 
         self.data.dsl_power_state.append(int(match.group(37)))
 
-        self.data.error_flags2.append(str(match.group(38), 16))
+        self.data.error_flags2.append(str(match.group(38)))
 
         self.data.port1_power_state.append(int(match.group(39)))
         self.data.port1_voltage.append(float(match.group(40)))
@@ -217,25 +206,15 @@ class Parser(ParserCommon):
         self.data.port3_current.append(float(match.group(49)))
         self.data.port3_error_flag.append(int(match.group(50)))
 
-        self.data.port4_power_state.append(int(match.group(51)))
-        self.data.port4_voltage.append(float(match.group(52)))
-        self.data.port4_current.append(float(match.group(53)))
-        self.data.port4_error_flag.append(int(match.group(54)))
+        self.data.port5_power_state.append(int(match.group(51)))
+        self.data.port5_voltage.append(float(match.group(52)))
+        self.data.port5_current.append(float(match.group(53)))
+        self.data.port5_error_flag.append(int(match.group(54)))
 
-        self.data.port5_power_state.append(int(match.group(55)))
-        self.data.port5_voltage.append(float(match.group(56)))
-        self.data.port5_current.append(float(match.group(57)))
-        self.data.port5_error_flag.append(int(match.group(58)))
-
-        self.data.port6_power_state.append(int(match.group(59)))
-        self.data.port6_voltage.append(float(match.group(60)))
-        self.data.port6_current.append(float(match.group(61)))
-        self.data.port6_error_flag.append(int(match.group(62)))
-
-        self.data.port7_power_state.append(int(match.group(63)))
-        self.data.port7_voltage.append(float(match.group(64)))
-        self.data.port7_current.append(float(match.group(65)))
-        self.data.port7_error_flag.append(int(match.group(66)))
+        self.data.port7_power_state.append(int(match.group(55)))
+        self.data.port7_voltage.append(float(match.group(56)))
+        self.data.port7_current.append(float(match.group(57)))
+        self.data.port7_error_flag.append(int(match.group(58)))
 
 
 if __name__ == '__main__':
