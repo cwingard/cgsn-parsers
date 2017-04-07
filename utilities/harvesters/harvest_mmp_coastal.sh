@@ -9,15 +9,32 @@
 # Wingard, C. 2017-02-23
 
 # Parse the command line inputs
-if [ $# -ne 2 ]; then
-    echo "$0: required inputs are the platform and deployment names"
-    echo "     example: $0 ce09ospm D00001"
+if [ $# -ne 3 ]; then
+    echo "$0: required inputs are the platform and deployment name, and"
+    echo "the time flag for processing today's file (0) or N days prior"
+    echo "     example: $0 ce02shsm D00001 0"
     exit 1
 fi
 PLATFORM=${1,,}
 DEPLOY=${2^^}
+TIME="-$3 day"
+FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
 
-# Set input and output directories
+# First we are going to process any syslog or mopak data sent by the mooring
+RAW="/home/ooiuser/data/raw"
+HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
+
+$HARVEST/harvest_superv_stc.sh $PLATFORM $DEPLOY $FNAME.syslog.log
+for mopak in $RAW/$PLATFORM/$DEPLOY/3dmgx3/$FNAME*.3dmgx3.log; do
+    if [ -e $mopak ]; then
+        SIZE=`du -k "$mopak" | cut -f1`
+        if [ $SIZE > 0 ]; then
+            $HARVEST/harvest_3dmgx3.sh $PLATFORM $DEPLOY $mopak
+        fi
+    fi
+done
+
+# And now process the MMP data, first setting the MMP input and output directories
 RAW="/home/ooiuser/data/raw/$PLATFORM/$DEPLOY/imm/mmp"
 PROC="/home/ooiuser/data/proc/$PLATFORM/$DEPLOY/imm/mmp"
 if [ ! -d $PROC ]; then
@@ -26,7 +43,7 @@ if [ ! -d $PROC ]; then
 fi
 
 # set the unpacker and a limit of 5 seconds for processing (takes less than a second normally)
-UNPACK="/usr/bin/timeout 5 /webdata/cgsn/omc/oms/bin/mmp_unpack"
+UNPACK="/usr/bin/timeout 5 /home/ooiuser/bin/cg_util/mmp_unpack"
 
 # setup the python parser used for creating the JSON formatted file
 PYTHON="/home/ooiuser/bin/conda/bin/python3"
