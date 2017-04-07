@@ -21,7 +21,6 @@ TIME="-$3 day"
 FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
 
 # First we are going to process any syslog or mopak data sent by the mooring
-RAW="/home/ooiuser/data/raw"
 HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
 
 $HARVEST/harvest_superv_stc.sh $PLATFORM $DEPLOY $FNAME.syslog.log
