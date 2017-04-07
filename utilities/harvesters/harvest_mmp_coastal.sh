@@ -43,7 +43,7 @@ if [ ! -d $PROC ]; then
 fi
 
 # set the unpacker and a limit of 5 seconds for processing (takes less than a second normally)
-UNPACK="/usr/bin/timeout 5 /home/ooiuser/bin/oms/mmp_unpack"
+UNPACK="/usr/bin/timeout 5 /home/ooiuser/bin/cg_util/mmp_unpack"
 
 # setup the python parser used for creating the JSON formatted file
 PYTHON="/home/ooiuser/bin/conda/bin/python3"
