@@ -216,14 +216,14 @@ class Parser(object):
         Create a buffered data object by opening the data file and reading in
         the contents
         """
-        with open(self.efile, 'rb') as fid:
+        with open(self.efile, 'r') as fid:
             self.eraw = fid.readlines()
 
-        with open(self.cfile, 'rb') as fid:
+        with open(self.cfile, 'r') as fid:
             self.craw = fid.readlines()
 
         if os.path.isfile(self.afile):
-            with open(self.afile, 'rb') as fid:
+            with open(self.afile, 'r') as fid:
                 self.araw = fid.readlines()
 
     def parse_edata(self):
