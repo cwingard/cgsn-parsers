@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-@package cgsn_parsers.parsers.parse_hydgn
-@file cgsn_parsers/parsers/parse_hydgn.py
+@package cgsn_parsers.parsers.parse_syslog_rda
+@file cgsn_parsers/parsers/parse_syslog_rda.py
 @author Christopher Wingard
-@brief Parses hydrogen data logged by the custom built WHOI data loggers.
+@brief Parses the RDA data logged in the syslog files by the custom built WHOI data loggers.
 """
 import os
 import re
@@ -13,29 +13,35 @@ import re
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, NEWLINE
 
-# Regex pattern for a line with a DCL time stamp and hydrogen data
+# Regex pattern for an RDA log entry in the syslog
 PATTERN = (
-    DCL_TIMESTAMP + r'\s+\*' +  # DCL Time-Stamp
-    FLOAT + r'\s+' +            # hydrogen LEL percentage
-    FLOAT + r'\s+' +            # hydrogen LEL ... printed again ... why?
-    r'\%\s+' + NEWLINE
+    DCL_TIMESTAMP + r'\sDAT\sRDA[67]\srda:\s+' +
+    FLOAT + r'\s+' + FLOAT + r'\s+' + r'([0-9a-f]{8})\s+' +
+    r'gf\s+([0-9a-f]{1})\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
+    r'type\s+([0-2]{1})' + r'\s+' +
+    r'rda\s+([0-1]{1})' + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
+    r'([0-9a-f]{3})' + NEWLINE
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
-_parameter_names_hydgn = [
-        'dcl_date_time_string',
-        'hydrogen_concentration'
-    ]
+_parameter_names_rda = [
+    'date_time_string',
+    'main_voltage',
+    'main_current',
+    'error_flags',
+    'rda_type'
+]
 
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the Parser base class, adds the METBK specific
-    methods to parse the data, and extracts the METBK data records from the DCL
-    daily log files.
+    A Parser subclass that calls the Parser base class, adds the DCL supervisor
+    specific methods to parse the data, and extracts the METBK data records
+    from the DCL daily log files.
     """
+
     def __init__(self, infile):
-        self.initialize(infile, _parameter_names_hydgn)
+        self.initialize(infile, _parameter_names_rda)
 
     def parse_data(self):
         """
@@ -57,10 +63,13 @@ class Parser(ParserCommon):
         # 1970-01-01)
         epts = dcl_to_epoch(match.group(1))
         self.data.time.append(epts)
-        self.data.dcl_date_time_string.append(str(match.group(1)))
+        self.data.date_time_string.append(str(match.group(1)))
 
-        # Assign the remaining MET data to the named parameters
-        self.data.hydrogen_concentration.append(float(match.group(2)))
+        # Assign the remaining data to the named parameters
+        self.data.main_voltage.append(float(match.group(2)))
+        self.data.main_current.append(float(match.group(3)))
+        self.data.error_flags.append(int(match.group(4), 16))
+        self.data.rda_type.append(int(match.group(10)))
 
 
 if __name__ == '__main__':
@@ -69,14 +78,14 @@ if __name__ == '__main__':
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for hydrogen
-    hydgn = Parser(infile)
+    # initialize the Parser object for RDA data
+    rda = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    hydgn.load_ascii()
-    hydgn.parse_data()
+    rda.load_ascii()
+    rda.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
-        f.write(hydgn.data.toJSON())
+        f.write(rda.data.toJSON())

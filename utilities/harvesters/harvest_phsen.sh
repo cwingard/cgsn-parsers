@@ -25,7 +25,7 @@ PARSED="/home/ooiuser/data/proc"
 PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
-if [ $DCL = "dcl35" ]; then
+if [ $DCL = "dcl35" ] || [ $DCL = "dcl36" ]; then
     pltfrm="mfn"
 else
     pltfrm="nsif"

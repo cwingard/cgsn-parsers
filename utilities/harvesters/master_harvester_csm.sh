@@ -55,6 +55,10 @@ esac
 # CPM1
 $HARVEST/harvest_gps.sh $PLATFORM $DEPLOY $FNAME.gps.log
 $HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY $FNAME.pwrsys.log
+$HARVEST/harvest_syslog_fb250.sh $PLATFORM $DEPLOY $FNAME.syslog.log
+$HARVEST/harvest_syslog_irid.sh $PLATFORM $DEPLOY $FNAME.syslog.log
+$HARVEST/harvest_syslog_rda.sh $PLATFORM $DEPLOY $FNAME.syslog.log
+$HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY $FNAME.pwrsys.log
 $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm1 0 $FNAME.superv.log
 
 # DCL11
@@ -64,7 +68,7 @@ $HARVEST/harvest_metbk.sh $PLATFORM $DEPLOY $FNAME.metbk.log
 for mopak in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl11/mopak/$FNAME*.mopak.log; do
     if [ -e $mopak ]; then
         SIZE=`du -k "$mopak" | cut -f1`
-        if [ $SIZE > 0 ]; then
+        if [ $SIZE -gt 0 ]; then
             $HARVEST/harvest_mopak.sh $PLATFORM $DEPLOY dcl11 $mopak
         fi
     fi
@@ -97,7 +101,7 @@ $HARVEST/harvest_flort.sh $PLATFORM $DEPLOY dcl27 $FNAME.flort.log
 for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl27/$OPTAA1/$FNAME*.$OPTAA1.log; do
     if [ -e $optaa ]; then
         SIZE=`du -k "$optaa" | cut -f1`
-        if [ $SIZE > 0 ]; then
+        if [ $SIZE -gt 0 ]; then
             $HARVEST/harvest_optaa.sh $PLATFORM $DEPLOY dcl27 $OPTAA1 $optaa
         fi
     fi
@@ -108,17 +112,17 @@ if [ $MFN_FLAG == 1 ]; then
     # CPM3
     $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm3 1 $FNAME.superv.log
 
-    # DCL35
-    $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl35 $FNAME.superv.log
-    $HARVEST/harvest_adcp.sh $PLATFORM $DEPLOY dcl35 $ADCP2 $FNAME.$ADCP2.log
-    $HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl35 pco2w $FNAME.pco2w.log
-    $HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl35 $PHSEN2 $FNAME.$PHSEN2.log
-    $HARVEST/harvest_presf.sh $PLATFORM $DEPLOY $FNAME.presf.log
-    for vel3d in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl35/vel3d/$FNAME*.vel3d.log; do
+    # DCL36
+    $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl36 $FNAME.superv.log
+    $HARVEST/harvest_adcp.sh $PLATFORM $DEPLOY dcl36 $ADCP2 $FNAME.$ADCP2.log
+    $HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl36 pco2w $FNAME.pco2w.log
+    $HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl36 $PHSEN2 $FNAME.$PHSEN2.log
+    $HARVEST/harvest_presf.sh $PLATFORM $DEPLOY dcl36 $FNAME.presf.log
+    for vel3d in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl36/vel3d/$FNAME*.vel3d.log; do
         if [ -e $vel3d ]; then
             SIZE=`du -k "$vel3d" | cut -f1`
-            if [ $SIZE > 0 ]; then
-                $HARVEST/harvest_vel3d.sh $PLATFORM $DEPLOY $vel3d
+            if [ $SIZE -gt 0 ]; then
+                $HARVEST/harvest_vel3d.sh $PLATFORM $DEPLOY dcl36 $vel3d
             fi
         fi
     done
@@ -129,7 +133,7 @@ if [ $MFN_FLAG == 1 ]; then
     for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl37/$OPTAA2/$FNAME*.$OPTAA2.log; do
         if [ -e $optaa ]; then
             SIZE=`du -k "$optaa" | cut -f1`
-            if [ $SIZE > 0 ]; then
+            if [ $SIZE -gt 0 ]; then
                 $HARVEST/harvest_optaa.sh $PLATFORM $DEPLOY dcl37 $OPTAA2 $optaa
             fi
         fi

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_superv_dcl
 @file cgsn_parsers/parsers/parse_superv_dcl.py
 @author Christopher Wingard
 @brief Parses DCL supervisor data logged by the custom built WHOI data loggers.
-'''
+"""
 import os
 import re
 
-# Import common utilites and base classes
+# Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, INTEGER, NEWLINE
 
@@ -110,20 +110,20 @@ _parameter_names_superv = [
 
 
 class Parser(ParserCommon):
-    '''
+    """
     A Parser subclass that calls the Parser base class, adds the DCL supervisor
     specific methods to parse the data, and extracts the METBK data records
     from the DCL daily log files.
-    '''
+    """
     def __init__(self, infile):
         self.initialize(infile, _parameter_names_superv)
 
     def parse_data(self):
-        '''
+        """
         Iterate through the record lines (defined via the regex expression
         above) in the data object, and parse the data into a pre-defined
         dictionary object created using the Bunch class.
-        '''
+        """
         for line in self.raw:
             match = REGEX.match(line)
             if match:
