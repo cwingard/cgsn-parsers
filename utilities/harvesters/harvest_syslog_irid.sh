@@ -21,7 +21,13 @@ RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/proc"
 PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
-IN="$RAW/$PLATFORM/$DEPLOY/syslog/$FILE"
+if [ -z "${PLATFORM/*pm*}" ]; then
+    # path is different for profiler moorings
+    IN="$RAW/$PLATFORM/$DEPLOY/syslog/$FILE"
+else
+    IN="$RAW/$PLATFORM/$DEPLOY/cg_data/syslog/$FILE"
+fi
+
 OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/irid/${FILE%.log}.json"
 if [ ! -d `/usr/bin/dirname $OUT` ]; then
     mkdir -p `/usr/bin/dirname $OUT`

@@ -68,7 +68,7 @@ for vel3d in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl35/vel3d/$FNAME*.vel3d.log; do
     if [ -e $vel3d ]; then
         SIZE=`du -k "$vel3d" | cut -f1`
         if [ $SIZE -gt 0 ]; then
-            $HARVEST/harvest_vel3d.sh $PLATFORM $DEPLOY dcl36 $vel3d
+            $HARVEST/harvest_vel3d.sh $PLATFORM $DEPLOY dcl35 $vel3d
         fi
     fi
 done

@@ -16,7 +16,7 @@ from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLO
 
 # Regex pattern for a summary Iridium log entry in the syslog
 PATTERN = (
-    DCL_TIMESTAMP + r'\s+(?:[DAT\sC_]*)' + r'IRID' + r'\s+' +
+    DCL_TIMESTAMP + r'\s+DAT\sC_IRID\s+' +
     r'sent\s+' + INTEGER + r'\s+' +
     r'recv\s+' + INTEGER + r'\s+' +
     r'tx\s+' + INTEGER + r'\s+' +
@@ -24,8 +24,7 @@ PATTERN = (
     r'avg_tx_rate\s+' + FLOAT + r'\s+' +
     r'avg_rx_rate\s+' + FLOAT + r'\s+' +
     r'logintime\s+' + FLOAT + r'\s+' +
-    r'ctime\s+' + FLOAT + r'\s+' +
-    NEWLINE
+    r'ctime\s+' + FLOAT + NEWLINE
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 

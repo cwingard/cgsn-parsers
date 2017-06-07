@@ -21,8 +21,8 @@ RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/proc"
 PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
-IN="$RAW/$PLATFORM/$DEPLOY/syslog/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/irid/${FILE%.log}.json"
+IN="$RAW/$PLATFORM/$DEPLOY/cg_data/syslog/$FILE"
+OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/fb250/${FILE%.log}.json"
 if [ ! -d `/usr/bin/dirname $OUT` ]; then
     mkdir -p `/usr/bin/dirname $OUT`
 fi
