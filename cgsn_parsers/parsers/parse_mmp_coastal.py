@@ -380,14 +380,10 @@ if __name__ == '__main__':
     # load the data into buffered objects and parse the data into dictionaries
     mmp.load_ascii()
     mmp.parse_edata()
-    if mmp.data.profile.sensor_on >= 2082758400:
-        print("Erroneous sensor_on time in %s" % efile)
-        print("Ending processing")
-    else:
-        mmp.parse_cdata()
-        if mmp.araw:
-            mmp.parse_adata()
+    mmp.parse_cdata()
+    if mmp.araw:
+        mmp.parse_adata()
 
-        # write the resulting Bunch object via the toJSON method to a JSON formatted data file
-        with open(outfile, 'w') as f:
-            f.write(mmp.data.toJSON())
+    # write the resulting Bunch object via the toJSON method to a JSON formatted data file
+    with open(outfile, 'w') as f:
+        f.write(mmp.data.toJSON())
