@@ -21,6 +21,7 @@ HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
 
 # CPM1
 $HARVEST/harvest_gps.sh $PLATFORM $DEPLOY $FNAME.gps.log
+$HARVEST/harvest_syslog_irid.sh $PLATFORM $DEPLOY $FNAME.syslog.log
 $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm1 0 $FNAME.superv.log
 
 # DCL17
@@ -29,7 +30,7 @@ $HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl17 ctdbp3 3 $FNAME.ctdbp3.log
 for mopak in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl17/mopak/$FNAME*.mopak.log; do
     if [ -e $mopak ]; then
         SIZE=`du -k "$mopak" | cut -f1`
-        if [ $SIZE > 0 ]; then
+        if [ $SIZE -gt 0 ]; then
             $HARVEST/harvest_mopak.sh $PLATFORM $DEPLOY dcl17 $mopak
         fi
     fi
@@ -46,7 +47,7 @@ $HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl16 phsen1 $FNAME.phsen1.log
 for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl16/optaa1/$FNAME*.optaa1.log; do
     if [ -e $optaa ]; then
         SIZE=`du -k "$optaa" | cut -f1`
-        if [ $SIZE > 0 ]; then
+        if [ $SIZE -gt 0 ]; then
             $HARVEST/harvest_optaa.sh $PLATFORM $DEPLOY dcl16 optaa1 $optaa
         fi
     fi
@@ -62,12 +63,12 @@ $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl35 $FNAME.superv.log
 $HARVEST/harvest_adcp.sh $PLATFORM $DEPLOY dcl35 adcpt $FNAME.adcpt.log
 $HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl35 pco2w2 $FNAME.pco2w2.log
 $HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl35 phsen2 $FNAME.phsen2.log
-$HARVEST/harvest_presf.sh $PLATFORM $DEPLOY $FNAME.presf.log
+$HARVEST/harvest_presf.sh $PLATFORM $DEPLOY dcl35 $FNAME.presf.log
 for vel3d in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl35/vel3d/$FNAME*.vel3d.log; do
     if [ -e $vel3d ]; then
         SIZE=`du -k "$vel3d" | cut -f1`
-        if [ $SIZE > 0 ]; then
-            $HARVEST/harvest_vel3d.sh $PLATFORM $DEPLOY $vel3d
+        if [ $SIZE -gt 0 ]; then
+            $HARVEST/harvest_vel3d.sh $PLATFORM $DEPLOY dcl35 $vel3d
         fi
     fi
 done
@@ -78,7 +79,7 @@ $HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl37 ctdbp2 2 $FNAME.ctdbp2.log
 for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl37/optaa2/$FNAME*.optaa2.log; do
     if [ -e $optaa ]; then
         SIZE=`du -k "$optaa" | cut -f1`
-        if [ $SIZE > 0 ]; then
+        if [ $SIZE -gt 0 ]; then
             $HARVEST/harvest_optaa.sh $PLATFORM $DEPLOY dcl37 optaa2 $optaa
         fi
     fi

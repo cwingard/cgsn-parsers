@@ -274,12 +274,8 @@ class Parser(object):
                 self._build_parsed_cdata(match)
 
         # now we need to create a time record, since the CTD record does not include an explicit time stamp
-        time_on = datetime.datetime.strptime(' '.join(self.craw[-2].split()[-2:]), '%m/%d/%Y %H:%M:%S')
-        time_on.replace(tzinfo=timezone('UTC'))
-        epts = timegm(time_on.timetuple())
-
         idx = np.arange(len(self.data.cdata.pressure))
-        self.data.cdata.time = (epts + (idx * 1)).tolist()
+        self.data.cdata.time = (self.data.profile.sensor_on + (idx * 1)).tolist()
 
     def parse_adata(self):
         """
@@ -305,12 +301,11 @@ class Parser(object):
                         self._beams = [3, 2, 3, 4, 0]
                     self._build_parsed_adata(sans, False)
 
-            # now we need to create a time record, since the CTD record does not include an explicit time stamp
-            time_on = datetime.datetime.strptime(' '.join(self.araw[-2].split()[-2:]), '%m/%d/%Y %H:%M:%S')
-            time_on.replace(tzinfo=timezone('UTC'))
-            epts = timegm(time_on.timetuple())
-            idx = np.arange(len(self.data.adata.date_time_string))
-            self.data.adata.time = (epts + (idx * 0.5)).tolist()
+        # now we need to recreate the time record, since the Aquadopp II record does not include an explicit time stamp
+        idx = np.arange(len(self.data.adata.time))
+        tic = 1 / np.round((len(self.data.adata.time) / (np.size(np.where(np.diff(self.data.adata.time) == 1)) + 1)))
+        epts = self.data.adata.time[0]
+        self.data.adata.time = (epts + (idx * tic)).tolist()
 
     def _build_parsed_edata(self, match):
         """
@@ -344,7 +339,11 @@ class Parser(object):
         """
         Extract the data from the relevant regex groups and assign to elements of the data dictionary.
         """
+        dt = datetime.datetime.strptime(match.group(1), '%m-%d-%Y %H:%M:%S')
+        utc = dt.replace(tzinfo=timezone('UTC'))
+        self.data.adata.time.append(timegm(utc.timetuple()))
         self.data.adata.date_time_string.append(str(match.group(1)))
+
         self.data.adata.temperature.append(float(match.group(2)))
         self.data.adata.heading.append(float(match.group(3)))
         self.data.adata.pitch.append(float(match.group(4)))

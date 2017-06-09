@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_presf
 @file cgsn_parsers/parsers/parse_presf.py
 @author Christopher Wingard
 @brief Parses PRESF data logged by the custom built WHOI data loggers.
-'''
+"""
 import os
 import re
 
-# Import common utilites and base classes
+# Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, NEWLINE
 
@@ -43,11 +43,11 @@ class Parser(ParserCommon):
         self.initialize(infile, _parameter_names_presf)
 
     def parse_data(self):
-        '''
+        """
         Iterate through the record lines (defined via the regex expression
         above) in the data object, and parse the data into a pre-defined
         dictionary object created using the Bunch class.
-        '''
+        """
         for line in self.raw:
             match = REGEX.match(line)
             if match:

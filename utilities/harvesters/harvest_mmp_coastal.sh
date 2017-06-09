@@ -20,18 +20,33 @@ DEPLOY=${2^^}
 TIME="-$3 day"
 FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
 
-# First we are going to process any syslog or mopak data sent by the mooring
+# First we are going to process any syslog (for iridium, gps and supervisor data) or mopak data sent by the mooring
+RAW="/home/ooiuser/data/raw"
 HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
 
 $HARVEST/harvest_superv_stc.sh $PLATFORM $DEPLOY $FNAME.syslog.log
+$HARVEST/harvest_syslog_gps.sh $PLATFORM $DEPLOY $FNAME.syslog.log
+$HARVEST/harvest_syslog_irid.sh $PLATFORM $DEPLOY $FNAME.syslog.log
 for mopak in $RAW/$PLATFORM/$DEPLOY/3dmgx3/$FNAME*.3dmgx3.log; do
     if [ -e $mopak ]; then
         SIZE=`du -k "$mopak" | cut -f1`
-        if [ $SIZE > 0 ]; then
+        if [ $SIZE -gt 0 ]; then
             $HARVEST/harvest_3dmgx3.sh $PLATFORM $DEPLOY $mopak
         fi
     fi
 done
+
+# If there is any ADCP data sent via the inductive modem, process it now
+if [ -d $RAW/$PLATFORM/$DEPLOY/imm/adcp* ]; then
+    for adcp in $RAW/$PLATFORM/$DEPLOY/imm/adcp*/adcp*_$FNAME*.DAT; do
+        if [ -e $adcp ]; then
+            SIZE=`du -k "$adcp" | cut -f1`
+            if [ $SIZE -gt 0 ]; then
+                $HARVEST/harvest_imm_adcp.sh $PLATFORM $DEPLOY $adcp
+            fi
+        fi
+    done
+fi
 
 # And now process the MMP data, first setting the MMP input and output directories
 RAW="/home/ooiuser/data/raw/$PLATFORM/$DEPLOY/imm/mmp"

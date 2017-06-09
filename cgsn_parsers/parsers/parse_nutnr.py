@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 @package cgsn_parsers.parsers.parse_nutnr
 @file cgsn_parsers/parsers/parse_nutnr.py
 @author Christopher Wingard
 @brief Parses NUTNR data logged by the custom built WHOI data loggers.
-'''
+"""
 import os
 import re
 
-# Import common utilites and base classes
+# Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, STRING, NEWLINE
 
@@ -23,9 +23,9 @@ REGEX = re.compile(PATTERN, re.DOTALL)
 
 
 def _parameter_names_nutnr(spectra):
-    '''
+    """
     Setup parameter names depending on the spectral output (full or condensed)
-    '''
+    """
     parameter_names = [
             'date_time_string',
             'measurement_type',
@@ -60,31 +60,31 @@ def _parameter_names_nutnr(spectra):
 
 
 class Parser(ParserCommon):
-    '''
+    """
     A Parser subclass that calls the Parser base class, adds the NUTNR specific
     methods to parse the data, and extracts the NUTNR data records from the DCL
     daily log files.
-    '''
+    """
     def __init__(self, infile, spectra):
         self.initialize(infile, _parameter_names_nutnr(spectra))
         self.spectra = spectra
 
     def parse_data(self):
-        '''
+        """
         Iterate through the record lines (defined via the regex expression
         above) in the data object, and parse the data into a pre-defined
         dictionary object created using the Bunch class.
-        '''
+        """
         for line in self.raw:
             match = REGEX.match(line)
             if match:
                 self._build_parsed_values(match, self.spectra)
 
     def _build_parsed_values(self, match, spectra):
-        '''
+        """
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
-        '''
+        """
         # Use the date_time_string to calculate an epoch timestamp (seconds
         # since 1970-01-01)
         epts = dcl_to_epoch(match.group(1))

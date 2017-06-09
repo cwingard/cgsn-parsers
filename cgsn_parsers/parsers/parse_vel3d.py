@@ -15,7 +15,7 @@ from datetime import datetime
 from pytz import timezone
 from struct import unpack
 
-# Import common utilites and base classes
+# Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon, inputs
 
 # Regex pattern for a binary VEL3D data packet;
