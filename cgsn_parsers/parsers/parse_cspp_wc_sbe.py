@@ -1,31 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-@package cgsn_parsers.parsers.parse_cspp_parad
-@file cgsn_parsers/parsers/parse_cspp_parad.py
+@package cgsn_parsers.parsers.parse_cspp_wc_sbe
+@file cgsn_parsers/parsers/parse_cspp_wc_sbe.py
 @author Christopher Wingard
-@brief Parses and converts the uncabled Coastal Surface Piercing Profiler -- PAR data files into a JSON file.
+@brief Parses and converts the uncabled Coastal Surface Piercing Profiler -- WC data files into a JSON file.
 """
 import os
 import re
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
+from cgsn_parsers.parsers.common import FLOAT, NEWLINE, STRING, inputs
 
-# Regex pattern for the PAR data from the uCSPP Satlantic PAR data files
+# Regex pattern for the Winch Controller data from the uCSPP WC_SBE data files
 PATTERN = (
-    FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
-    r'([0-9/]+[0-9]+\s+[0-9:]+[0-9]+)' + r'\s+' +
-    INTEGER + NEWLINE
+    FLOAT + r'\s+' + STRING + r'\s+' + FLOAT + r'\s+' + FLOAT + NEWLINE
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
-_parameter_names_parad = [
-    'depth',
+_parameter_names_wc_sbe = [
     'suspect_timestamp',
-    'parad_date_time_string',
-    'raw_par'
+    'pressure',
+    'velocity'
     ]
 
 
@@ -35,7 +32,7 @@ class Parser(ParserCommon):
     extracts the data records from the uCSPP extracted data files.
     """
     def __init__(self, infile):
-        self.initialize(infile, _parameter_names_parad)
+        self.initialize(infile, _parameter_names_wc_sbe)
 
     def parse_data(self):
         """
@@ -54,11 +51,9 @@ class Parser(ParserCommon):
         of the data dictionary.
         """
         self.data.time.append(match.group(1))
-        self.data.time.depth.append(match.group(2))
-        self.data.time.suspect_timestamp.append(match.group(3))
-        self.data.time.parad_date_time_string.append(match.group(4))
-        self.data.time.raw_par.append(match.group(5))
-
+        self.data.suspect_timestamp.append(match.group(2))
+        self.data.pressure.append(match.group(3))
+        self.data.velocity.append(match.group(4))
 
 if __name__ == '__main__':
     # load the input arguments
@@ -66,14 +61,14 @@ if __name__ == '__main__':
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for parad
-    parad = Parser(infile)
+    # initialize the Parser object for wc_sbe
+    wc_sbe = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    parad.load_ascii()
-    parad.parse_data()
+    wc_sbe.load_ascii()
+    wc_sbe.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
-        f.write(parad.data.toJSON())
+        f.write(wc_sbe.data.toJSON())

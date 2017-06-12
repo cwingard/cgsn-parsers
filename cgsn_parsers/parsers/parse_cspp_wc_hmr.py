@@ -1,40 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-@package cgsn_parsers.parsers.parse_cspp_flort
-@file cgsn_parsers/parsers/parse_cspp_flort.py
+@package cgsn_parsers.parsers.parse_cspp_wc_hmr
+@file cgsn_parsers/parsers/parse_cspp_wc_hmr.py
 @author Christopher Wingard
-@brief Parses and converts the uncabled Coastal Surface Piercing Profiler -- ECO Triplet data files into a JSON file.
+@brief Parses and converts the uncabled Coastal Surface Piercing Profiler -- WC_HMR data files into a JSON file.
 """
 import os
 import re
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
+from cgsn_parsers.parsers.common import FLOAT, NEWLINE, STRING, inputs
 
-# Regex pattern for the ECO Triplet data from the uCSPP ECO Triplet data files
+# Regex pattern for the Winch Controller data from the uCSPP WC_HMR data files
 PATTERN = (
-    FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
-    r'([0-9/]+[0-9]+\s+[0-9:]+[0-9]+)' + r'\s+' +
-    INTEGER + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
-    INTEGER + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
-    NEWLINE
+    FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + NEWLINE
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
-_parameter_names_flort = [
+_parameter_names_wc_hmr = [
     'depth',
     'suspect_timestamp',
-    'flort_date_time_string',
-    'measurement_wavelength_beta',
-    'raw_signal_beta',
-    'measurement_wavelength_chl',
-    'raw_signal_chl',
-    'measurement_wavelength_cdom',
-    'raw_signal_cdom',
-    'raw_internal_temp'
-]
+    'heading',
+    'pitch',
+    'roll'
+    ]
 
 
 class Parser(ParserCommon):
@@ -43,7 +34,7 @@ class Parser(ParserCommon):
     extracts the data records from the uCSPP extracted data files.
     """
     def __init__(self, infile):
-        self.initialize(infile, _parameter_names_flort)
+        self.initialize(infile, _parameter_names_wc_hmr)
 
     def parse_data(self):
         """
@@ -64,14 +55,9 @@ class Parser(ParserCommon):
         self.data.time.append(match.group(1))
         self.data.depth.append(match.group(2))
         self.data.suspect_timestamp.append(match.group(3))
-        self.data.flort_date_time_string.append(match.group(4))
-        self.data.measurement_wavelength_beta.append(match.group(5))
-        self.data.raw_signal_beta.append(match.group(6))
-        self.data.measurement_wavelength_chl.append(match.group(7))
-        self.data.raw_signal_chl.append(match.group(8))
-        self.data.measurement_wavelength_cdom.append(match.group(9))
-        self.data.raw_signal_cdom.append(match.group(10))
-        self.data.raw_internal_temp.append(match.group(11))
+        self.data.heading.append(match.group(4))
+        self.data.pitch.append(match.group(5))
+        self.data.roll.append(match.group(6))
 
 
 if __name__ == '__main__':
@@ -80,14 +66,14 @@ if __name__ == '__main__':
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for flort
-    flort = Parser(infile)
+    # initialize the Parser object for wc_hmr
+    wc_hmr = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    flort.load_ascii()
-    flort.parse_data()
+    wc_hmr.load_ascii()
+    wc_hmr.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
-        f.write(flort.data.toJSON())
+        f.write(wc_hmr.data.toJSON())

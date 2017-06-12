@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-@package cgsn_parsers.parsers.parse_cspp_dosta
-@file cgsn_parsers/parsers/parse_cspp_dosta.py
+@package cgsn_parsers.parsers.parse_cspp_wc_wm
+@file cgsn_parsers/parsers/parse_cspp_wc_wm.py
 @author Christopher Wingard
-@brief Parses and converts the uncabled Coastal Surface Piercing Profiler -- Optode data files into a JSON file.
+@brief Parses and converts the uncabled Coastal Surface Piercing Profiler -- WC_WM data files into a JSON file.
 """
 import os
 import re
@@ -13,32 +13,28 @@ import re
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
 
-# Regex pattern for the Optode data from the uCSPP Optode data files
+# Regex pattern for the Winch Controller data from the uCSPP WC_WM data files
 PATTERN = (
     FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
-    INTEGER + r'\s+' + INTEGER + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    NEWLINE
+    INTEGER + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
+    INTEGER + r'\s+' + INTEGER + r'\s+' + FLOAT + r'\s+' +
+    INTEGER + r'\s+' + INTEGER + r'\s+' + FLOAT + NEWLINE
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
-_parameter_names_dosta = [
+_parameter_names_wc_wm = [
     'depth',
     'suspect_timestamp',
-    'product_number',
-    'serial_number',
-    'estimated_oxygen_concentration',
-    'estimated_oxygen_saturation',
-    'optode_temperature',
-    'calibrated_phase',
-    'temp_compensated_phase',
-    'blue_phase',
-    'red_phase',
-    'blue_amplitude',
-    'red_amplitude',
-    'raw_temperature'
-]
+    'encoder_counts',
+    'current',
+    'status_string',
+    'raw_velocity',
+    'temperature',
+    'voltage',
+    'raw_time',
+    'raw_discharge',
+    'rope_on_drum'
+    ]
 
 
 class Parser(ParserCommon):
@@ -47,7 +43,7 @@ class Parser(ParserCommon):
     extracts the data records from the uCSPP extracted data files.
     """
     def __init__(self, infile):
-        self.initialize(infile, _parameter_names_dosta)
+        self.initialize(infile, _parameter_names_wc_wm)
 
     def parse_data(self):
         """
@@ -68,18 +64,15 @@ class Parser(ParserCommon):
         self.data.time.append(match.group(1))
         self.data.depth.append(match.group(2))
         self.data.suspect_timestamp.append(match.group(3))
-        self.data.product_number.append(match.group(4))
-        self.data.serial_number.append(match.group(5))
-        self.data.estimated_oxygen_concentration.append(match.group(6))
-        self.data.estimated_oxygen_saturation.append(match.group(7))
-        self.data.optode_temperature.append(match.group(8))
-        self.data.calibrated_phase.append(match.group(9))
-        self.data.temp_compensated_phase.append(match.group(10))
-        self.data.blue_phase.append(match.group(11))
-        self.data.red_phase.append(match.group(12))
-        self.data.blue_amplitude.append(match.group(13))
-        self.data.red_amplitude.append(match.group(14))
-        self.data.raw_temperature.append(match.group(15))
+        self.data.encoder_counts.append(match.group(4))
+        self.data.current.append(match.group(5))
+        self.data.status_string.append(match.group(6))
+        self.data.raw_velocity.append(match.group(7))
+        self.data.temperature.append(match.group(8))
+        self.data.voltage.append(match.group(9))
+        self.data.raw_time.append(match.group(10))
+        self.data.raw_discharge.append(match.group(11))
+        self.data.rope_on_drum.append(match.group(12))
 
 
 if __name__ == '__main__':
@@ -88,14 +81,14 @@ if __name__ == '__main__':
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for dosta
-    dosta = Parser(infile)
+    # initialize the Parser object for wc_wm
+    wc_wm = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    dosta.load_ascii()
-    dosta.parse_data()
+    wc_wm.load_ascii()
+    wc_wm.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
-        f.write(dosta.data.toJSON())
+        f.write(wc_wm.data.toJSON())
