@@ -62,21 +62,21 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(match.group(1))
-        self.data.depth.append(match.group(2))
-        self.data.suspect_timestamp.append(match.group(3))
-        self.data.serial_number.append(match.group(5))
-        self.data.timer.append(match.group(6))
-        self.data.sample_delay.append(match.group(7))
+        self.data.time.append(float(match.group(1)))
+        self.data.depth.append(float(match.group(2)))
+        self.data.suspect_timestamp.append(str(match.group(3)))
+        self.data.serial_number.append(int(match.group(5)))
+        self.data.timer.append(float(match.group(6)))
+        self.data.sample_delay.append(int(match.group(7)))
         channels = [
-            match.group(8), match.group(9), match.group(10), match.group(11),
-            match.group(12), match.group(13), match.group(14)
+            int(match.group(8)), int(match.group(9)), int(match.group(10)), int(match.group(11)),
+            int(match.group(12)), int(match.group(13)), int(match.group(14))
         ]
         self.data.raw_channels.append(channels)
-        self.data.input_voltage.append(match.group(15))
-        self.data.analog_rail_voltage.append(match.group(16))
-        self.data.internal_temperature.append(match.group(17))
-        self.data.frame_counter.append(match.group(18))
+        self.data.input_voltage.append(int(match.group(15)))
+        self.data.analog_rail_voltage.append(int(match.group(16)))
+        self.data.internal_temperature.append(int(match.group(17)))
+        self.data.frame_counter.append(int(match.group(18)))
 
 
 if __name__ == '__main__':

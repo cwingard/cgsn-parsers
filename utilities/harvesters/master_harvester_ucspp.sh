@@ -13,129 +13,169 @@ if [ $# -ne 3 ]; then
 fi
 PLATFORM=${1,,}
 DEPLOY=${2^^}
-TYPE=${3^^}
+FTYPE=${3^^}
 
 # setup the base directories and the python parser used for creating the JSON formatted file
 RAW="/home/ooiuser/data/raw/$PLATFORM/$DEPLOY/extract"
-PROC="/home/ooiuser/data/proc/$PLATFORM/$DEPLOY/$TYPE"
+PROC="/home/ooiuser/data/proc/$PLATFORM/$DEPLOY"
 if [ ! -d $PROC ]; then
     # Make the output directory, if it doesn't exist
     /bin/mkdir -p $PROC
 fi
 PYTHON="/home/ooiuser/bin/conda/bin/python3"
-# Process the profiler data, using the E files as the key.
-case $TYPE in
+
+case $FTYPE in
     "ACS" )
         # OPTAA data files
+        ODIR="$PROC/optaa"
+        if [ ! -d $ODIR ]; then
+            mkdir -p $ODIR
+        fi
         for file in $RAW/ucspp_*_ACS_ACS.txt; do
             out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
                 echo "Processing $file..."
                 cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_optaa -i $file -o $PROC/$out
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_optaa -i $file -o $ODIR/${out%.txt}.json
             fi
         done ;;
 
-    "PDB" | "PDD" )
+    "PPB" | "PPD" )
         # CTDPF data files
-        for file in $RAW/ucspp_*_$TYPE_CTD.txt; do
+        ODIR="$PROC/ctdpf"
+        if [ ! -d $ODIR ]; then
+            mkdir -p $ODIR
+        fi
+        for file in $RAW/ucspp_*_"$FTYPE"_CTD.txt; do
             out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
                 echo "Processing $file..."
                 cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_ctdpf -i $file -o $PROC/$out
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_ctdpf -i $file -o $ODIR/${out%.txt}.json
             fi
         done
 
         # DOSTA data files
-        for file in $RAW/ucspp_*_$TYPE_OPT.txt; do
+        ODIR="$PROC/dosta"
+        if [ ! -d $ODIR ]; then
+            mkdir -p $ODIR
+        fi
+        for file in $RAW/ucspp_*_"$FTYPE"_OPT.txt; do
             out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
                 echo "Processing $file..."
                 cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_dosta -i $file -o $PROC/$out
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_dosta -i $file -o $ODIR/${out%.txt}.json
             fi
         done
 
         # FLORT data files
-        for file in $RAW/ucspp_*_$TYPE_TRIP.txt; do
+        ODIR="$PROC/flort"
+        if [ ! -d $ODIR ]; then
+            mkdir -p $ODIR
+        fi
+        for file in $RAW/ucspp_*_"$FTYPE"_TRIP.txt; do
             out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
                 echo "Processing $file..."
                 cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_flort -i $file -o $PROC/$out
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_flort -i $file -o $ODIR/${out%.txt}.json
             fi
         done
 
-        # PARAD data files
-        for file in $RAW/ucspp_*_$TYPE_PAR.txt; do
-            out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
-                echo "Processing $file..."
-                cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_parad -i $file -o $PROC/$out
+        if [ $FTYPE == "PPB" ]; then
+            # PARAD data files
+            ODIR="$PROC/parad"
+            if [ ! -d $ODIR ]; then
+                mkdir -p $ODIR
             fi
-        done
+            for file in $RAW/ucspp_*_"$FTYPE"_PARS.txt; do
+                out=`/bin/basename $file`
+                if [ ! -f $ODIR/${out%.txt}.json ]; then
+                    echo "Processing $file..."
+                    cd /home/ooiuser/code/cgsn-parsers
+                    $PYTHON -m cgsn_parsers.parsers.parse_cspp_parad -i $file -o $ODIR/${out%.txt}.json
+                fi
+            done
 
-        # SPKIR data files
-        for file in $RAW/ucspp_*_$TYPE_OCR.txt; do
-            out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
-                echo "Processing $file..."
-                cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_spkir -i $file -o $PROC/$out
+            # SPKIR data files
+            ODIR="$PROC/spkir"
+            if [ ! -d $ODIR ]; then
+                mkdir -p $ODIR
             fi
-        done
+            for file in $RAW/ucspp_*_"$FTYPE"_OCR.txt; do
+                out=`/bin/basename $file`
+                if [ ! -f $ODIR/${out%.txt}.json ]; then
+                    echo "Processing $file..."
+                    cd /home/ooiuser/code/cgsn-parsers
+                    $PYTHON -m cgsn_parsers.parsers.parse_cspp_spkir -i $file -o $ODIR/${out%.txt}.json
+                fi
+            done
 
-        # VELPT data files
-        for file in $RAW/ucspp_*_$TYPE_ADCP.txt; do
-            out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
-                echo "Processing $file..."
-                cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_velpt -i $file -o $PROC/$out
+            # VELPT data files
+            ODIR="$PROC/velpt"
+            if [ ! -d $ODIR ]; then
+                mkdir -p $ODIR
             fi
-        done ;;
+            for file in $RAW/ucspp_*_"$FTYPE"_ADCP.txt; do
+                out=`/bin/basename $file`
+                if [ ! -f $ODIR/${out%.txt}.json ]; then
+                    echo "Processing $file..."
+                    cd /home/ooiuser/code/cgsn-parsers
+                    $PYTHON -m cgsn_parsers.parsers.parse_cspp_velpt -i $file -o $ODIR/${out%.txt}.json
+                fi
+            done
+        fi
+
+        ;;
 
     "SNA" )
         # NUTNR data files
+        ODIR="$PROC/nutnr"
+        if [ ! -d $ODIR ]; then
+            mkdir -p $ODIR
+        fi
         for file in $RAW/ucspp_*_SNA_SNA.txt; do
             out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
                 echo "Processing $file..."
                 cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_nutnr -i $file -o $PROC/$out
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_nutnr -i $file -o $ODIR/${out%.txt}.json
             fi
         done ;;
 
     "WC" )
         # HMR data files
+        ODIR="$PROC/winch"
+        if [ ! -d $ODIR ]; then
+            mkdir -p $ODIR
+        fi
         for file in $RAW/ucspp_*_WC_HMR.txt; do
             out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
                 echo "Processing $file..."
                 cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_wc_hmr -i $file -o $PROC/$out
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_wc_hmr -i $file -o $ODIR/${out%.txt}.json
             fi
         done
 
         # SBE data files
         for file in $RAW/ucspp_*_WC_SBE.txt; do
             out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
                 echo "Processing $file..."
                 cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_wc_sbe -i $file -o $PROC/$out
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_wc_sbe -i $file -o $ODIR/${out%.txt}.json
             fi
         done
 
         # WM data files
         for file in $RAW/ucspp_*_WC_WM.txt; do
             out=`/bin/basename $file`
-            if [ ! -f $PROC/${out%.txt}.json ]; then
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
                 echo "Processing $file..."
                 cd /home/ooiuser/code/cgsn-parsers
-                $PYTHON -m cgsn_parsers.parsers.parse_ucspp_wc_wm -i $file -o $PROC/$out
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_wc_wm -i $file -o $ODIR/${out%.txt}.json
             fi
         done ;;
 

@@ -53,11 +53,11 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(match.group(1))
-        self.data.time.depth.append(match.group(2))
-        self.data.time.suspect_timestamp.append(match.group(3))
-        self.data.time.parad_date_time_string.append(match.group(4))
-        self.data.time.raw_par.append(match.group(5))
+        self.data.time.append(float(match.group(1)))
+        self.data.depth.append(float(match.group(2)))
+        self.data.suspect_timestamp.append(str(match.group(3)))
+        self.data.parad_date_time_string.append(str(match.group(4)))
+        self.data.raw_par.append(int(match.group(5)))
 
 
 if __name__ == '__main__':

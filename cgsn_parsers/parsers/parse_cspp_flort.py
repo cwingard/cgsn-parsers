@@ -61,17 +61,17 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(match.group(1))
-        self.data.depth.append(match.group(2))
-        self.data.suspect_timestamp.append(match.group(3))
-        self.data.flort_date_time_string.append(match.group(4))
-        self.data.measurement_wavelength_beta.append(match.group(5))
-        self.data.raw_signal_beta.append(match.group(6))
-        self.data.measurement_wavelength_chl.append(match.group(7))
-        self.data.raw_signal_chl.append(match.group(8))
-        self.data.measurement_wavelength_cdom.append(match.group(9))
-        self.data.raw_signal_cdom.append(match.group(10))
-        self.data.raw_internal_temp.append(match.group(11))
+        self.data.time.append(float(match.group(1)))
+        self.data.depth.append(float(match.group(2)))
+        self.data.suspect_timestamp.append(str(match.group(3)))
+        self.data.flort_date_time_string.append(str(match.group(4)))
+        self.data.measurement_wavelength_beta.append(int(match.group(5)))
+        self.data.raw_signal_beta.append(int(match.group(6)))
+        self.data.measurement_wavelength_chl.append(int(match.group(7)))
+        self.data.raw_signal_chl.append(int(match.group(8)))
+        self.data.measurement_wavelength_cdom.append(int(match.group(9)))
+        self.data.raw_signal_cdom.append(int(match.group(10)))
+        self.data.raw_internal_temp.append(int(match.group(11)))
 
 
 if __name__ == '__main__':

@@ -61,18 +61,18 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(match.group(1))
-        self.data.depth.append(match.group(2))
-        self.data.suspect_timestamp.append(match.group(3))
-        self.data.encoder_counts.append(match.group(4))
-        self.data.current.append(match.group(5))
-        self.data.status_string.append(match.group(6))
-        self.data.raw_velocity.append(match.group(7))
-        self.data.temperature.append(match.group(8))
-        self.data.voltage.append(match.group(9))
-        self.data.raw_time.append(match.group(10))
-        self.data.raw_discharge.append(match.group(11))
-        self.data.rope_on_drum.append(match.group(12))
+        self.data.time.append(float(match.group(1)))
+        self.data.depth.append(float(match.group(2)))
+        self.data.suspect_timestamp.append(str(match.group(3)))
+        self.data.encoder_counts.append(int(match.group(4)))
+        self.data.current.append(float(match.group(5)))
+        self.data.status_string.append(str(match.group(6)))
+        self.data.raw_velocity.append(int(match.group(7)))
+        self.data.temperature.append(int(match.group(8)))
+        self.data.voltage.append(float(match.group(9)))
+        self.data.raw_time.append(int(match.group(10)))
+        self.data.raw_discharge.append(int(match.group(11)))
+        self.data.rope_on_drum.append(float(match.group(12)))
 
 
 if __name__ == '__main__':

@@ -66,21 +66,21 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(match.group(1))
-        self.data.depth.append(match.group(2))
-        self.data.suspect_timestamp.append(match.group(3))
-        self.data.speed_of_sound.append(match.group(4))
-        self.data.heading.append(match.group(5))
-        self.data.pitch.append(match.group(6))
-        self.data.roll.append(match.group(7))
-        self.data.pressure.append(match.group(8))
-        self.data.temperature.append(match.group(9))
-        self.data.velocity_east.append(match.group(10))
-        self.data.velocity_north.append(match.group(11))
-        self.data.velocity_vertical.append(match.group(12))
-        self.data.amplitude_beam1.append(match.group(13))
-        self.data.amplitude_beam2.append(match.group(14))
-        self.data.amplitude_beam3.append(match.group(15))
+        self.data.time.append(float(match.group(1)))
+        self.data.depth.append(float(match.group(2)))
+        self.data.suspect_timestamp.append(str(match.group(3)))
+        self.data.speed_of_sound.append(float(match.group(4)))
+        self.data.heading.append(float(match.group(5)))
+        self.data.pitch.append(float(match.group(6)))
+        self.data.roll.append(float(match.group(7)))
+        self.data.pressure.append(float(match.group(8)))
+        self.data.temperature.append(float(match.group(9)))
+        self.data.velocity_east.append(float(match.group(10)))
+        self.data.velocity_north.append(float(match.group(11)))
+        self.data.velocity_vertical.append(float(match.group(12)))
+        self.data.amplitude_beam1.append(int(match.group(13)))
+        self.data.amplitude_beam2.append(int(match.group(14)))
+        self.data.amplitude_beam3.append(int(match.group(15)))
 
 
 if __name__ == '__main__':

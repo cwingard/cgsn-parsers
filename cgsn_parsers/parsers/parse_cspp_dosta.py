@@ -65,21 +65,21 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(match.group(1))
-        self.data.depth.append(match.group(2))
-        self.data.suspect_timestamp.append(match.group(3))
-        self.data.product_number.append(match.group(4))
-        self.data.serial_number.append(match.group(5))
-        self.data.estimated_oxygen_concentration.append(match.group(6))
-        self.data.estimated_oxygen_saturation.append(match.group(7))
-        self.data.optode_temperature.append(match.group(8))
-        self.data.calibrated_phase.append(match.group(9))
-        self.data.temp_compensated_phase.append(match.group(10))
-        self.data.blue_phase.append(match.group(11))
-        self.data.red_phase.append(match.group(12))
-        self.data.blue_amplitude.append(match.group(13))
-        self.data.red_amplitude.append(match.group(14))
-        self.data.raw_temperature.append(match.group(15))
+        self.data.time.append(float(match.group(1)))
+        self.data.depth.append(float(match.group(2)))
+        self.data.suspect_timestamp.append(str(match.group(3)))
+        self.data.product_number.append(int(match.group(4)))
+        self.data.serial_number.append(int(match.group(5)))
+        self.data.estimated_oxygen_concentration.append(float(match.group(6)))
+        self.data.estimated_oxygen_saturation.append(float(match.group(7)))
+        self.data.optode_temperature.append(float(match.group(8)))
+        self.data.calibrated_phase.append(float(match.group(9)))
+        self.data.temp_compensated_phase.append(float(match.group(10)))
+        self.data.blue_phase.append(float(match.group(11)))
+        self.data.red_phase.append(float(match.group(12)))
+        self.data.blue_amplitude.append(float(match.group(13)))
+        self.data.red_amplitude.append(float(match.group(14)))
+        self.data.raw_temperature.append(float(match.group(15)))
 
 
 if __name__ == '__main__':

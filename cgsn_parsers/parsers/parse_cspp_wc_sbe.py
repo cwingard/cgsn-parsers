@@ -50,10 +50,10 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(match.group(1))
-        self.data.suspect_timestamp.append(match.group(2))
-        self.data.pressure.append(match.group(3))
-        self.data.velocity.append(match.group(4))
+        self.data.time.append(float(match.group(1)))
+        self.data.suspect_timestamp.append(str(match.group(2)))
+        self.data.pressure.append(float(match.group(3)))
+        self.data.velocity.append(float(match.group(4)))
 
 if __name__ == '__main__':
     # load the input arguments

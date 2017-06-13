@@ -65,29 +65,33 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(match.group(1))
-        self.data.depth.append(match.group(2))
-        self.data.suspect_timestamp.append(match.group(3))
-        self.data.serial_number.append(match.group(4))
-        self.data.elapsed_run_time.append(match.group(5))
+        self.data.time.append(float(match.group(1)))
+        self.data.depth.append(float(match.group(2)))
+        self.data.suspect_timestamp.append(str(match.group(3)))
+        self.data.serial_number.append(int(match.group(4)))
+        self.data.elapsed_run_time.append(float(match.group(5)))
 
         # use the number of wavelengths to set the remaining arrays
         nwave = int(match.group(6))
         self.data.num_wavelengths.append(nwave)
-        data = (match.group(7)).split()
+        data = [int(i) for i in (match.group(7)).split()]
 
         # c and a channel references and signals for dark and raw measurements
         self.data.c_reference_dark.append(data[0])
-        start = 1; stop = start + nwave
+        start = 1
+        stop = start + nwave
         self.data.c_reference_raw.append(data[start:stop])
         self.data.c_signal_dark.append(data[stop])
-        start = stop + 1; stop = start + nwave
+        start = stop + 1
+        stop = start + nwave
         self.data.c_signal_raw.append(data[start:stop])
         self.data.a_reference_dark.append(data[stop])
-        start = stop + 1; stop = start + nwave
+        start = stop + 1
+        stop = start + nwave
         self.data.a_reference_raw.append(data[start:stop])
         self.data.a_signal_dark.append(data[stop])
-        start = stop + 1; stop = start + nwave
+        start = stop + 1
+        stop = start + nwave
         self.data.a_signal_raw.append(data[stop])
 
         # external and internal raw temperatures and the external pressure
