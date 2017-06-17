@@ -83,49 +83,47 @@ case $FTYPE in
             fi
         done
 
-        if [ $FTYPE == "PPB" ]; then
-            # PARAD data files
-            ODIR="$PROC/parad"
-            if [ ! -d $ODIR ]; then
-                mkdir -p $ODIR
-            fi
-            for file in $RAW/ucspp_*_"$FTYPE"_PARS.txt; do
-                out=`/bin/basename $file`
-                if [ ! -f $ODIR/${out%.txt}.json ]; then
-                    echo "Processing $file..."
-                    cd /home/ooiuser/code/cgsn-parsers
-                    $PYTHON -m cgsn_parsers.parsers.parse_cspp_parad -i $file -o $ODIR/${out%.txt}.json
-                fi
-            done
-
-            # SPKIR data files
-            ODIR="$PROC/spkir"
-            if [ ! -d $ODIR ]; then
-                mkdir -p $ODIR
-            fi
-            for file in $RAW/ucspp_*_"$FTYPE"_OCR.txt; do
-                out=`/bin/basename $file`
-                if [ ! -f $ODIR/${out%.txt}.json ]; then
-                    echo "Processing $file..."
-                    cd /home/ooiuser/code/cgsn-parsers
-                    $PYTHON -m cgsn_parsers.parsers.parse_cspp_spkir -i $file -o $ODIR/${out%.txt}.json
-                fi
-            done
-
-            # VELPT data files
-            ODIR="$PROC/velpt"
-            if [ ! -d $ODIR ]; then
-                mkdir -p $ODIR
-            fi
-            for file in $RAW/ucspp_*_"$FTYPE"_ADCP.txt; do
-                out=`/bin/basename $file`
-                if [ ! -f $ODIR/${out%.txt}.json ]; then
-                    echo "Processing $file..."
-                    cd /home/ooiuser/code/cgsn-parsers
-                    $PYTHON -m cgsn_parsers.parsers.parse_cspp_velpt -i $file -o $ODIR/${out%.txt}.json
-                fi
-            done
+        # PARAD data files
+        ODIR="$PROC/parad"
+        if [ ! -d $ODIR ]; then
+            mkdir -p $ODIR
         fi
+        for file in $RAW/ucspp_*_"$FTYPE"_PARS.txt; do
+            out=`/bin/basename $file`
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
+                echo "Processing $file..."
+                cd /home/ooiuser/code/cgsn-parsers
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_parad -i $file -o $ODIR/${out%.txt}.json
+            fi
+        done
+
+        # SPKIR data files
+        ODIR="$PROC/spkir"
+        if [ ! -d $ODIR ]; then
+            mkdir -p $ODIR
+        fi
+        for file in $RAW/ucspp_*_"$FTYPE"_OCR.txt; do
+            out=`/bin/basename $file`
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
+                echo "Processing $file..."
+                cd /home/ooiuser/code/cgsn-parsers
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_spkir -i $file -o $ODIR/${out%.txt}.json
+            fi
+        done
+
+        # VELPT data files
+        ODIR="$PROC/velpt"
+        if [ ! -d $ODIR ]; then
+            mkdir -p $ODIR
+        fi
+        for file in $RAW/ucspp_*_"$FTYPE"_ADCP.txt; do
+            out=`/bin/basename $file`
+            if [ ! -f $ODIR/${out%.txt}.json ]; then
+                echo "Processing $file..."
+                cd /home/ooiuser/code/cgsn-parsers
+                $PYTHON -m cgsn_parsers.parsers.parse_cspp_velpt -i $file -o $ODIR/${out%.txt}.json
+            fi
+        done
 
         ;;
 
