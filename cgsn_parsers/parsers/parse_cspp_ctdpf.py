@@ -52,12 +52,12 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(match.group(1))
-        self.data.suspect_timestamp.append(match.group(2))
-        self.data.temperature.append(match.group(3))
-        self.data.conductivity.append(match.group(4))
-        self.data.pressure.append(match.group(5))
-        self.data.salinity.append(match.group(6))
+        self.data.time.append(float(match.group(1)))
+        self.data.suspect_timestamp.append(str(match.group(2)))
+        self.data.temperature.append(float(match.group(3)))
+        self.data.conductivity.append(float(match.group(4)))
+        self.data.pressure.append(float(match.group(5)))
+        self.data.salinity.append(float(match.group(6)))
 
 if __name__ == '__main__':
     # load the input arguments
