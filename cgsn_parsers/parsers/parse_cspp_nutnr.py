@@ -16,7 +16,7 @@ from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
 # Regex pattern for the SUNA data (light frames only) from the uCSPP SNA data files
 PATTERN = (
     r'^' + FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
-    r'SLB' + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
+    STRING + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
     FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
     FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
     INTEGER + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
@@ -32,6 +32,7 @@ REGEX = re.compile(PATTERN, re.DOTALL)
 _parameter_names_nutnr = [
     'depth',
     'suspect_timestamp',
+    'measurement_type',
     'year',
     'day_of_year',
     'decimal_hours',
@@ -88,18 +89,19 @@ class Parser(ParserCommon):
         self.data.time.append(float(match.group(1)))
         self.data.depth.append(float(match.group(2)))
         self.data.suspect_timestamp.append(str(match.group(3)))
-        self.data.year.append(int(match.group(4)))
-        self.data.day_of_year.append(int(match.group(5)))
-        self.data.decimal_hours.append(float(match.group(6)))
-        self.data.nitrate_concentration.append(float(match.group(7)))
-        self.data.nitrogen_in_nitrate.append(float(match.group(8)))
-        self.data.absorbance_254.append(float(match.group(9)))
-        self.data.absorbance_250.append(float(match.group(10)))
-        self.data.bromide_trace.append(float(match.group(11)))
-        self.data.spectal_average.append(int(match.group(12)))
-        self.data.dark_value.append(int(match.group(13)))
-        self.data.integration_factor.append(int(match.group(14)))
-        channels = [int(i) for i in (match.group(15)).split()]
+        self.data.measurement_type.append(str(match.group(4)))
+        self.data.year.append(int(match.group(5)))
+        self.data.day_of_year.append(int(match.group(6)))
+        self.data.decimal_hours.append(float(match.group(7)))
+        self.data.nitrate_concentration.append(float(match.group(8)))
+        self.data.nitrogen_in_nitrate.append(float(match.group(9)))
+        self.data.absorbance_254.append(float(match.group(10)))
+        self.data.absorbance_250.append(float(match.group(11)))
+        self.data.bromide_trace.append(float(match.group(12)))
+        self.data.spectal_average.append(int(match.group(13)))
+        self.data.dark_value.append(int(match.group(14)))
+        self.data.integration_factor.append(int(match.group(15)))
+        channels = [int(i) for i in (match.group(16)).split()]
         self.data.channel_measurements.append(channels)
         self.data.temperature_internal.append(float(match.group(17)))
         self.data.temperature_spectrometer.append(float(match.group(18)))
