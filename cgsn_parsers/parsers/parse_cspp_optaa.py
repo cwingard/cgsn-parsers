@@ -92,7 +92,7 @@ class Parser(ParserCommon):
         self.data.a_signal_dark.append(data[stop])
         start = stop + 1
         stop = start + nwave
-        self.data.a_signal_raw.append(data[stop])
+        self.data.a_signal_raw.append(data[start:stop])
 
         # external and internal raw temperatures and the external pressure
         self.data.external_temp_raw.append(data[-3])

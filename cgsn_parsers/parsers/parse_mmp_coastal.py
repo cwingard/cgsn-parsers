@@ -274,8 +274,8 @@ class Parser(object):
                 self._build_parsed_cdata(match)
 
         # now we need to create a time record, since the CTD record does not include an explicit time stamp
-        idx = np.arange(len(self.data.cdata.pressure))
-        self.data.cdata.time = (self.data.profile.sensor_on + (idx * 1)).tolist()
+        idx = np.flipud(np.arange(len(self.data.cdata.pressure)))
+        self.data.cdata.time = (self.data.profile.sensor_on - idx).tolist()
 
     def parse_adata(self):
         """
