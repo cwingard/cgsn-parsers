@@ -22,6 +22,7 @@ if [ ! -d $PROC ]; then
     # Make the output directory, if it doesn't exist
     /bin/mkdir -p $PROC
 fi
+# set the python version
 PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 case $FTYPE in

@@ -11,23 +11,24 @@ import re
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
+from cgsn_parsers.parsers.common import INTEGER, NEWLINE, inputs
+from cgsn_parsers.parsers.common import FLTNAN as FLOAT
 
-# Regex pattern for the SUNA data (light frames only) from the uCSPP SNA data files
+# Regex pattern for the SUNA data from the uCSPP SNA data files
 PATTERN = (
-    r'^' + FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
-    STRING + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    INTEGER + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
+    r'^' + FLOAT + r'\t' + FLOAT + r'\t' + r'([yn]{1})' + r'\t' +
+    r'(SLB|SDB)' + r'\t' + INTEGER + r'\t' + INTEGER + r'\t' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
+    INTEGER + r'\t' + INTEGER + r'\t' + INTEGER + r'\t' +
     r'(([+-]?[0-9]+\s){256})' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + INTEGER + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    INTEGER + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + INTEGER + r'\t' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
+    INTEGER + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
     r'[0-9A-F]{2}' + NEWLINE
 )
-REGEX = re.compile(PATTERN, re.DOTALL)
+REGEX = re.compile(PATTERN, re.A)
 
 _parameter_names_nutnr = [
     'depth',
@@ -77,9 +78,10 @@ class Parser(ParserCommon):
         dictionary object created using the Bunch class.
         """
         for line in self.raw:
-            match = REGEX.match(line)
-            if match:
-                self._build_parsed_values(match)
+            if len(line.split()) == 290:
+                match = REGEX.match(line)
+                if match:
+                    self._build_parsed_values(match)
 
     def _build_parsed_values(self, match):
         """

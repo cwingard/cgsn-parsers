@@ -11,13 +11,13 @@ import re
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
+from cgsn_parsers.parsers.common import FLOAT, NEWLINE, STRING, inputs
 
 # Regex pattern for the AC-S data from the uCSPP ACS data files
 PATTERN = (
-    r'^' + FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
-    INTEGER + r'\s+' + FLOAT + r'\s+' + INTEGER + r'\s+' +
-    r'([\d\s]+)' + NEWLINE
+    r'^' + FLOAT + r'\t' + FLOAT + r'\t' + STRING + r'\t' +
+    r'([\d]{3})' + r'\t' + FLOAT + r'\t' + r'([\d]{2})' + r'\t' +
+    r'([\d\t]+)' + NEWLINE
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
@@ -65,39 +65,43 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        self.data.time.append(float(match.group(1)))
-        self.data.depth.append(float(match.group(2)))
-        self.data.suspect_timestamp.append(str(match.group(3)))
-        self.data.serial_number.append(int(match.group(4)))
-        self.data.elapsed_run_time.append(float(match.group(5)))
-
-        # use the number of wavelengths to set the remaining arrays
+        # first check to make sure we have a complete data packet, only proceed if we do. There should be 4 sets of
+        # arrays comprised on N wavelengths in the data array plus an additional 7 parameters.
         nwave = int(match.group(6))
-        self.data.num_wavelengths.append(nwave)
         data = [int(i) for i in (match.group(7)).split()]
 
-        # c and a channel references and signals for dark and raw measurements
-        self.data.c_reference_dark.append(data[0])
-        start = 1
-        stop = start + nwave
-        self.data.c_reference_raw.append(data[start:stop])
-        self.data.c_signal_dark.append(data[stop])
-        start = stop + 1
-        stop = start + nwave
-        self.data.c_signal_raw.append(data[start:stop])
-        self.data.a_reference_dark.append(data[stop])
-        start = stop + 1
-        stop = start + nwave
-        self.data.a_reference_raw.append(data[start:stop])
-        self.data.a_signal_dark.append(data[stop])
-        start = stop + 1
-        stop = start + nwave
-        self.data.a_signal_raw.append(data[start:stop])
+        if (len(data) - 7) / nwave == 4:
+            self.data.time.append(float(match.group(1)))
+            self.data.depth.append(float(match.group(2)))
+            self.data.suspect_timestamp.append(str(match.group(3)))
+            self.data.serial_number.append(int(match.group(4)))
+            self.data.elapsed_run_time.append(float(match.group(5)))
 
-        # external and internal raw temperatures and the external pressure
-        self.data.external_temp_raw.append(data[-3])
-        self.data.internal_temp_raw.append(data[-2])
-        self.data.pressure_raw.append(data[-1])
+            # use the number of wavelengths and the data list from above to set the remaining arrays
+            self.data.num_wavelengths.append(nwave)
+
+            # c and a channel references and signals for dark and raw measurements
+            self.data.c_reference_dark.append(data[0])
+            start = 1
+            stop = start + nwave
+            self.data.c_reference_raw.append(data[start:stop])
+            self.data.c_signal_dark.append(data[stop])
+            start = stop + 1
+            stop = start + nwave
+            self.data.c_signal_raw.append(data[start:stop])
+            self.data.a_reference_dark.append(data[stop])
+            start = stop + 1
+            stop = start + nwave
+            self.data.a_reference_raw.append(data[start:stop])
+            self.data.a_signal_dark.append(data[stop])
+            start = stop + 1
+            stop = start + nwave
+            self.data.a_signal_raw.append(data[start:stop])
+
+            # external and internal raw temperatures and the external pressure
+            self.data.external_temp_raw.append(data[-3])
+            self.data.internal_temp_raw.append(data[-2])
+            self.data.pressure_raw.append(data[-1])
 
 
 if __name__ == '__main__':
