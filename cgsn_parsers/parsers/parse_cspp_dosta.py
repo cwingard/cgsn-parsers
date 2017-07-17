@@ -6,6 +6,7 @@
 @author Christopher Wingard
 @brief Parses and converts the uncabled Coastal Surface Piercing Profiler -- Optode data files into a JSON file.
 """
+import numpy as np
 import os
 import re
 
@@ -13,7 +14,7 @@ import re
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
 
-# Regex pattern for the Optode data from the uCSPP Optode data files
+# Two regex patterns for the Optode data from the uCSPP Optode data files (with or without the percent saturation
 PATTERN = (
     FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
     INTEGER + r'\s+' + INTEGER + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
@@ -22,6 +23,14 @@ PATTERN = (
     NEWLINE
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
+PATTERN_SANS = (
+    FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
+    INTEGER + r'\s+' + INTEGER + r'\s+' + FLOAT + r'\s+' +
+    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
+    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
+    NEWLINE
+)
+REGEX_SANS = re.compile(PATTERN_SANS, re.DOTALL)
 
 _parameter_names_dosta = [
     'depth',
@@ -57,10 +66,14 @@ class Parser(ParserCommon):
         """
         for line in self.raw:
             match = REGEX.match(line)
+            match_sans = REGEX_SANS.match(line)
             if match:
-                self._build_parsed_values(match)
+                self._build_parsed_values(match, True)
 
-    def _build_parsed_values(self, match):
+            if match_sans:
+                self._build_parsed_values(match_sans, False)
+
+    def _build_parsed_values(self, match, saturation):
         """
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
@@ -71,15 +84,26 @@ class Parser(ParserCommon):
         self.data.product_number.append(int(match.group(4)))
         self.data.serial_number.append(int(match.group(5)))
         self.data.estimated_oxygen_concentration.append(float(match.group(6)))
-        self.data.estimated_oxygen_saturation.append(float(match.group(7)))
-        self.data.optode_temperature.append(float(match.group(8)))
-        self.data.calibrated_phase.append(float(match.group(9)))
-        self.data.temp_compensated_phase.append(float(match.group(10)))
-        self.data.blue_phase.append(float(match.group(11)))
-        self.data.red_phase.append(float(match.group(12)))
-        self.data.blue_amplitude.append(float(match.group(13)))
-        self.data.red_amplitude.append(float(match.group(14)))
-        self.data.raw_temperature.append(float(match.group(15)))
+        if saturation:
+            self.data.estimated_oxygen_saturation.append(float(match.group(7)))
+            self.data.optode_temperature.append(float(match.group(8)))
+            self.data.calibrated_phase.append(float(match.group(9)))
+            self.data.temp_compensated_phase.append(float(match.group(10)))
+            self.data.blue_phase.append(float(match.group(11)))
+            self.data.red_phase.append(float(match.group(12)))
+            self.data.blue_amplitude.append(float(match.group(13)))
+            self.data.red_amplitude.append(float(match.group(14)))
+            self.data.raw_temperature.append(float(match.group(15)))
+        else:
+            self.data.estimated_oxygen_saturation.append(np.nan)
+            self.data.optode_temperature.append(float(match.group(7)))
+            self.data.calibrated_phase.append(float(match.group(8)))
+            self.data.temp_compensated_phase.append(float(match.group(9)))
+            self.data.blue_phase.append(float(match.group(10)))
+            self.data.red_phase.append(float(match.group(11)))
+            self.data.blue_amplitude.append(float(match.group(12)))
+            self.data.red_amplitude.append(float(match.group(13)))
+            self.data.raw_temperature.append(float(match.group(14)))
 
 
 if __name__ == '__main__':

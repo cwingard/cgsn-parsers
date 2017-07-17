@@ -16,7 +16,7 @@ from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, STR
 # Set regex string to just find the NUTNR data.
 PATTERN = (
     DCL_TIMESTAMP + r'\s+' +         # DCL Time-Stamp
-    r'SATN(\w{2})' + r'(\d{4}),' +   # Measurement type and serial #
+    r'SAT(\w{3})' + r'(\d{4}),' +    # Measurement type and serial #
     STRING + NEWLINE                 # rest of the data, comma separated
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
@@ -52,7 +52,7 @@ def _parameter_names_nutnr(spectra):
             'average_reference',
             'variance_reference',
             'seawater_dark',
-            'spectal_average',
+            'spectral_average',
             'channel_measurements'
         ])
     

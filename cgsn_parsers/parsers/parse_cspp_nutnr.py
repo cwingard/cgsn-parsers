@@ -11,27 +11,29 @@ import re
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
+from cgsn_parsers.parsers.common import INTEGER, NEWLINE, inputs
+from cgsn_parsers.parsers.common import FLTNAN as FLOAT
 
-# Regex pattern for the SUNA data (light frames only) from the uCSPP SNA data files
+# Regex pattern for the SUNA data from the uCSPP SNA data files
 PATTERN = (
-    r'^' + FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
-    r'SLB' + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    INTEGER + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
+    r'^' + FLOAT + r'\t' + FLOAT + r'\t' + r'([yn]{1})' + r'\t' +
+    r'(SLB|SDB)' + r'\t' + INTEGER + r'\t' + INTEGER + r'\t' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
+    INTEGER + r'\t' + INTEGER + r'\t' + INTEGER + r'\t' +
     r'(([+-]?[0-9]+\s){256})' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + INTEGER + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    INTEGER + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + INTEGER + r'\t' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
+    FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
+    INTEGER + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' + FLOAT + r'\t' +
     r'[0-9A-F]{2}' + NEWLINE
 )
-REGEX = re.compile(PATTERN, re.DOTALL)
+REGEX = re.compile(PATTERN, re.A)
 
 _parameter_names_nutnr = [
     'depth',
     'suspect_timestamp',
+    'measurement_type',
     'year',
     'day_of_year',
     'decimal_hours',
@@ -76,9 +78,10 @@ class Parser(ParserCommon):
         dictionary object created using the Bunch class.
         """
         for line in self.raw:
-            match = REGEX.match(line)
-            if match:
-                self._build_parsed_values(match)
+            if len(line.split()) == 290:
+                match = REGEX.match(line)
+                if match:
+                    self._build_parsed_values(match)
 
     def _build_parsed_values(self, match):
         """
@@ -88,33 +91,34 @@ class Parser(ParserCommon):
         self.data.time.append(float(match.group(1)))
         self.data.depth.append(float(match.group(2)))
         self.data.suspect_timestamp.append(str(match.group(3)))
-        self.data.year.append(int(match.group(4)))
-        self.data.day_of_year.append(int(match.group(5)))
-        self.data.decimal_hours.append(float(match.group(6)))
-        self.data.nitrate_concentration.append(float(match.group(7)))
-        self.data.nitrogen_in_nitrate.append(float(match.group(8)))
-        self.data.absorbance_254.append(float(match.group(9)))
-        self.data.absorbance_250.append(float(match.group(10)))
-        self.data.bromide_trace.append(float(match.group(11)))
-        self.data.spectal_average.append(int(match.group(12)))
-        self.data.dark_value.append(int(match.group(13)))
-        self.data.integration_factor.append(int(match.group(14)))
-        channels = [int(i) for i in (match.group(15)).split()]
+        self.data.measurement_type.append(str(match.group(4)))
+        self.data.year.append(int(match.group(5)))
+        self.data.day_of_year.append(int(match.group(6)))
+        self.data.decimal_hours.append(float(match.group(7)))
+        self.data.nitrate_concentration.append(float(match.group(8)))
+        self.data.nitrogen_in_nitrate.append(float(match.group(9)))
+        self.data.absorbance_254.append(float(match.group(10)))
+        self.data.absorbance_250.append(float(match.group(11)))
+        self.data.bromide_trace.append(float(match.group(12)))
+        self.data.spectal_average.append(int(match.group(13)))
+        self.data.dark_value.append(int(match.group(14)))
+        self.data.integration_factor.append(int(match.group(15)))
+        channels = [int(i) for i in (match.group(16)).split()]
         self.data.channel_measurements.append(channels)
-        self.data.temperature_internal.append(float(match.group(17)))
-        self.data.temperature_spectrometer.append(float(match.group(18)))
-        self.data.temperature_lamp.append(float(match.group(19)))
-        self.data.lamp_on_time.append(int(match.group(20)))
-        self.data.humidity.append(float(match.group(21)))
-        self.data.voltage_main.append(float(match.group(22)))
-        self.data.voltage_lamp.append(float(match.group(23)))
-        self.data.voltage_internal.append(float(match.group(24)))
-        self.data.main_current.append(float(match.group(25)))
-        self.data.fit_auxiliary_1.append(float(match.group(26)))
-        self.data.fit_auxiliary_2.append(float(match.group(27)))
-        self.data.fit_base_1.append(float(match.group(28)))
-        self.data.fit_base_2.append(float(match.group(29)))
-        self.data.fit_rmse.append(float(match.group(30)))
+        self.data.temperature_internal.append(float(match.group(18)))
+        self.data.temperature_spectrometer.append(float(match.group(19)))
+        self.data.temperature_lamp.append(float(match.group(20)))
+        self.data.lamp_on_time.append(int(match.group(21)))
+        self.data.humidity.append(float(match.group(22)))
+        self.data.voltage_main.append(float(match.group(23)))
+        self.data.voltage_lamp.append(float(match.group(24)))
+        self.data.voltage_internal.append(float(match.group(25)))
+        self.data.main_current.append(float(match.group(26)))
+        self.data.fit_auxiliary_1.append(float(match.group(27)))
+        self.data.fit_auxiliary_2.append(float(match.group(28)))
+        self.data.fit_base_1.append(float(match.group(29)))
+        self.data.fit_base_2.append(float(match.group(30)))
+        self.data.fit_rmse.append(float(match.group(31)))
 
 
 if __name__ == '__main__':
