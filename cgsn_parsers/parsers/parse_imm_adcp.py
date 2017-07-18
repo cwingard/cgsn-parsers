@@ -19,8 +19,6 @@ PATTERN = (
     b'Record\[([0-9]+)\]:([\x00-\xFF]+?)(?=\\r\\n)'
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
-for match in REGEX.findall(self.raw):
-    print(len(match[1]))
 
 # object from the struct class to read the binary portion of the data
 PD12 = struct.Struct('<2HI3BH6BH3hi3B')
@@ -77,20 +75,20 @@ class Parser(ParserCommon):
         of the data dictionary.
         """
         # record the record number
-        self.data.record_number.append(int(match[0]))
+        self.data.record_number.append(int(match[1]))
 
         # parse the binary data packet -- part 1 of 2
         (_, _, ensemble_number, unit_id, cpu_firmware_version,
          cpu_firmware_revision, year, month, day, hour,
          minute, second, csecond, heading, pitch,
-         roll, temperature, pressure, _, start_bin, bins) = PD12.unpack(match[1][:34])
+         roll, temperature, pressure, _, start_bin, bins) = PD12.unpack(match[2][:34])
 
         # construct date/time string
         dt_str = ("%4d/%02d/%02d %02d:%02d:%05.3f" % (year, month, day, hour, minute, (second + (csecond / 100))))
         epts = dcl_to_epoch(dt_str)     # convert to epoch time (seconds since 1970-01-01
         self.data.time.append(epts)
 
-        # assign 
+        # assign the parameters
         self.data.ensemble_number.append(ensemble_number)
         self.data.unit_id.append(unit_id)
         self.data.cpu_firmware_version.append(cpu_firmware_revision)
@@ -111,26 +109,28 @@ class Parser(ParserCommon):
         self.data.bins.append(bins)
 
         # parse the binary data packet -- part 2 of 2
-        chunk = match[1][34:]
-        n = len(chunk) // 2 // 4
+        chunk = match[1][34:]       # velocity bins
+        n = len(chunk) // 2 // 4    # determine number of velocity bins
         offset = 0
 
-        beam1 = []
-        beam2 = []
-        beam3 = []
-        beam4 = []
+        # create the empty lists for the velocity data
+        east = []
+        north = []
+        vertical = []
+        error = []
         for i in range(1, n):
             (a, b, c, d) = VEL.unpack(chunk[offset: offset + 8])
-            beam1.append(a)
-            beam2.append(b)
-            beam3.append(c)
-            beam4.append(d)
+            east.append(a)
+            north.append(b)
+            vertical.append(c)
+            error.append(d)
             offset += 8
 
-        self.data.eastward_velocity.append(beam1)
-        self.data.northward_velocity.append(beam2)
-        self.data.vertical_velocity.append(beam3)
-        self.data.error_velocity.append(beam4)
+        # assign the parameters
+        self.data.eastward_velocity.append(east)
+        self.data.northward_velocity.append(north)
+        self.data.vertical_velocity.append(vertical)
+        self.data.error_velocity.append(error)
 
 if __name__ == '__main__':
     # load the input arguments
