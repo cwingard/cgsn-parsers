@@ -16,12 +16,10 @@ from datetime import datetime
 from pytz import timezone
 
 # Import common utilities and base classes
-from cgsn_parsers.parsers.common import INTEGER, FLOAT, NEWLINE, STRING, inputs
+from cgsn_parsers.parsers.common import INTEGER, FLOAT, NEWLINE, inputs
 
-# Regex patterns to match the CTDBP status and data records. Usually these are 1:1, but there are cases where multiple
-# data records are recorded per one status record.
+# Regex patterns to match the CTDBP status and data records.
 status = (
-    r'#7370_DateTime:\s+(\d{8}\s+\d{6})' + NEWLINE +
     r'#SBE 16plus-IM[\s\S]+SERIAL NO.\s+(\d{5})\s+(\d{2}\s+\w{3}\s+\d{4}\s+\d{2}:\d{2}:\d{2})' + NEWLINE +
     r'#vbatt =\s+' + FLOAT + ', vlith =\s+' + FLOAT + ',\s+' +
     r'ioper =\s+' + FLOAT + '\s+ma, ipump =\s+' + FLOAT + '\s+ma,\s+' + NEWLINE +
@@ -49,9 +47,8 @@ class ParameterNames(object):
         # CTD status data
         self._status = [
             'time',
-            'imm_date_time',
             'serial_number',
-            'ctd_date_time',
+            'date_time_string',
             'main_battery',
             'lithium_battery',
             'main_current',
@@ -97,7 +94,7 @@ class ParameterNames(object):
 
 class Parser(object):
     """
-    A Parser class, with methods to load, parse the data, and save to JSON the MMP data on a profile-by-profile basis.
+    A Parser class, with methods to load, parse the data, and save to JSON.
     """
     def __init__(self, infile):
         # set the infile names
@@ -108,7 +105,7 @@ class Parser(object):
         self.data = d.create_dict()
         self.raw = None
 
-    def load_ascii(self):
+    def load_imm(self):
         """
         Create a buffered data object by opening the data file and reading in
         the contents
@@ -137,23 +134,22 @@ class Parser(object):
                 self._build_parsed_ctd(match)
 
     def _build_parsed_status(self, match):
+        # assign the parameters
+        self.data.status.serial_number.append(int(match.group(1)))
+        self.data.status.date_time_string.append(str(match.group(2)))
+        self.data.status.main_battery.append(float(match.group(3)))
+        self.data.status.lithium_battery.append(float(match.group(4)))
+        self.data.status.main_current.append(float(match.group(5)))
+        self.data.status.pump_current.append(float(match.group(6)))
+        self.data.status.oxy_current.append(float(match.group(7)))
+        self.data.status.eco_current.append(float(match.group(8)))
+        self.data.status.samples_recorded.append(int(match.group(9)))
+        self.data.status.memory_free.append(int(match.group(10)))
+
         # Use the imm_date_time string to calculate an epoch timestamp (seconds since 1970-01-01)
-        dt = datetime.strptime(match.group(1), '%Y%m%d %H%M%S')
+        dt = datetime.strptime(match.group(2), '%d %b %Y %H:%M:%S')
         dt.replace(tzinfo=timezone('UTC'))
         self.data.status.time = timegm(dt.timetuple())
-
-        # assign the parameters
-        self.data.status.imm_date_time.append(str(match.group(1)))
-        self.data.status.serial_number.append(int(match.group(2)))
-        self.data.status.ctd_date_time.append(str(match.group(3)))
-        self.data.status.main_battery.append(float(match.group(4)))
-        self.data.status.lithium_battery.append(float(match.group(5)))
-        self.data.status.main_current.append(float(match.group(6)))
-        self.data.status.pump_current.append(float(match.group(7)))
-        self.data.status.oxy_current.append(float(match.group(8)))
-        self.data.status.eco_current.append(float(match.group(9)))
-        self.data.status.samples_recorded.append(int(match.group(10)))
-        self.data.status.memory_free.append(int(match.group(11)))
 
     def _build_parsed_ctd(self, match):
         # assign the parameters
@@ -182,7 +178,7 @@ if __name__ == '__main__':
     ctd = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    ctd.load_ascii()
+    ctd.load_imm()
     ctd.parse_status()
     ctd.parse_ctd()
 
