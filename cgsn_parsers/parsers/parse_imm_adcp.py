@@ -4,7 +4,8 @@
 @package cgsn_parsers.parsers.parse_imm_adcp
 @file cgsn_parsers/parsers/parse_imm_adcp.py
 @author Christopher Wingard
-@brief Parses ADCP data logged by the custom built WHOI data loggers via Inductive Modem (IMM communications).
+@brief Parses ADCP data, in PD12 format, logged by the custom built WHOI data loggers via Inductive Modem (IMM)
+    communications.
 """
 import os
 import re
@@ -14,7 +15,7 @@ import struct
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs
 
-# Regex pattern for a PD12 data record logged by the IMM system on STCs and DCLs.
+# Regex pattern for a PD12 data record logged via the IMM system on STCs and DCLs.
 PATTERN = (
     b'Record\[([0-9]+)\]:([\x00-\xFF]+?)(?=\\r\\n)'
 )
@@ -53,8 +54,8 @@ _parameter_names_pd12 = [
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the ParserCommon base class, adds the ADCP PD12 specific
-    methods to parse the data, and extracts the ADCP data records from the IMM log files.
+    A Parser subclass that calls the ParserCommon base class, adds the ADCP PD12 specific methods to parse the data,
+    and extracts the ADCP data records from the IMM log files.
     """
 
     def __init__(self, infile):
@@ -62,17 +63,15 @@ class Parser(ParserCommon):
 
     def parse_data(self):
         """
-        Iterate through the record lines (defined via the regex expression
-        above) in the data object, and parse the data into a pre-defined
-        dictionary object created using the Bunch class.
+        Iterate through the record lines (defined via the regex expression above) in the data object, and parse the
+        data into a pre-defined dictionary object created using the Bunch class.
         """
         for match in REGEX.findall(self.raw):
             self._build_parsed_values(match)
 
     def _build_parsed_values(self, match):
         """
-        Extract the data from the relevant regex groups and assign to elements
-        of the data dictionary.
+        Extract the data from the relevant regex groups and assign to elements of the data dictionary.
         """
         # record the record number
         self.data.record_number.append(int(match[1]))
@@ -85,7 +84,7 @@ class Parser(ParserCommon):
 
         # construct date/time string
         dt_str = ("%4d/%02d/%02d %02d:%02d:%05.3f" % (year, month, day, hour, minute, (second + (csecond / 100))))
-        epts = dcl_to_epoch(dt_str)     # convert to epoch time (seconds since 1970-01-01
+        epts = dcl_to_epoch(dt_str)     # convert to epoch time (seconds since 1970-01-01)
         self.data.time.append(epts)
 
         # assign the parameters
@@ -138,7 +137,7 @@ if __name__ == '__main__':
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for PCO2A
+    # initialize the Parser object
     adcp = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary

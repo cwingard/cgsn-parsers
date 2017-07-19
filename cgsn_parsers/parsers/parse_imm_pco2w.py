@@ -18,8 +18,9 @@ from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import inputs, NEWLINE
 
 # Regex pattern for a line with the IMM record number followed by the "*" character, 4 unknown characters (2 for a 1
-# byte hash of the unit serial number and calibration, and 2 for the length byte), and a '04' (indicating a Type 4 data
-# record), all of which combine to denote the start of a sampling record.
+# byte hash of the unit serial number and calibration, and 2 for the length byte), and a '04' or '05' (indicating a
+# Type 4 (measurement) or 5 (blank) data record), with the follow on characters for the remaining bytes through the
+# checksum and carriage return.
 sample = (
     r'Record\[(\d+)\]:\*([0-9A-F]{2})([0-9A-F]{2})(04|05)'      # Unique ID, record length and record type
     r'([0-9A-F]{8})([0-9A-F]{56})' +                            # Time and 14 sets of light measurements
@@ -53,7 +54,7 @@ class Parser(ParserCommon):
 
     def load_imm(self):
         """
-        Create a buffered data object by opening the data file and reading in the contents
+        Create a buffered data object by opening the data file and reading in the contents as a single string
         """
         with open(self.infile, 'r') as fid:
             self.raw = fid.read()
@@ -79,7 +80,7 @@ class Parser(ParserCommon):
         self.data.record_type.append(int(match.group(4), 16))
         self.data.record_time.append(int(match.group(5), 16))
 
-        # break the light measurements out into list
+        # break the light measurements out into a list
         light = re.findall('....', match.group(6))
         self.data.light_measurements.append([int(i, 16) for i in light])
 
@@ -96,7 +97,7 @@ if __name__ == '__main__':
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for pco2w
+    # initialize the Parser object
     pco2w = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary

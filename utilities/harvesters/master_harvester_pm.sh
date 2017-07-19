@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Read the raw, telemetered MMP data files for the Coastal Profiler Moorings
+# Read the STC data and the raw, telemetered MMP data files for the Coastal Profiler Moorings
 # and create parsed data sets available in TXT and JSON files for further processing and
 # review. Utilizes the mmp_unpack utility created by Jeff O'Brien of WHOI. Traps
 # files that fail to process using a timeout control. Files that fail to process

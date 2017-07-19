@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #
-# Parse the various data files for a Coastal Surface Mooring.
+# Parse the various data files for uncabled Coastal Surface Piercing Profiler (uCSPP).
 #
 # Wingard, C. 2015-04-17
 

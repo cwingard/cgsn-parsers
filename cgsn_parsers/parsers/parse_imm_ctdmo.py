@@ -44,7 +44,7 @@ BASE = timegm(dt.timetuple())
 
 class ParameterNames(object):
     """
-    Parameter names for the two data record types in the IMM data files.
+    Parameter names for the two data record types in the IMM files.
     """
     def __init__(self):
         # CTD status data
@@ -102,8 +102,7 @@ class Parser(object):
 
     def load_imm(self):
         """
-        Create a buffered data object by opening the data file and reading in
-        the contents
+        Create a buffered data object by opening the data file and reading in the contents as a single string
         """
         with open(self.infile, 'r') as fid:
             self.raw = fid.read()
@@ -168,7 +167,7 @@ if __name__ == '__main__':
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for the ctd data
+    # initialize the Parser object
     ctd = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
