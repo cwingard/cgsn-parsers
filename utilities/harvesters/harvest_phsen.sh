@@ -8,9 +8,9 @@
 
 # Parse the command line inputs
 if [ $# -ne 6 ]; then
-    echo "$0: required inputs are the platform and deployment names, the DCL"
-    echo "number, the PHSEN directory name, the platform location of the PHSEN"
-    echo "and the name of the file to process."
+    echo "$0: required inputs are the platform and deployment names, the DCL number, the PHSEN"
+    echo "directory name, the subassembly [buoy/nsif/mfn] location of the PHSEN and the name"
+    echo "of the file to process."
     echo "     example: $0 ce01issm D00001 dcl16 phsen1 nsif 20150505.phsen1.log"
     exit 1
 fi
@@ -18,7 +18,7 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
 PHSEN=${4,,}
-PLTFRM=${5,,}
+SUBASY=${5,,}
 FILE=`/bin/basename $6`
 
 
@@ -29,7 +29,7 @@ PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$PHSEN/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$PLTFRM/phsen/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/phsen/${FILE%.log}.json"
 if [ ! -d `/usr/bin/dirname $OUT` ]; then
     mkdir -p `/usr/bin/dirname $OUT`
 fi

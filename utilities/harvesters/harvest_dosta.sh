@@ -8,9 +8,9 @@
 
 # Parse the command line inputs
 if [ $# -ne 6 ]; then
-    echo "$0: required inputs are the platform and deployment names, the DCL"
-    echo "number, the DOSTA directory name, the platform location of the DOSTA"
-    echo "and the name of the file to process."
+    echo "$0: required inputs are the platform and deployment names, the DCL number, the DOSTA "
+    echo "directory name, the subassembly [buoy/nsif/mfn] location of the DOSTA and the name"
+    echo "of the file to process."
     echo "     example: $0 ce07shsm D00001 dcl27 dosta nsif 20150505.dosta.log"
     exit 1
 fi
@@ -18,7 +18,7 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
 DOSTA=${4,,}
-PLTFRM=${5,,}
+SUBASY=${5,,}
 FILE=`/bin/basename $6`
 
 # Set the default directory paths
@@ -28,7 +28,7 @@ PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$DOSTA/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$PLTFRM/dosta/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/dosta/${FILE%.log}.json"
 if [ ! -d `/usr/bin/dirname $OUT` ]; then
     mkdir -p `/usr/bin/dirname $OUT`
 fi

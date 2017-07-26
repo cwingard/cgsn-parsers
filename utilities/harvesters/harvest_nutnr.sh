@@ -8,10 +8,10 @@
 
 # Parse the command line inputs
 if [ $# -ne 7 ]; then
-    echo "$0: required inputs are the platform and deployment names, the DCL number,"
-    echo "the NUTNR directory name, the platform location of the NUTNR, a switch to"
-    echo "indicate what data is available (condensed or full) in the data files,"
-    echo "and the name of the file to process."
+    echo "$0: required inputs are the platform and deployment names, the DCL number, the NUTNR"
+    echo "directory name, the subassembly [buoy/nsif/mfn] location of the NUTNR, a switch to"
+    echo "indicate what data is available (condensed or full) in the data files, and the name "
+    echo "of the file to process."
     echo "     example: $0 ce01issm D00001 dcl16 nutnr nsif 0 20150505.nutnr.log"
     exit 1
 fi
@@ -19,7 +19,7 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
 NUTNR=${4,,}
-PLTFRM=${5,,}
+SUBASY=${5,,}
 SWITCH=$6
 FILE=`/bin/basename $7`
 
@@ -30,7 +30,7 @@ PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$NUTNR/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$PLTFRM/$NUTNR/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/$NUTNR/${FILE%.log}.json"
 if [ ! -d `/usr/bin/dirname $OUT` ]; then
     mkdir -p `/usr/bin/dirname $OUT`
 fi

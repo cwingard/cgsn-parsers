@@ -8,15 +8,15 @@
 
 # Parse the command line inputs
 if [ $# -ne 5 ]; then
-    echo "$0: required inputs are the platform and deployment names, the name of"
-    echo "the DCL, the platform location and the name of the file to process."
+    echo "$0: required inputs are the platform and deployment names, the name of the DCL, the"
+    echo "subassembly [buoy/nsif/mfn] location of the DCL and the name of the file to process."
     echo "     example: $0 ce02shsm D00001 dcl11 buoy 20150505.superv.log"
     exit 1
 fi
 PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
-PLTFRM=${4,,}
+SUBASY=${4,,}
 FILE=`/bin/basename $5`
 
 # Set the default directory paths
@@ -26,7 +26,7 @@ PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/superv/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$PLTFRM/superv/$DCL/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/superv/$DCL/${FILE%.log}.json"
 if [ ! -d `/usr/bin/dirname $OUT` ]; then
     mkdir -p `/usr/bin/dirname $OUT`
 fi

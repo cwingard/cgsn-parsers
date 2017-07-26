@@ -8,8 +8,8 @@
 
 # Parse the command line inputs
 if [ $# -ne 7 ]; then
-    echo "$0: required inputs are the platform and deployment names, the DCL number,"
-    echo "the CTDBP name, the platform location of the CTDBP, a switch to indicate what data"
+    echo "$0: required inputs are the platform and deployment names, the DCL number, the CTDBP name,"
+    echo "the subassembly [buoy/nsif/mfn] location of the CTDBP, a switch to indicate what data"
     echo "is available in the data files, and the name of the file to process."
     echo "     example: $0 ce01issm D00001 dcl16 ctdbp1 nsif 2 20150505.ctdbp1.log"
     exit 1
@@ -18,7 +18,7 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
 CTDBP=${4,,}
-PLTFRM=${5,,}
+SUBASY=${5,,}
 SWITCH=$6
 FILE=`/bin/basename $7`
 
@@ -29,7 +29,7 @@ PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$CTDBP/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$PLTFRM/ctdbp/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/ctdbp/${FILE%.log}.json"
 if [ ! -d `/usr/bin/dirname $OUT` ]; then
     mkdir -p `/usr/bin/dirname $OUT`
 fi
