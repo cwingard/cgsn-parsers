@@ -8,8 +8,8 @@
 
 # Parse the command line inputs
 if [ $# -ne 6 ]; then
-    echo "$0: required inputs are the platform and deployment names, the DCL"
-    echo "number, the ADCP name and the name of the file to process."
+    echo "$0: required inputs are the platform and deployment names, the DCL number,"
+    echo "the ADCP name, the platform location of the ADCP, and the name of the file to process."
     echo "     example: $0 ce01issm D00001 dcl35 adcpt mfn 20150505.adcpt.log"
     exit 1
 fi

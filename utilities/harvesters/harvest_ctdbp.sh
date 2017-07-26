@@ -8,9 +8,9 @@
 
 # Parse the command line inputs
 if [ $# -ne 7 ]; then
-    echo "$0: required inputs are the platform and deployment names, the DCL"
-    echo "number, the CTDBP name, a switch to indicate what data is available"
-    echo "in the data files, and the name of the file to process."
+    echo "$0: required inputs are the platform and deployment names, the DCL number,"
+    echo "the CTDBP name, the platform location of the CTDBP, a switch to indicate what data"
+    echo "is available in the data files, and the name of the file to process."
     echo "     example: $0 ce01issm D00001 dcl16 ctdbp1 nsif 2 20150505.ctdbp1.log"
     exit 1
 fi
