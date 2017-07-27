@@ -4,7 +4,8 @@
 @package cgsn_parsers.parsers.parse_imm_adcp
 @file cgsn_parsers/parsers/parse_imm_adcp.py
 @author Christopher Wingard
-@brief Parses ADCP data logged by the custom built WHOI data loggers via Inductive Modem (IMM communications).
+@brief Parses ADCP data, in PD12 format, logged by the custom built WHOI data loggers via Inductive Modem (IMM)
+    communications.
 """
 import os
 import re
@@ -14,13 +15,11 @@ import struct
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs
 
-# Regex pattern for a PD12 data record logged by the IMM system on STCs and DCLs.
+# Regex pattern for a PD12 data record logged via the IMM system on STCs and DCLs.
 PATTERN = (
     b'Record\[([0-9]+)\]:([\x00-\xFF]+?)(?=\\r\\n)'
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
-for match in REGEX.findall(self.raw):
-    print(len(match[1]))
 
 # object from the struct class to read the binary portion of the data
 PD12 = struct.Struct('<2HI3BH6BH3hi3B')
@@ -55,8 +54,8 @@ _parameter_names_pd12 = [
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the ParserCommon base class, adds the ADCP PD12 specific
-    methods to parse the data, and extracts the ADCP data records from the IMM log files.
+    A Parser subclass that calls the ParserCommon base class, adds the ADCP PD12 specific methods to parse the data,
+    and extracts the ADCP data records from the IMM log files.
     """
 
     def __init__(self, infile):
@@ -64,33 +63,31 @@ class Parser(ParserCommon):
 
     def parse_data(self):
         """
-        Iterate through the record lines (defined via the regex expression
-        above) in the data object, and parse the data into a pre-defined
-        dictionary object created using the Bunch class.
+        Iterate through the record lines (defined via the regex expression above) in the data object, and parse the
+        data into a pre-defined dictionary object created using the Bunch class.
         """
         for match in REGEX.findall(self.raw):
             self._build_parsed_values(match)
 
     def _build_parsed_values(self, match):
         """
-        Extract the data from the relevant regex groups and assign to elements
-        of the data dictionary.
+        Extract the data from the relevant regex groups and assign to elements of the data dictionary.
         """
         # record the record number
-        self.data.record_number.append(int(match[0]))
+        self.data.record_number.append(int(match[1]))
 
         # parse the binary data packet -- part 1 of 2
         (_, _, ensemble_number, unit_id, cpu_firmware_version,
          cpu_firmware_revision, year, month, day, hour,
          minute, second, csecond, heading, pitch,
-         roll, temperature, pressure, _, start_bin, bins) = PD12.unpack(match[1][:34])
+         roll, temperature, pressure, _, start_bin, bins) = PD12.unpack(match[2][:34])
 
         # construct date/time string
         dt_str = ("%4d/%02d/%02d %02d:%02d:%05.3f" % (year, month, day, hour, minute, (second + (csecond / 100))))
-        epts = dcl_to_epoch(dt_str)     # convert to epoch time (seconds since 1970-01-01
+        epts = dcl_to_epoch(dt_str)     # convert to epoch time (seconds since 1970-01-01)
         self.data.time.append(epts)
 
-        # assign 
+        # assign the parameters
         self.data.ensemble_number.append(ensemble_number)
         self.data.unit_id.append(unit_id)
         self.data.cpu_firmware_version.append(cpu_firmware_revision)
@@ -111,26 +108,28 @@ class Parser(ParserCommon):
         self.data.bins.append(bins)
 
         # parse the binary data packet -- part 2 of 2
-        chunk = match[1][34:]
-        n = len(chunk) // 2 // 4
+        chunk = match[1][34:]       # velocity bins
+        n = len(chunk) // 2 // 4    # determine number of velocity bins
         offset = 0
 
-        beam1 = []
-        beam2 = []
-        beam3 = []
-        beam4 = []
+        # create the empty lists for the velocity data
+        east = []
+        north = []
+        vertical = []
+        error = []
         for i in range(1, n):
             (a, b, c, d) = VEL.unpack(chunk[offset: offset + 8])
-            beam1.append(a)
-            beam2.append(b)
-            beam3.append(c)
-            beam4.append(d)
+            east.append(a)
+            north.append(b)
+            vertical.append(c)
+            error.append(d)
             offset += 8
 
-        self.data.eastward_velocity.append(beam1)
-        self.data.northward_velocity.append(beam2)
-        self.data.vertical_velocity.append(beam3)
-        self.data.error_velocity.append(beam4)
+        # assign the parameters
+        self.data.eastward_velocity.append(east)
+        self.data.northward_velocity.append(north)
+        self.data.vertical_velocity.append(vertical)
+        self.data.error_velocity.append(error)
 
 if __name__ == '__main__':
     # load the input arguments
@@ -138,7 +137,7 @@ if __name__ == '__main__':
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for PCO2A
+    # initialize the Parser object
     adcp = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary

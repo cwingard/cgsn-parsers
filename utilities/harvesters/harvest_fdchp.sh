@@ -25,12 +25,12 @@ PYTHON="/home/ooiuser/bin/conda/bin/python3"
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/dcl12/fdchp/$FILE"
 OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/fdchp/${FILE%.log}.json"
-if [ ! -d `/usr/bin/dirname $OUT` ]; then
-    mkdir -p `/usr/bin/dirname $OUT`
-fi
 
 # Parse the file
 if [ -e $IN ]; then
+    if [ ! -d `/usr/bin/dirname $OUT` ]; then
+        mkdir -p `/usr/bin/dirname $OUT`
+    fi
     cd /home/ooiuser/code/cgsn-parsers
     $PYTHON -m cgsn_parsers.parsers.parse_fdchp -i $IN -o $OUT
 fi

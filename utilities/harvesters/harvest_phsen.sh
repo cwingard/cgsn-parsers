@@ -7,17 +7,20 @@
 # C. Wingard -- 2016-02-11
 
 # Parse the command line inputs
-if [ $# -ne 5 ]; then
-    echo "$0: required inputs are the platform and deployment names, the DCL"
-    echo "number, the phsen directory name and the name of the file to process."
-    echo "     example: $0 ce01issm D00001 dcl16 phsen1 20150505.phsen1.log"
+if [ $# -ne 6 ]; then
+    echo "$0: required inputs are the platform and deployment names, the DCL number, the PHSEN"
+    echo "directory name, the subassembly [buoy/nsif/mfn] location of the PHSEN and the name"
+    echo "of the file to process."
+    echo "     example: $0 ce01issm D00001 dcl16 phsen1 nsif 20150505.phsen1.log"
     exit 1
 fi
 PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
 PHSEN=${4,,}
-FILE=`/bin/basename $5`
+SUBASY=${5,,}
+FILE=`/bin/basename $6`
+
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
@@ -25,13 +28,8 @@ PARSED="/home/ooiuser/data/proc"
 PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
-if [ $DCL = "dcl35" ] || [ $DCL = "dcl36" ]; then
-    pltfrm="mfn"
-else
-    pltfrm="nsif"
-fi
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$PHSEN/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$pltfrm/phsen/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/phsen/${FILE%.log}.json"
 if [ ! -d `/usr/bin/dirname $OUT` ]; then
     mkdir -p `/usr/bin/dirname $OUT`
 fi
