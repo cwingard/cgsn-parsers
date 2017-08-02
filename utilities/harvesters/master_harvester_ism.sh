@@ -39,7 +39,7 @@ $HARVEST/harvest_velpt.sh $PLATFORM $DEPLOY dcl17 velpt1 buoy $FNAME.velpt1.log
 
 # DCL16
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl16 nsif $FNAME.superv.log
-$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl16 ctdbp1 nisf 2 $FNAME.ctdbp1.log
+$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl16 ctdbp1 nsif 2 $FNAME.ctdbp1.log
 $HARVEST/harvest_flort.sh $PLATFORM $DEPLOY dcl16 flort nsif $FNAME.flort.log
 $HARVEST/harvest_nutnr.sh $PLATFORM $DEPLOY dcl16 nutnr nsif 1 $FNAME.nutnr.log
 $HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl16 pco2w1 nsif $FNAME.pco2w1.log
