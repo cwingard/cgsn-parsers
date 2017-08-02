@@ -78,9 +78,9 @@ class Parser(ParserCommon):
         for line in self.raw:
             match = REGEX.match(line)
             if match:
-                self._build_parsed_values(match, self.spectra)
+                self._build_parsed_values(match)
 
-    def _build_parsed_values(self, match, spectra):
+    def _build_parsed_values(self, match):
         """
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
@@ -121,7 +121,7 @@ class Parser(ParserCommon):
             self.data.variance_reference.append(float(data[16]))
             self.data.seawater_dark.append(float(data[17]))
             self.data.spectral_average.append(float(data[18]))
-            self.data.channel_measurements.append(list(map(int, data[19:])))
+            self.data.channel_measurements.append(list(map(int, data[19:-1])))
 
 if __name__ == '__main__':
     # load the input arguments
