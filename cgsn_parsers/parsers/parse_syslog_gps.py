@@ -87,9 +87,9 @@ class Parser(ParserCommon):
         self.data.longitude_string.append(str(match.group(14)))
 
 
-if __name__ == '__main__':
+def main(argv=None):
     # load the input arguments
-    args = inputs()
+    args = inputs(argv)
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
@@ -104,3 +104,6 @@ if __name__ == '__main__':
     # formatted data file (note, no pretty-printing to keep things compact)
     with open(outfile, 'w') as f:
         f.write(gps.data.toJSON())
+
+if __name__ == '__main__':
+    main()

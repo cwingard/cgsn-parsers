@@ -366,9 +366,9 @@ class Parser(object):
             self.data.adata.amplitude_beam_2.append(int(match.group(11)))
 
 
-if __name__ == '__main__':
+def main(argv=None):
     # load the input arguments
-    args = inputs()
+    args = inputs(argv)
     efile = os.path.abspath(args.infile)
     cfile = os.path.join(os.path.dirname(efile), re.sub('E', 'C', os.path.basename(efile)))
     afile = os.path.join(os.path.dirname(efile), re.sub('E', 'A', os.path.basename(efile)))
@@ -387,3 +387,6 @@ if __name__ == '__main__':
     # write the resulting Bunch object via the toJSON method to a JSON formatted data file
     with open(outfile, 'w') as f:
         f.write(mmp.data.toJSON())
+
+if __name__ == '__main__':
+    main()

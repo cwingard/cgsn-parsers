@@ -167,9 +167,9 @@ class Parser(object):
         dt.replace(tzinfo=timezone('UTC'))
         self.data.ctd.time = timegm(dt.timetuple())
 
-if __name__ == '__main__':
+def main(argv=None):
     # load the input arguments
-    args = inputs()
+    args = inputs(argv)
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
@@ -185,3 +185,6 @@ if __name__ == '__main__':
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(ctd.data.toJSON())
+
+if __name__ == '__main__':
+    main()
