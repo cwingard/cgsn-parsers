@@ -70,9 +70,9 @@ class Parser(ParserCommon):
         self.data.pressure_temp.append(float(match.group(4)))
         self.data.seawater_temperature.append(float(match.group(5)))
 
-if __name__ == '__main__':
+def main(argv=None):
     # load the input arguments
-    args = inputs()
+    args = inputs(argv)
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
@@ -87,3 +87,6 @@ if __name__ == '__main__':
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(presf.data.toJSON())
+
+if __name__ == '__main__':
+    main()
