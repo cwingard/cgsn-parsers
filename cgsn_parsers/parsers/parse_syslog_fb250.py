@@ -84,9 +84,9 @@ class Parser(ParserCommon):
         self.data.elapsed_time.append(int(match.group(16)))
 
 
-if __name__ == '__main__':
+def main(argv=None):
     # load the input arguments
-    args = inputs()
+    args = inputs(argv)
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
@@ -101,3 +101,6 @@ if __name__ == '__main__':
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(fb250.data.toJSON())
+
+if __name__ == '__main__':
+    main()

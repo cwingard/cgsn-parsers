@@ -89,9 +89,9 @@ class Parser(ParserCommon):
         self.data.frame_counter.append(count)
         self.data.internal_temperature.append(temp)
 
-if __name__ == '__main__':
+def main(argv=None):
     # load the input arguments
-    args = inputs()
+    args = inputs(argv)
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
@@ -106,3 +106,6 @@ if __name__ == '__main__':
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(spkir.data.toJSON())
+
+if __name__ == '__main__':
+    main()

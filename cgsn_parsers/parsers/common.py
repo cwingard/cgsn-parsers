@@ -9,6 +9,7 @@
 import argparse
 import datetime
 import re
+import sys
 
 from munch import Munch as Bunch
 from calendar import timegm
@@ -123,7 +124,7 @@ def logfilename_to_epoch(time_string):
     return epts
 
 
-def inputs():
+def inputs(argv=None):
     """
     Sets the main input arguments for the parser that would be passed by the
     harvester. By default, these are just the input file (raw data file), the
@@ -131,6 +132,9 @@ def inputs():
     custom options for parsers if needed. File names should include pathnames,
     which can be relative to the harvester.
     """
+    if argv is None:
+        argv = sys.argv[1:]
+        
     # initialize arguement parser
     parser = argparse.ArgumentParser(description="""Parse data files from DCL
                                      formatted daily or hourly log files""",
@@ -144,6 +148,6 @@ def inputs():
     parser.add_argument("-s", "--switch", dest="switch", type=int, default=0)
 
     # parse the input arguements and create a parser object
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     return args
