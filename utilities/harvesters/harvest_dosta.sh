@@ -17,7 +17,7 @@ fi
 PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
-DOSTA=${4,,}
+DOSTA=$4
 SUBASY=${5,,}
 FILE=`/bin/basename $6`
 
