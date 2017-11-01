@@ -39,8 +39,21 @@ _parameter_names_pco2w = [
     'record_length',
     'record_type',
     'record_time',
-    'light_measurements',
-    'voltage_battery',
+    'dark_reference_a',
+    'dark_signal_a',
+    'reference_434_a',
+    'signal_434_a',
+    'reference_620_a',
+    'signal_620_a',
+    'ratio_434',
+    'ratio_620',
+    'dark_reference_b',
+    'dark_signal_b',
+    'reference_434_b',
+    'signal_434_b',
+    'reference_620_b',
+    'signal_620_b',
+    'voltage_raw',
     'thermistor_raw'
 ]
 
@@ -81,8 +94,20 @@ class Parser(ParserCommon):
         self.data.record_time.append(int(match.group(5), 16))
 
         # break the light measurements out into a list
-        light = re.findall('....', match.group(6))
-        self.data.light_measurements.append([int(i, 16) for i in light])
+        self.data.dark_reference_a.append(int(match.group(6)[0:4], 16))
+        self.data.dark_signal_a.append(int(match.group(6)[4:8], 16))
+        self.data.reference_434_a.append(int(match.group(6)[8:12], 16))
+        self.data.signal_434_a.append(int(match.group(6)[12:16], 16))
+        self.data.reference_620_a.append(int(match.group(6)[16:20], 16))
+        self.data.signal_620_a.append(int(match.group(6)[20:24], 16))
+        self.data.ratio_434.append(int(match.group(6)[24:28], 16))
+        self.data.ratio_620.append(int(match.group(6)[28:32], 16))
+        self.data.dark_reference_b.append(int(match.group(6)[32:36], 16))
+        self.data.dark_signal_b.append(int(match.group(6)[36:40], 16))
+        self.data.reference_434_b.append(int(match.group(6)[40:44], 16))
+        self.data.signal_434_b.append(int(match.group(6)[44:48], 16))
+        self.data.reference_620_b.append(int(match.group(6)[48:52], 16))
+        self.data.signal_620_b.append(int(match.group(6)[52:], 16))
 
         # assign remaining values
         self.data.voltage_battery.append(int(match.group(7), 16))
@@ -90,6 +115,7 @@ class Parser(ParserCommon):
 
         # set the time to seconds since 1970-01-01
         self.data.time.append(int(match.group(5), 16) + BASE)
+
 
 def main(argv=None):
     # load the input arguments
@@ -108,6 +134,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(pco2w.data.toJSON())
+
 
 if __name__ == '__main__':
     main()
