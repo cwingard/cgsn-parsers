@@ -18,6 +18,7 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
 NUTNR=${4,,}
+SUNA=${NUTNR/nutnr/suna}
 SUBASY=${5,,}
 FILE=`/bin/basename $6`
 
