@@ -17,22 +17,21 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
 METBK=${4,,}
-FILE=`/bin/basename $5`
+FILE=`basename $5`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/proc"
-PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$METBK/$FILE"
 OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/metbk/${FILE%.log}.json"
-if [ ! -d `/usr/bin/dirname $OUT` ]; then
-    mkdir -p `/usr/bin/dirname $OUT`
+if [ ! -d `dirname $OUT` ]; then
+    mkdir -p `dirname $OUT`
 fi
 
 # Parse the file
 if [ -e $IN ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    $PYTHON -m cgsn_parsers.parsers.parse_metbk -i $IN -o $OUT
+    python -m cgsn_parsers.parsers.parse_metbk -i $IN -o $OUT
 fi

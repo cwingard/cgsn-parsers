@@ -20,22 +20,21 @@ DCL=${3,,}
 CTDBP=${4,,}
 SUBASY=${5,,}
 SWITCH=$6
-FILE=`/bin/basename $7`
+FILE=`basename $7`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/proc"
-PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$CTDBP/$FILE"
 OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/ctdbp/${FILE%.log}.json"
-if [ ! -d `/usr/bin/dirname $OUT` ]; then
-    mkdir -p `/usr/bin/dirname $OUT`
+if [ ! -d `dirname $OUT` ]; then
+    mkdir -p `dirname $OUT`
 fi
 
 # Parse the file
 if [ -e $IN ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    $PYTHON -m cgsn_parsers.parsers.parse_ctdbp -i $IN -o $OUT -s $SWITCH
+    python -m cgsn_parsers.parsers.parse_ctdbp -i $IN -o $OUT -s $SWITCH
 fi

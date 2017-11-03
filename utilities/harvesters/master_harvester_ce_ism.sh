@@ -18,6 +18,7 @@ FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
 
 RAW="/home/ooiuser/data/raw"
 HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
+source activate ooi
 
 # CPM1
 $HARVEST/harvest_gps.sh $PLATFORM $DEPLOY $FNAME.gps.log

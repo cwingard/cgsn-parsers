@@ -13,22 +13,21 @@ if [ $# -ne 3 ]; then
 fi
 PLATFORM=${1,,}
 DEPLOY=${2^^}
-FILE=`/bin/basename $3`
-RAW=`/usr/bin/dirname $3`
-CTDMO=`/bin/basename $RAW`
+FILE=`basename $3`
+RAW=`dirname $3`
+CTDMO=`basename $RAW`
 
 # Set the default directory paths
 PARSED="/home/ooiuser/data/proc"
-PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 OUT="$PARSED/$PLATFORM/$DEPLOY/imm/$CTDMO/${FILE%.DAT}.json"
-if [ ! -d `/usr/bin/dirname $OUT` ]; then
-    mkdir -p `/usr/bin/dirname $OUT`
+if [ ! -d `dirname $OUT` ]; then
+    mkdir -p `dirname $OUT`
 fi
 
 # Parse the file, if hasn't already been parsed
 if [ ! -e $OUT/ ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    $PYTHON -m cgsn_parsers.parsers.parse_imm_ctdmo -i $RAW/$FILE -o $OUT
+    python -m cgsn_parsers.parsers.parse_imm_ctdmo -i $RAW/$FILE -o $OUT
 fi

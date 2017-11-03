@@ -18,6 +18,7 @@ FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
 
 RAW="/home/ooiuser/data/raw"
 HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
+source activate ooi
 
 # Set some instrument names and processing flags based on the platform name
 case "$PLATFORM" in

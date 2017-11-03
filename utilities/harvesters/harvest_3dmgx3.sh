@@ -13,21 +13,20 @@ if [ $# -ne 3 ]; then
 fi
 PLATFORM=${1,,}
 DEPLOY=${2^^}
-FILE=`/bin/basename $3`
-RAW=`/usr/bin/dirname $3`
+FILE=`basename $3`
+RAW=`dirname $3`
 
 # Set the default directory paths
 PARSED="/home/ooiuser/data/proc"
-PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/3dmgx3/${FILE%.log}.json"
-if [ ! -d `/usr/bin/dirname $OUT` ]; then
-    mkdir -p `/usr/bin/dirname $OUT`
+if [ ! -d `dirname $OUT` ]; then
+    mkdir -p `dirname $OUT`
 fi
 
 # Parse the file
 if [ ! -e $OUT ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    $PYTHON -m cgsn_parsers.parsers.parse_mopak -i $RAW/$FILE -o $OUT
+    python -m cgsn_parsers.parsers.parse_mopak -i $RAW/$FILE -o $OUT
 fi

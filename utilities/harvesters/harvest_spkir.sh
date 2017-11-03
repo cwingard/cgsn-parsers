@@ -19,23 +19,22 @@ DEPLOY=${2^^}
 DCL=${3,,}
 SPKIR=${4,,}
 SUBASY=${5,,}
-FILE=`/bin/basename $6`
+FILE=`basename $6`
 
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/proc"
-PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$SPKIR/$FILE"
 OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/spkir/${FILE%.log}.json"
-if [ ! -d `/usr/bin/dirname $OUT` ]; then
-    mkdir -p `/usr/bin/dirname $OUT`
+if [ ! -d `dirname $OUT` ]; then
+    mkdir -p `dirname $OUT`
 fi
 
 # Parse the file
 if [ -e $IN ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    $PYTHON -m cgsn_parsers.parsers.parse_spkir -i $IN -o $OUT
+    python -m cgsn_parsers.parsers.parse_spkir -i $IN -o $OUT
 fi

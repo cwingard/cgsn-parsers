@@ -23,6 +23,7 @@ FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
 # First we are going to process any syslog (for iridium, gps and supervisor data) or mopak data sent by the mooring
 RAW="/home/ooiuser/data/raw"
 HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
+source activate ooi
 
 $HARVEST/harvest_superv_stc.sh $PLATFORM $DEPLOY $FNAME.syslog.log
 $HARVEST/harvest_syslog_gps.sh $PLATFORM $DEPLOY $FNAME.syslog.log
@@ -60,12 +61,11 @@ fi
 UNPACK="/usr/bin/timeout 5 /home/ooiuser/bin/cg_util/mmp_unpack"
 
 # setup the python parser used for creating the JSON formatted file
-PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 # Process the profiler data, using the E files as the key.
 for file in $RAW/E*.DAT; do
     # unpack the file, if it hasn't already been processed
-    out=`/bin/basename $file`
+    out=`basename $file`
     if [ ! -f $PROC/${out%.DAT}.TXT* ]; then
         echo "Processing $file..."
 
@@ -132,7 +132,7 @@ for file in $RAW/E*.DAT; do
         outfile=${infile/E/P}
         outfile=${outfile%.TXT}.json
         cd /home/ooiuser/code/cgsn-parsers
-        $PYTHON -m cgsn_parsers.parsers.parse_mmp_coastal -i $infile -o $outfile
+        python -m cgsn_parsers.parsers.parse_mmp_coastal -i $infile -o $outfile
     fi
 done
 
