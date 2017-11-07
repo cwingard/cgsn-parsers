@@ -42,7 +42,7 @@ _parameter_names_nutnr = [
     'absorbance_254',
     'absorbance_250',
     'bromide_trace',
-    'spectal_average',
+    'spectral_average',
     'dark_value',
     'integration_factor',
     'channel_measurements',
@@ -100,7 +100,7 @@ class Parser(ParserCommon):
         self.data.absorbance_254.append(float(match.group(10)))
         self.data.absorbance_250.append(float(match.group(11)))
         self.data.bromide_trace.append(float(match.group(12)))
-        self.data.spectal_average.append(int(match.group(13)))
+        self.data.spectral_average.append(int(match.group(13)))
         self.data.dark_value.append(int(match.group(14)))
         self.data.integration_factor.append(int(match.group(15)))
         channels = [int(i) for i in (match.group(16)).split()]

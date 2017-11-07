@@ -18,6 +18,7 @@ FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
 
 RAW="/home/ooiuser/data/raw"
 HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
+source activate ooi
 
 # Set some instrument names and processing flags based on the platform name
 case "$PLATFORM" in
@@ -59,7 +60,7 @@ $HARVEST/harvest_syslog_fb250.sh $PLATFORM $DEPLOY $FNAME.syslog.log
 $HARVEST/harvest_syslog_irid.sh $PLATFORM $DEPLOY $FNAME.syslog.log
 $HARVEST/harvest_syslog_rda.sh $PLATFORM $DEPLOY $FNAME.syslog.log
 $HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY $FNAME.pwrsys.log
-$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm1 buoy 0 $FNAME.superv.log
+$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm1 buoy $FNAME.superv.log
 
 # DCL11
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl11 buoy $FNAME.superv.log
@@ -80,10 +81,12 @@ $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl12 buoy $FNAME.superv.log
 $HARVEST/harvest_hydgn.sh $PLATFORM $DEPLOY dcl12 hyd2 $FNAME.hyd2.log
 $HARVEST/harvest_wavss.sh $PLATFORM $DEPLOY $FNAME.wavss.log
 $HARVEST/harvest_pco2a.sh $PLATFORM $DEPLOY $FNAME.pco2a.log
-$HARVEST/harvest_fdchp.sh $PLATFORM $DEPLOY $FNAME.fdchp.log
+if [ $PLATFORM = "ce02shsm" ]; then
+    $HARVEST/harvest_fdchp.sh $PLATFORM $DEPLOY $FNAME.fdchp.log
+fi
 
 # CPM2
-$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm2 nsif 1 $FNAME.superv.log
+$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm2 nsif $FNAME.superv.log
 
 # DCL26
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl26 nsif $FNAME.superv.log
@@ -97,6 +100,9 @@ $HARVEST/harvest_velpt.sh $PLATFORM $DEPLOY dcl26 velpt2 nsif $FNAME.velpt2.log
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl27 nsif $FNAME.superv.log
 $HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl27 $CTDBP1 nsif 1 $FNAME.$CTDBP1.log
 $HARVEST/harvest_dosta.sh $PLATFORM $DEPLOY dcl27 dosta nsif $FNAME.dosta.log
+if [ $PLATFORM = "ce02shsm" ]; then
+    $HARVEST/harvest_dosta.sh $PLATFORM $DEPLOY dcl27 testO2 nsif $FNAME.testO2.log
+fi
 $HARVEST/harvest_flort.sh $PLATFORM $DEPLOY dcl27 flort nsif $FNAME.flort.log
 for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl27/$OPTAA1/$FNAME*.$OPTAA1.log; do
     if [ -e $optaa ]; then
@@ -108,9 +114,9 @@ for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl27/$OPTAA1/$FNAME*.$OPTAA1.log; d
 done
 
 # Washington MFN
-if [ $MFN_FLAG == 1 ]; then
+if [ $MFN_FLAG -eq 1 ]; then
     # CPM3
-    $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm3 mfn 1 $FNAME.superv.log
+    $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm3 mfn $FNAME.superv.log
     $HARVEST/harvest_mpea.sh $PLATFORM $DEPLOY $FNAME.pwrsys.log
 
     # DCL36

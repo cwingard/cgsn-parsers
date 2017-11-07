@@ -21,21 +21,34 @@ PATTERN = (
     DCL_TIMESTAMP + r'\s+' +                  # DCL Time-Stamp
     r'(\*[A-F0-9]{4}11[A-F0-9]+)' + r'\s' +   # Device 1 (external pump) sample collection
     DCL_TIMESTAMP + r'\s+' +                  # DCL Time-Stamp
-    r'(\*[A-F0-9]{4}04[A-F0-9]+)' + r'\s'     # Device 0 sample processing
+    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)' + r'\s'     # Device 0 sample processing
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
 _parameter_names_pco2w = [
-        'collect_date_time',
-        'process_date_time',
-        'unique_id',
-        'record_length',
-        'record_type',
-        'record_time',
-        'light_measurements',
-        'voltage_battery',
-        'thermistor_raw'
-    ]
+    'collect_date_time',
+    'process_date_time',
+    'unique_id',
+    'record_length',
+    'record_type',
+    'record_time',
+    'dark_reference_a',
+    'dark_signal_a',
+    'reference_434_a',
+    'signal_434_a',
+    'reference_620_a',
+    'signal_620_a',
+    'ratio_434',
+    'ratio_620',
+    'dark_reference_b',
+    'dark_signal_b',
+    'reference_434_b',
+    'signal_434_b',
+    'reference_620_b',
+    'signal_620_b',
+    'voltage_raw',
+    'thermistor_raw'
+]
 
 
 class Parser(ParserCommon):
@@ -74,7 +87,7 @@ class Parser(ParserCommon):
             # pull out of the sample string the DCL timestamps and a cleaned sample string
             collect_time = match.group(1)
             process_time = match.group(3)
-            sample = match.group(4)
+            sample = match.group(4) + match.group(5) + match.group(6)
 
             # if we have a complete sample, process it.
             if len(sample) == 81:
@@ -101,18 +114,23 @@ class Parser(ParserCommon):
         self.data.record_length.append(int(sample[3:5], 16))
         self.data.record_type.append(int(sample[5:7], 16))
         self.data.record_time.append(int(sample[7:15], 16))
+        self.data.dark_reference_a.append(int(sample[15:19], 16))
+        self.data.dark_signal_a.append(int(sample[19:23], 16))
+        self.data.reference_434_a.append(int(sample[23:27], 16))
+        self.data.signal_434_a.append(int(sample[27:31], 16))
+        self.data.reference_620_a.append(int(sample[31:35], 16))
+        self.data.signal_620_a.append(int(sample[35:39], 16))
+        self.data.ratio_434.append(int(sample[39:43], 16))
+        self.data.ratio_620.append(int(sample[43:47], 16))
+        self.data.dark_reference_b.append(int(sample[47:51], 16))
+        self.data.dark_signal_b.append(int(sample[51:55], 16))
+        self.data.reference_434_b.append(int(sample[55:59], 16))
+        self.data.signal_434_b.append(int(sample[59:63], 16))
+        self.data.reference_620_b.append(int(sample[63:67], 16))
+        self.data.signal_620_b.append(int(sample[67:71], 16))
+        self.data.voltage_raw.append(int(sample[71:75], 16))
+        self.data.thermistor_raw.append(int(sample[75:79], 16))
 
-        cnt = 15    # set the counter for the light measurements
-        light = []  # create empty list to hold the 14 light measurements
-        for i in range(0, 14):
-            indx = (i * 4) + cnt
-            light.append(int(sample[indx:indx+4], 16))
-
-        self.data.light_measurements.append(light)
-
-        cnt = indx + 4  # reset the counter for the final parameters
-        self.data.voltage_battery.append(int(sample[cnt:cnt+4], 16))
-        self.data.thermistor_raw.append(int(sample[cnt+4:cnt+8], 16))
 
 def main(argv=None):
     # load the input arguments
@@ -131,6 +149,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(pco2w.data.toJSON())
+
 
 if __name__ == '__main__':
     main()

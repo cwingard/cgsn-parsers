@@ -14,12 +14,11 @@ if [ $# -ne 3 ]; then
 fi
 PLATFORM=${1,,}
 DEPLOY=${2^^}
-FILE=`/bin/basename $3`
+FILE=`basename $3`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/proc"
-PYTHON="/home/ooiuser/bin/conda/bin/python3"
 
 if [ -z "${PLATFORM/*pm*}" ]; then
     # path is different for profiler moorings
@@ -29,12 +28,12 @@ else
 fi
 
 OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/irid/${FILE%.log}.json"
-if [ ! -d `/usr/bin/dirname $OUT` ]; then
-    mkdir -p `/usr/bin/dirname $OUT`
+if [ ! -d `dirname $OUT` ]; then
+    mkdir -p `dirname $OUT`
 fi
 
 # Parse the file
 if [ -e $IN ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    $PYTHON -m cgsn_parsers.parsers.parse_syslog_irid -i $IN -o $OUT
+    python -m cgsn_parsers.parsers.parse_syslog_irid -i $IN -o $OUT
 fi

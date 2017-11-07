@@ -18,11 +18,12 @@ FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
 
 RAW="/home/ooiuser/data/raw"
 HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
+source activate ooi
 
 # CPM1
 $HARVEST/harvest_gps.sh $PLATFORM $DEPLOY $FNAME.gps.log
 $HARVEST/harvest_syslog_irid.sh $PLATFORM $DEPLOY $FNAME.syslog.log
-$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm1 buoy 0 $FNAME.superv.log
+$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm1 buoy $FNAME.superv.log
 
 # DCL17
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl17 buoy $FNAME.superv.log
@@ -39,9 +40,13 @@ $HARVEST/harvest_velpt.sh $PLATFORM $DEPLOY dcl17 velpt1 buoy $FNAME.velpt1.log
 
 # DCL16
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl16 nsif $FNAME.superv.log
-$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl16 ctdbp1 nisf 2 $FNAME.ctdbp1.log
+$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl16 ctdbp1 nsif 2 $FNAME.ctdbp1.log
 $HARVEST/harvest_flort.sh $PLATFORM $DEPLOY dcl16 flort nsif $FNAME.flort.log
-$HARVEST/harvest_nutnr.sh $PLATFORM $DEPLOY dcl16 nutnr nsif 1 $FNAME.nutnr.log
+if [ $PLATFORM = "ce01issm" ]; then
+    $HARVEST/harvest_suna.sh $PLATFORM $DEPLOY dcl16 nutnr nsif $FNAME.nutnr.log
+else
+    $HARVEST/harvest_nutnr.sh $PLATFORM $DEPLOY dcl16 nutnr nsif 1 $FNAME.nutnr.log
+fi
 $HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl16 pco2w1 nsif $FNAME.pco2w1.log
 $HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl16 phsen1 nsif $FNAME.phsen1.log
 for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl16/optaa1/$FNAME*.optaa1.log; do
@@ -56,19 +61,19 @@ $HARVEST/harvest_spkir.sh $PLATFORM $DEPLOY dcl16 spkir nsif $FNAME.spkir.log
 $HARVEST/harvest_velpt.sh $PLATFORM $DEPLOY dcl16 velpt2 nsif $FNAME.velpt2.log
 
 # CPM3
-$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm3 mfn 1 $FNAME.superv.log
+$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm3 mfn $FNAME.superv.log
 
-# DCL35
-$HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl35 mfn $FNAME.superv.log
-$HARVEST/harvest_adcp.sh $PLATFORM $DEPLOY dcl35 adcpt mfn $FNAME.adcpt.log
-$HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl35 pco2w2 mfn $FNAME.pco2w2.log
-$HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl35 phsen2 mfn $FNAME.phsen2.log
-$HARVEST/harvest_presf.sh $PLATFORM $DEPLOY dcl35 $FNAME.presf.log
-for vel3d in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl35/vel3d/$FNAME*.vel3d.log; do
+# DCL36
+$HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl36 mfn $FNAME.superv.log
+$HARVEST/harvest_adcp.sh $PLATFORM $DEPLOY dcl36 adcpt mfn $FNAME.adcpt.log
+$HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl36 pco2w2 mfn $FNAME.pco2w2.log
+$HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl36 phsen2 mfn $FNAME.phsen2.log
+$HARVEST/harvest_presf.sh $PLATFORM $DEPLOY dcl36 $FNAME.presf.log
+for vel3d in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl36/vel3d/$FNAME*.vel3d.log; do
     if [ -e $vel3d ]; then
         SIZE=`du -k "$vel3d" | cut -f1`
         if [ $SIZE -gt 0 ]; then
-            $HARVEST/harvest_vel3d.sh $PLATFORM $DEPLOY dcl35 $vel3d
+            $HARVEST/harvest_vel3d.sh $PLATFORM $DEPLOY dcl36 $vel3d
         fi
     fi
 done
