@@ -1,61 +1,48 @@
 # CGSN Parsers
 
-Simple python modules and shell script utilities used to parse the raw data files
-logged by the custom built CGSN data logger systems. Resulting parsed data is saved
-in .JSON files for further processing, analysis and plotting.
+Python modules and shell script utilities used to parse the raw data files logged by the custom built CGSN data logger
+systems. Resulting parsed data is saved in .JSON files for further processing, analysis and plotting.
 
-The parsers convert the data from the different formats found in the raw
-log files (binary, ASCII, ASCIIHEX, mixed ASCII/binary, etc) into a common
-format (JSON) that can be used for further processing. They do not convert the
-data values (for the most part) found within the raw data. In other words, if a
-particular measurement contained in the raw data file is reported in counts, the
-parser does not convert that value to scientific units.
+The parsers convert the data from the different formats found in the raw log files (binary, ASCII, ASCIIHEX, mixed 
+ASCII/binary) into a common format (JSON) that can be used for further processing and analysis. They do not convert the
+data values (for the most part) found within the raw data. In other words, if a particular measurement contained in the 
+raw data file is reported in counts, the parser does not convert that measurement to scientific units.
 
-An exception to the above conversion applies to calculating an Epoch time stamp 
-(seconds since 1970-01-01) from the date and time string information contained in
-the files. The preferred source of time is the DCL timestamp as those systems are
-synced to GPS via a LAN NTP server and are accurate to with a few milliseconds.
+An exception to the above conversion applies to calculating an Epoch time stamp (seconds since 1970-01-01) from the date
+and time string information contained in the files. The preferred source of time is the DCL timestamp as those systems
+are synced to GPS via a LAN NTP server and are accurate to with a few milliseconds.
 
 # Usage
 
-Current usage is for monitoring the system health of the moorings (hydrogen
-concentration levels, battery voltages, leak detect currents, etc) and a select
-set of instruments providing an assessment of current environmental conditions
-(e.g. surface meteorological conditions, wave field and subsurface currents)
-for mission planning and troubleshooting (low salinity surface water from the
-Columbia River Plume may impact the ability of gliders to surface).
+Current usage is for monitoring the system health of the moorings (e.g. hydrogen concentration levels, battery voltages,
+leak detect currents) and current environmental conditions (e.g. surface meteorological conditions, wave field and
+subsurface currents) for deployment planning and troubleshooting (e.g. low salinity surface water from the Columbia 
+River Plume may impact the ability of gliders to surface).
 
-Several tools in multiple languages (a browser, Matlab, Python, R, Java, etc) exist
-that will enable a user to load a parsed JSON formatted data file for further
-processing and review.
+Several tools in multiple languages (a browser, Matlab, Python, R, Java, etc) exist that will enable a user to load a 
+parsed JSON formatted data file for further processing and review.
 
-Ultimately, parsed and subsequently processed data can be compared to the output from
-other systems for purposes of integration testing and verification. This code is
-provided "as-is" for other users who may wish to interact directly with the [raw
-data](https://rawdata.oceanobservatories.org/files/).
+This code is provided "as-is" for other users who may wish to interact directly with the
+[raw data](https://rawdata.oceanobservatories.org/files/).
 
 # Directory Organization
 
-The python code for this project is available in the cgsn_parsers/parsers directory.
-Unit tests are available in the cgsn_parsers/tests directory.
+The python code for this project is available in the cgsn_parsers/parsers directory. Unit tests are available in the 
+cgsn_parsers/tests directory.
 
-Examples for how to work with some of the parsers are presented in the notebooks
-directory using [Jupyter](http://jupyter.org/) Notebooks.
+Examples for how to work with some of the parsers are presented in the notebooks directory using 
+[Jupyter](http://jupyter.org/) Notebooks.
 
-Shell scripts in the utilities/harvesters directory are presented as an example
-of how to collect data from the different instrument systems installed on a
-mooring, either individually or via a `master_harvester.sh` shell script. These
-scripts set the input and output directories for the data and call the
-appropriate python parser (located in the cgsn_parsers directory) to use with
-that instrument. It should be noted that these scripts were created with a
-specific user and system in mind. Other users will need to adapt these scripts to fit
-their own needs.
+Shell scripts in the utilities/harvesters directory are presented as examples of how to collect data from the different
+instrument systems installed on a mooring, either individually or via a `master_harvester.sh` shell script. These 
+scripts set the input and output directories for the data and call the appropriate python parser (located in the 
+cgsn_parsers directory) to use with that instrument. It should be noted that these scripts were created with a specific 
+user and system in mind. Others will need to adapt these scripts to fit their own needs.
 
 # Requirements
 
-This code was written and tested against Python 3.5.2 using Anaconda from
-[Continuum Analytics](https://www.continuum.io/). The code has been used on Windows
-machines (7 and 10), as well as Linux servers running CentOS 6 and 7.
+This code was written and tested against Python 3.5.2 using Anaconda from [Continuum Analytics](https://www.continuum.io/).
+The code has been used on Windows machines (7 and 10), as well as Linux servers running CentOS 6 and 7 and Debian 8.
 
 The following additional python packages, beyond those provided by anaconda are used
 by this code:
@@ -66,17 +53,15 @@ If starting from miniconda, you will need to add:
 
    * nose
    * numpy
-   * pytz'
-   * (need to determine the remainder)
+   * munch >= 2.1.0
+   * pytz
 
 # Contributing
 
-Users are encouraged to contribute to this code. The hope is this repository can
-provide the science community with a means of accessing and working with the raw
-OOI mooring data. To contribute, please fork the main
-[repo](https://bitbucket.org/ooicgsn/cgsn-parsers) to your BitBucket account,
-create a branch, do your work, and then (when satisfied) submit a pull request
-to have your work integrated back into the main project repo.
+Users are encouraged to contribute to this code. The hope is this repository can provide the science community with a 
+means of accessing and working with the raw OOI mooring data. To contribute, please fork the main 
+[repo](https://bitbucket.org/ooicgsn/cgsn-parsers) to your own BitBucket account, create a branch, do your work, and 
+then (when satisfied) submit a pull request to have your work integrated back into the main project repo.
 
 An example work flow would be:
 
@@ -131,9 +116,6 @@ git rebase -p upstream/master
 
 # At this point you will need to deal with any conflicts, of which there should
 # be none. Hopefully...
-
-# Count the number of commits in the current work you are trying to merge
-git log --oneline master...<branch>
 
 # Push the current working, rebased branch to your bitbucket fork and then 
 # make a pull request to merge your work into the main code branch. Once the

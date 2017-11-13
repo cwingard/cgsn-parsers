@@ -1,0 +1,4 @@
+nose
+numpy
+munch>=2.1.0
+pytz
