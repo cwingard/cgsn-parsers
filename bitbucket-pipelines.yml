@@ -18,3 +18,7 @@ pipelines:
       - step:
           script:
             - python -m unittest discover
+
+definitions:
+  caches:
+    conda: continuumio/miniconda3

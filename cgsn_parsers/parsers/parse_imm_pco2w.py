@@ -110,7 +110,7 @@ class Parser(ParserCommon):
         self.data.signal_620_b.append(int(match.group(6)[52:], 16))
 
         # assign remaining values
-        self.data.voltage_battery.append(int(match.group(7), 16))
+        self.data.voltage_raw.append(int(match.group(7), 16))
         self.data.thermistor_raw.append(int(match.group(8), 16))
 
         # set the time to seconds since 1970-01-01
