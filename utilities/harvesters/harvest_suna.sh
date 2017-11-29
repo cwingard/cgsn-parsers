@@ -18,7 +18,6 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
 NUTNR=${4,,}
-SUNA=${NUTNR/nutnr/suna}
 SUBASY=${5,,}
 FILE=`basename $6`
 
@@ -28,7 +27,7 @@ PARSED="/home/ooiuser/data/proc"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$NUTNR/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/$SUNA/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/$NUTNR/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi
