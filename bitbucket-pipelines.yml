@@ -11,6 +11,11 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - conda config --add channels conda-forge
           - conda install --yes --file requirements.txt
+  custom: # Pipelines that are triggered manually
+    unittest:
+      - step:
+          script:
+            - python -m unittest discover
   branches:
     master:
       - step:
