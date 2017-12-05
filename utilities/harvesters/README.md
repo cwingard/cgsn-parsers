@@ -1,23 +1,20 @@
 # Harvesters
 
-Shell scripts used by OOI Endurance staff to harvest and parse data from the
-Endurance moorings for monitoring purposes. The master harvester scripts are
-used to call all of the associated harvesters for a particular mooring and
-deployment. Scheduling is handled via crontab. Other users would need to modify
-input and output paths for their own applications.
+This directory contains the shell scripts used by OOI CGSN staff in parsing the raw data files. The master harvester 
+scripts are used to call all of the associated harvesters for a particular mooring and deployment. Directory paths and
+structures specified in the scripts are unique to our systems. Other users would need to modify input and output paths 
+for their own applications.
 
-These scripts are provided as an example for how to use these parsers.
-Alternatively, one can load the cgsn_parsers as a module in python and call the
-respective parsers needed in that manner. The user will need to create their own
-methodologies for loading the data files (see the notebooks for some examples).
+These scripts are provided as an example for how to use these parsers. Alternatively, one can load the cgsn_parsers as a
+module in python and call the respective parsers needed in that manner. The user will need to create their own
+methodologies for loading the data files (see the included python notebooks for some examples).
 
 # Raw Data used by the Harvesters
 
-The raw data needs to be downloaded to your machine prior to working with these
-parsers. I've included an example below of the crontab OOI Endurance has used to
-access the raw data for mooring monitoring and managing purposes. Note, I find
-it much easier to limit the wget calls to a specific mooring and deployment.
-Otherwise it just takes too long.
+The raw data needs to be downloaded to your machine prior to working with these parsers. We've included an example below
+of the crontab OOI Endurance has used to access the raw data from the OOI Raw Data server for mooring monitoring and 
+managing purposes. Note, you'll find it much easier to limit the wget calls to a specific mooring and deployment.
+Otherwise, it will take a long time to download the data you are after. 
 
 ```bash
 # OOI Endurance crontab

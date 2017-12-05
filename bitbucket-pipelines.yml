@@ -1,0 +1,22 @@
+# cgsn-parsers build configuration
+# -----
+# Continuum Analytics docker image from Docker Hub for miniconda.
+image: continuumio/miniconda3
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - conda
+        script: # Modify the commands below to build your repository.
+          - conda config --add channels conda-forge
+          - conda install --yes --file requirements.txt
+  branches:
+    master:
+      - step:
+          script:
+            - python -m unittest discover
+
+definitions:
+  caches:
+    conda: continuumio/miniconda3

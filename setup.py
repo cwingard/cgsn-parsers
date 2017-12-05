@@ -1,12 +1,15 @@
-from setuptools import setup
-
+from setuptools import setup, find_packages
 
 def readme():
     with open('README.md') as f:
         return f.read()
 
+def version():
+    with open('VERSION.txt') as f:
+        return f.read().strip()
+
 setup(name='cgsn_parsers',
-      version='0.2.0',
+      version=version(),
       description=(
           'Collection of parsers for converting raw data from the OOI Endurance, '
           'Global and Pioneer moorings to JSON for further work.'
@@ -19,11 +22,11 @@ setup(name='cgsn_parsers',
           'Topic :: Data Parsing :: JSON :: Scientific :: OOI',
       ],
       keywords='OOI Endurance Global Pioneer raw data parsing',
-      url='http://github.com/ooi-integration/cgsn-parsers',
+      url='https://bitbucket.org/ooicgsn/cgsn-parsers',
       author='Christopher Wingard',
       author_email='cwingard@coas.oregonstate.edu',
       license='MIT',
-      packages=['cgsn_parsers'],
+      packages=find_packages(),
       install_requires=[
           'nose',
           'numpy',
