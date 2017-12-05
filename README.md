@@ -63,6 +63,11 @@ means of accessing and working with the raw OOI mooring data. To contribute, ple
 [repo](https://bitbucket.org/ooicgsn/cgsn-parsers) to your own BitBucket account, create a branch, do your work, and 
 then (when satisfied) submit a pull request to have your work integrated back into the main project repo.
 
+This project uses [Semantic Versioning](https://semver.org/) with Major:Minor:Patch levels designtated in the VERSION
+file. Be sure to include/update the version level as appropriate based on the guidlines for Semantic Versioning and
+provide that information in the pull request so the project admin can appropriately tag the code for automated builds
+and testing.
+
 An example work flow would be:
 
 ```bash
