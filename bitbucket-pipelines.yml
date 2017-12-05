@@ -4,22 +4,23 @@
 image: continuumio/miniconda3
 
 pipelines:
-  default:
-    - step:
-        caches:
-          - conda
-        script: # Modify the commands below to build your repository.
-          - conda config --add channels conda-forge
-          - conda install --yes --file requirements.txt
   custom: # Pipelines that are triggered manually
     unittest:
       - step:
+          caches:
+            - conda
           script:
+            - conda config --add channels conda-forge
+            - conda install --yes --file requirements.txt
             - python -m unittest discover
-  branches:
+  branches: # Pipelines that are triggered automatically for named branches only
     master:
       - step:
+          caches:
+            - conda
           script:
+            - conda config --add channels conda-forge
+            - conda install --yes --file requirements.txt
             - python -m unittest discover
 
 definitions:
