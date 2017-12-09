@@ -4,15 +4,11 @@
 @package cgsn_parsers.parsers.parse_adcp
 @file cgsn_parsers/parsers/parse_adcp.py
 @author Christopher Wingard
-@brief Parses Teledyne RDI WorkHorse ADCP data, reported as an ASCIIHEX string
-    (in PD0 format) to the DCL with a DCL timestamp prepended to the record
-    string.
+@brief Parses Teledyne RDI WorkHorse ADCP data, reported as an ASCIIHEX string (in PD0 format), or as an ASCII text
+    block (in PD8 format) to the DCL with a DCL timestamp prepended to the record strings.
 
-Release notes:
-    This code evolved from earlier work by Roger Unwin at the University of
-    California, San Diego as part of the Ocean Observatories Initiative
-    CyberInfrastructure team. See https://github.com/ooici/marine-integrations/blob/
-    f9371e42341e1cb9363df84e8980ed063f0c0a95/mi/instrument/teledyne/particles.py
+Release notes: The PD0 portion of this code evolved from earlier work by Roger Unwin at the University of California,
+               San Diego as part of the Ocean Observatories Initiative CyberInfrastructure team.
 """
 import os
 import re
@@ -22,12 +18,10 @@ from munch import Munch as Bunch
 from struct import unpack
 
 # Import common utilities and base classes
-from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import dcl_to_epoch, inputs
+from cgsn_parsers.parsers.common import ParserCommon, dcl_to_epoch, inputs
 
-# Regex set to find the start of a PD0 packet (DCL timestamp and the first 6
-# bytes of the header data). Using the first 6 bytes of the packet is a more
-# explicit regex than just the 0x7f7f marker the manual specifies, eliminating
+# Regex set to find the start of a PD0 packet (DCL timestamp and the first 6 bytes of the header data). Using the
+# first 6 bytes of the packet is a more explicit regex than just the 0x7f7f marker the manual specifies, eliminating
 # false positive matches.
 DCL_TIMESTAMP = b'(\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})'
 NEWLINE = b'(?:\r\n|\n)?'
@@ -36,10 +30,16 @@ PATTERN = (
     b'(7F7F)([0-9A-F]{4})(00)(06|07)' +
     b'([0-9A-F]+)' + NEWLINE
 )
-REGEX = re.compile(PATTERN, re.DOTALL)
+PD0_REGEX = re.compile(PATTERN, re.DOTALL)
+
+# Regex set to find the text block(s) that comprise the PD8 formatted output data
+PATTERN = (
+    b'.*power on message\n(.*?\r\n(?:(?!.*power off message).*?\r\n)*)'
+)
+PD8_BLOCKS = re.compile(PATTERN, re.MULTILINE)
 
 
-class ParameterNames(object):
+class ParameterNamesPD0(object):
     """
     Teledyne RDI WorkHorse PD0 formatted data files
     """
@@ -234,17 +234,86 @@ class ParameterNames(object):
         return bunch
 
 
+class ParameterNamesPD8(object):
+    """
+    Teledyne RDI WorkHorse PD8 formatted data files
+    """
+    def __init__(self):
+        # Variable Leader Data
+        self._variable = [
+            'ensemble_number',
+            'real_time_clock',
+            'heading',
+            'pitch',
+            'roll',
+            'temperature',
+            'speed_of_sound',
+            'bit_result'
+        ]
+
+        # Velocity Data
+        self._velocity = [
+            'bin_number',
+            'direction',
+            'magnitude',
+            'eastward',
+            'northward',
+            'vertical',
+            'error'
+        ]
+
+        # Echo Intensity Data
+        self._echo = [
+            'bin_number',
+            'intensity_beam1',
+            'intensity_beam2',
+            'intensity_beam3',
+            'intensity_beam4'
+        ]
+
+    # Create the initial dictionary object from the variable, velocity, and echo intensity data types.
+    def create_dict(self):
+        """
+        Create a Bunch class object to store the parameter names for the Workhorse ADCP PD8 data files, with the data
+        organized hierarchically by the data type.
+        """
+        bunch = Bunch()
+        bunch.time = []
+        bunch.date_time_string = []
+        bunch.variable = Bunch()
+        bunch.velocity = Bunch()
+        bunch.echo = Bunch()
+
+        for name in self._variable:
+            bunch.variable[name] = []
+
+        for name in self._velocity:
+            bunch.velocity[name] = []
+
+        for name in self._echo:
+            bunch.echo[name] = []
+
+        return bunch
+
+
 class Parser(ParserCommon):
     """
-    A Parser class that extracts the data records from a PD0 data packet
-    formatted in ASCIIHEX produced by a Teledyne RDI Workhorse ADCP.
+    A Parser class that extracts the data records from either PD0 or PD8 data packets produced by a Teledyne RDI
+    Workhorse ADCP.
     """
-    def __init__(self, infile):
+    def __init__(self, infile, pd_type=0):
         # set the infile name and path
         self.infile = infile
+        self.pd_type = pd_type      # using the switch input option to specify the output data format, default is PD0
 
         # initialize the data dictionary using the names defined above
-        data = ParameterNames()
+        if self.pd_type == 0:
+            data = ParameterNamesPD0()
+        elif self.pd_type == 8:
+            data = ParameterNamesPD8()
+        else:
+            raise ValueError("Unrecognized PD data type, Options are 0 for PD0, or 8 for PD8.")
+
         self.data = data.create_dict()
         self.raw = None
 
@@ -254,11 +323,16 @@ class Parser(ParserCommon):
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
         """
-        for match in REGEX.findall(self.raw):
-            self._build_parsed_values(match)
+        if self.pd_type == 0:
+            for match in PD0_REGEX.findall(self.raw):
+                self._build_parsed_values_pd0(match)
 
-    # Parse the ADCP ensembles, building a full, parsed record
-    def _build_parsed_values(self, match):
+        if self.pd_type == 8:
+            for match in PD8_BLOCKS.findall(self.raw):
+                self._build_parsed_values_pd8(match)
+
+    # Parse the PD0 formatted ADCP ensembles, building a full, parsed record
+    def _build_parsed_values_pd0(self, match):
         """
         Start by parsing the beginning portion of the ensemble (Header Data)
         """
@@ -339,6 +413,90 @@ class Parser(ParserCommon):
                 chunk = ensemble[offset:offset+nBytes]
                 self._parse_percent_good_chunk(chunk)
 
+    # Parse the PD8 formatted ADCP ensembles, building a full, parsed record
+    def _build_parsed_values_pd8(self, match):
+        """
+        Parse the PD8 data packet into appropriate parameters
+        """
+        lines = match.splitlines()
+        if len(lines) < 5:
+            # making sure we actually have some data
+            return None
+
+        # DCL date/time, ADCP ensemble time and ensemble record number
+        line = lines[0].split()
+        dt_str = '{} {}'.format(line[0].decode('utf-8'), line[1].decode('utf-8'))
+        self.data.date_time_string.append(dt_str)
+        self.data.time.append(dcl_to_epoch(dt_str))
+        dt_str = '{} {}'.format(line[2].decode('utf-8'), line[3].decode('utf-8'))
+        self.data.variable.real_time_clock.append(dt_str)
+        self.data.variable.ensemble_number.append(int(line[4]))
+
+        # ADCP heading, pitch and roll
+        line = lines[1].split()
+        self.data.variable.heading.append(float(line[3]))
+        self.data.variable.pitch.append(float(line[5]))
+        self.data.variable.roll.append(float(line[7]))
+
+        # ADCP temperature, speed of sound estimate and Built-In-Test (BIT) result
+        line = lines[2].split()
+        self.data.variable.temperature.append(float(line[3]))
+        self.data.variable.speed_of_sound.append(float(line[5]))
+        self.data.variable.bit_result.append(int(line[7]))
+
+        # velocity direction and magnitude (as well as individual components) and echo intensities
+        bin_num = []
+        vel_dir = []
+        vel_mag = []
+        vel_ew = []
+        vel_ns = []
+        vel_vert = []
+        vel_err = []
+        beam1 = []
+        beam2 = []
+        beam3 = []
+        beam4 = []
+        for line in lines[4:]:
+            data = line.split()
+            # bin number
+            bin_num.append(int(data[2]))
+
+            # velocity direction and magnitude, only set if all 4 beams have good data, otherwise is '--'
+            try:
+                vel_dir.append(float(data[3]))
+                vel_mag.append(float(data[4]))
+            except ValueError as e:
+                vel_dir.append('NaN')
+                vel_mag.append('NaN')
+
+            # velocity components
+            vel_ew.append(int(data[5]))
+            vel_ns.append(int(data[6]))
+            vel_vert.append(int(data[7]))
+            vel_err.append(int(data[8]))
+
+            # echo intensities
+            beam1.append(int(data[9]))
+            beam2.append(int(data[10]))
+            beam3.append(int(data[11]))
+            beam4.append(int(data[12]))
+
+        self.data.velocity.bin_number.append(bin_num)
+        self.data.velocity.direction.append(vel_dir)
+        self.data.velocity.magnitude.append(vel_mag)
+
+        self.data.velocity.eastward.append(vel_ew)
+        self.data.velocity.northward.append(vel_ns)
+        self.data.velocity.vertical.append(vel_vert)
+        self.data.velocity.error.append(vel_err)
+
+        self.data.echo.bin_number.append(bin_num)
+        self.data.echo.intensity_beam1.append(beam1)
+        self.data.echo.intensity_beam2.append(beam2)
+        self.data.echo.intensity_beam3.append(beam3)
+        self.data.echo.intensity_beam4.append(beam4)
+
+    # Sub-functions used by _build_parsed_values_pd0
     def _parse_fixed_chunk(self, chunk):
         """
         Parse the fixed leader portion of the particle
@@ -642,9 +800,14 @@ def main(argv=None):
     args = inputs(argv)
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
+    pd_type = args.switch
 
     # initialize the Parser object for the ADCP
-    adcp = Parser(infile)
+    try:
+        adcp = Parser(infile, pd_type)
+    except ValueError as e:
+        print("Be sure PD data type is set correctly via switch argument as either 0 (for PD0) or 8 (for PD8) data")
+        return None
 
     # load the data into a buffered object and parse the data into a dictionary
     adcp.load_binary()
