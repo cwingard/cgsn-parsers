@@ -17,6 +17,7 @@ from cgsn_parsers.parsers.parse_adcp import Parser
 TESTDATA_PD0 = path.join(path.dirname(__file__), 'adcp/20160617.adcpt.log')
 TESTDATA_PD8 = path.join(path.dirname(__file__), 'adcp/20150515.adcp.log')
 
+
 @attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
@@ -36,14 +37,16 @@ class TestParsingUnit(unittest.TestCase):
         self.adcp_pd0 = Parser(TESTDATA_PD0, 0)
         self.adcp_pd8 = Parser(TESTDATA_PD8, 8)
 
-        # set the expected output arrays for the PD0 formatted data. Expected data created using WinADCP on recovered
+        # Set the expected output arrays for the PD0 formatted data. Expected data created using WinADCP on recovered
         # data from the Spring 2016 deployment of CE02SHSM, focusing specifically on data from 2016-06-17. Source data
         # can be found:
         #
         #   https://rawdata.oceanobservatories.org/files/CE02SHSM/R00003/instrmts/dcl26/ADCPT_sn18222/
         #
         # Expected data limited to ensemble number, real time clock, heading, pitch, roll and the first 5 bins of the
-        # eastward and northward velocities. Limited to first 12 hours of the day.
+        # eastward and northward velocities. Limited to first 12 hours of the day. These elements are spread throughout
+        # the data file. Thus, if the parsing had failed, the whole house of cards should come apart and none of these
+        # elements will match
         self.pd0 = np.array([
             [2892, 16, 6, 17, 0, 0, -2.65, -0.65, 265.7, -59, -61, -49, -17, 17, -253, -251, -225, -220, -178],
             [2893, 16, 6, 17, 0, 15, -1.93, -2.84, 276.07, -110, -80, -79, -17, 36, -238, -226, -229, -172, -106],
@@ -95,33 +98,34 @@ class TestParsingUnit(unittest.TestCase):
             [2939, 16, 6, 17, 11, 45, -4.28, 11.81, 112.61, -95, -75, -66, -60, -60, -285, -258, -257, -271, -288]
         ])
 
-        # set the expected output arrays for the PD8 formatted data. Expected data created using WinADCP on recovered
+        # Set the expected output arrays for the PD8 formatted data. Expected data created using WinADCP on recovered
         # data from the Spring 2015 deployment of CP01CNSM, focusing specifically on data from 2015-05-15. Source data
         # can be found:
         #
         #   https://rawdata.oceanobservatories.org/files/CP01CNSM/R00003/cg_data/dcl35/ADCP_sn18593/
         #
-        # Expected data limited to ensemble number, real time clock, heading, pitch, roll and the first 5 bins of the
-        # eastward and northward velocities.
+        # Expected data limited to ensemble number, heading, pitch, roll and the first 5 bins of the eastward and
+        # northward velocities. These elements are spread throughout the data file. Thus, if the parsing had failed,
+        # the whole house of cards should come apart and none of these elements will match
         self.pd8 = np.array([
-            [784, 15, 5, 15, 1, 0, -1.56, -0.56, 166.53, -12, -9, -29, -16, -5, 48, 27, 17, 7, 8],
-            [792, 15, 5, 15, 3, 0, -1.57, -0.56, 166.58, -6, -4, -10, -4, 20, 69, 64, 77, 75, 77],
-            [796, 15, 5, 15, 4, 0, -1.57, -0.56, 166.5, -29, -19, -5, 3, 4, 57, 48, 56, 72, 24],
-            [800, 15, 5, 15, 5, 0, -1.57, -0.56, 166.51, 7, -29, 1, 14, 10, 81, 75, 85, 55, 70],
-            [804, 15, 5, 15, 6, 0, -1.57, -0.56, 166.47, 71, 47, 71, 75, 81, 83, 60, 63, 62, 31],
-            [808, 15, 5, 15, 7, 0, -1.57, -0.56, 166.46, 86, 75, 43, 53, 56, 96, 89, 91, 102, 68],
-            [812, 15, 5, 15, 8, 0, -1.57, -0.56, 166.44, 91, 65, 79, 79, 89, 30, 61, 58, 40, 38],
-            [816, 15, 5, 15, 9, 0, -1.55, -0.55, 166.47, -21, -26, -45, -23, -35, -48, -55, -51, -38, -71],
-            [820, 15, 5, 15, 10, 0, -1.56, -0.56, 166.5, -13, 0, -13, 12, 16, -20, -13, 10, 24, 3],
-            [824, 15, 5, 15, 11, 0, -1.56, -0.56, 166.61, 24, 35, 57, 48, 46, 3, 5, 21, 41, 47],
-            [828, 15, 5, 15, 12, 0, -1.56, -0.55, 166.54, 7, 3, -14, -34, -32, -58, -50, -40, -17, -21],
-            [832, 15, 5, 15, 13, 0, -1.56, -0.56, 166.56, -18, -19, -16, -15, -12, -14, 5, -8, 8, 14],
-            [836, 15, 5, 15, 14, 0, -1.57, -0.57, 166.62, 12, 10, 35, 44, 49, 14, 22, 39, 26, 41],
-            [840, 15, 5, 15, 15, 0, -1.56, -0.56, 166.61, -19, -37, -11, -2, 8, 4, 7, 8, 33, 34],
-            [844, 15, 5, 15, 16, 0, -1.56, -0.56, 166.55, -12, -13, 1, 35, 39, 67, 49, 61, 46, 40],
-            [848, 15, 5, 15, 17, 0, -1.56, -0.57, 166.53, 13, 24, 15, 11, 3, 69, 38, 59, 41, 35],
-            [852, 15, 5, 15, 18, 0, -1.57, -0.56, 166.53, 12, 13, 9, 8, 9, 33, 25, 2, 25, 40],
-            [856, 15, 5, 15, 19, 0, -1.57, -0.56, 166.52, 6, 6, 34, 22, 33, 12, 4, 44, 45, 32]
+            [784, -1.6, -0.6, 166.5, -12, -9, -29, -16, -5, 48, 27, 17, 7, 8],
+            [792, -1.6, -0.6, 166.6, -6, -4, -10, -4, 20, 69, 64, 77, 75, 77],
+            [796, -1.6, -0.6, 166.5, -29, -19, -5, 3, 4, 57, 48, 56, 72, 24],
+            [800, -1.6, -0.6, 166.5, 7, -29, 1, 14, 10, 81, 75, 85, 55, 70],
+            [804, -1.6, -0.6, 166.5, 71, 47, 71, 75, 81, 83, 60, 63, 62, 31],
+            [808, -1.6, -0.6, 166.5, 86, 75, 43, 53, 56, 96, 89, 91, 102, 68],
+            [812, -1.6, -0.6, 166.4, 91, 65, 79, 79, 89, 30, 61, 58, 40, 38],
+            [816, -1.5, -0.6, 166.5, -21, -26, -45, -23, -35, -48, -55, -51, -38, -71],
+            [820, -1.6, -0.6, 166.5, -13, 0, -13, 12, 16, -20, -13, 10, 24, 3],
+            [824, -1.6, -0.6, 166.6, 24, 35, 57, 48, 46, 3, 5, 21, 41, 47],
+            [828, -1.6, -0.6, 166.5, 7, 3, -14, -34, -32, -58, -50, -40, -17, -21],
+            [832, -1.6, -0.6, 166.6, -18, -19, -16, -15, -12, -14, 5, -8, 8, 14],
+            [836, -1.6, -0.6, 166.6, 12, 10, 35, 44, 49, 14, 22, 39, 26, 41],
+            [840, -1.6, -0.6, 166.6, -19, -37, -11, -2, 8, 4, 7, 8, 33, 34],
+            [844, -1.6, -0.6, 166.6, -12, -13, 1, 35, 39, 67, 49, 61, 46, 40],
+            [848, -1.6, -0.6, 166.5, 13, 24, 15, 11, 3, 69, 38, 59, 41, 35],
+            [852, -1.6, -0.6, 166.5, 12, 13, 9, 8, 9, 33, 25, 2, 25, 40],
+            [856, -1.6, -0.6, 166.5, 6, 6, 34, 22, 33, 12, 4, 44, 45, 32]
         ])
 
     def test_adcp_pd0(self):
@@ -132,37 +136,56 @@ class TestParsingUnit(unittest.TestCase):
         self.adcp_pd0.parse_data()
         parsed = self.adcp_pd0.data.toDict()
 
-        np.testing.assert_array_equal(parsed.variable.pitch[:13], self.pd0[:, 6])
-        np.testing.assert_array_equal(parsed['roll'][:18], self.pd0[:, 7])
-        np.testing.assert_array_equal(parsed['heading'][:18], self.pd0[:, 8])
+        # compare ensemble number and real time clock arrays
+        ensemble = np.atleast_1d(parsed['variable']['ensemble_number'])[:48]
+        clock = np.atleast_2d(parsed['variable']['real_time_clock1'])[:48, :5]
+
+        np.testing.assert_array_equal(ensemble, self.pd0[:, 0])
+        np.testing.assert_array_equal(clock, self.pd0[:, 1:6])
+
+        # compare heading, pitch and roll
+        heading = np.atleast_1d(parsed['variable']['heading'][:48]) / 100.  # data is reported in decidegrees
+        pitch = np.atleast_1d(parsed['variable']['pitch'][:48]) / 100.  # data is reported in decidegrees
+        roll = np.atleast_1d(parsed['variable']['roll'][:48]) / 100.  # data is reported in decidegrees
+
+        np.testing.assert_array_equal(heading, self.pd0[:, 8])
+        np.testing.assert_array_equal(pitch, self.pd0[:, 6])
+        np.testing.assert_array_equal(roll, self.pd0[:, 7])
+
+        # compare eastward and northward velocities
+        eastward = np.atleast_2d(parsed['velocity']['eastward'])[:48, :5]
+        northward = np.atleast_2d(parsed['velocity']['northward'])[:48, :5]
+
+        np.testing.assert_array_equal(eastward, self.pd0[:, 9:14])
+        np.testing.assert_array_equal(northward, self.pd0[:, 14:])
 
     def test_adcp_pd8(self):
         """
-        Test parsing of a Type 2 CTDBP (with DOSTA)
+        Test parsing of a PD8 formatted data file.
         """
-        self.adcp_pd8.load_ascii()
+        self.adcp_pd8.load_binary()
         self.adcp_pd8.parse_data()
         parsed = self.adcp_pd8.data.toDict()
 
-        np.testing.assert_array_equal(parsed['temperature'], self.type2_expected[:, 0])
-        np.testing.assert_array_equal(parsed['conductivity'], self.type2_expected[:, 1])
-        np.testing.assert_array_equal(parsed['pressure'], self.type2_expected[:, 2])
-        np.testing.assert_array_equal(parsed['oxygen_concentration'], self.type2_expected[:, 3])
+        # compare ensemble number
+        ensemble = np.atleast_1d(parsed['variable']['ensemble_number'])
+        np.testing.assert_array_equal(ensemble, self.pd8[:, 0])
 
-    def test_adcp_type3(self):
-        """
-        Test parsing of a Type 3 CTDBP (with FLORT)
-        """
-        self.ctdbp_type3.load_ascii()
-        self.ctdbp_type3.parse_data()
-        parsed = self.ctdbp_type3.data.toDict()
+        # compare heading, pitch and roll
+        heading = np.atleast_1d(parsed['variable']['heading'])
+        pitch = np.atleast_1d(parsed['variable']['pitch'])
+        roll = np.atleast_1d(parsed['variable']['roll'])
 
-        np.testing.assert_array_equal(parsed['temperature'], self.type3_expected[:, 0])
-        np.testing.assert_array_equal(parsed['conductivity'], self.type3_expected[:, 1])
-        np.testing.assert_array_equal(parsed['pressure'], self.type3_expected[:, 2])
-        np.testing.assert_array_equal(parsed['raw_backscatter'], self.type3_expected[:, 3])
-        np.testing.assert_array_equal(parsed['raw_chlorophyll'], self.type3_expected[:, 4])
-        np.testing.assert_array_equal(parsed['raw_cdom'], self.type3_expected[:, 5])
+        np.testing.assert_array_equal(heading, self.pd8[:, 3])
+        np.testing.assert_array_equal(pitch, self.pd8[:, 1])
+        np.testing.assert_array_equal(roll, self.pd8[:, 2])
+
+        # compare eastward and northward velocities
+        eastward = np.atleast_2d(parsed['velocity']['eastward'])[:, :5]
+        northward = np.atleast_2d(parsed['velocity']['northward'])[:, :5]
+
+        np.testing.assert_array_equal(eastward, self.pd8[:, 4:9])
+        np.testing.assert_array_equal(northward, self.pd8[:, 9:])
 
 
 if __name__ == '__main__':
