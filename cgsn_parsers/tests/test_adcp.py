@@ -23,7 +23,7 @@ class TestParsingUnit(unittest.TestCase):
     """
     OOI Endurance and Pioneer moorings use the Teledyne RDI Workhorse ADCPs on the NSIF and MFN instrument frames, 
     configured to output the data in either PD0 format (Endurance) or PD8 format (Pioneer). All units are set to output
-    the velocity data in Earth Coordinates.
+    the velocity data in Earth Coordinates: eastward, northward and vertical (up/down) velocities.
 
     This test class will parse and compare the outputs from the two types of ADCPs to confirm the parser functions
     as expected.
