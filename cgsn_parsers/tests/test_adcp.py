@@ -106,8 +106,9 @@ class TestParsingUnit(unittest.TestCase):
         #
         # Expected data limited to ensemble number, heading, pitch, roll and the first 5 bins of the eastward and
         # northward velocities. These elements are spread throughout the data file. Thus, if the parsing had failed,
-        # the whole house of cards should come apart and none of these elements will match
+        # the whole house of cards should come apart and none of these elements will match.
         self.pd8 = np.array([
+            [776, -1.6, -0.6, 166.5, 60, 62, 44, 54, 62, -42, -41, -37, -28, -29],
             [784, -1.6, -0.6, 166.5, -12, -9, -29, -16, -5, 48, 27, 17, 7, 8],
             [792, -1.6, -0.6, 166.6, -6, -4, -10, -4, 20, 69, 64, 77, 75, 77],
             [796, -1.6, -0.6, 166.5, -29, -19, -5, 3, 4, 57, 48, 56, 72, 24],
