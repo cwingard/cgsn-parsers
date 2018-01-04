@@ -1,0 +1,2 @@
+# make sure git doesn't mess with the line endings in the log files used for the unittests.
+*.log -text
