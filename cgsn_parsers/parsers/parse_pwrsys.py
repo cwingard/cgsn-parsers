@@ -11,7 +11,7 @@ import re
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, NEWLINE
+from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, FLTINT, NEWLINE
 
 # Regex pattern for the power system records
 PATTERN = (
@@ -24,8 +24,8 @@ PATTERN = (
     r'pv4\s([0-1]{1})\s' + FLOAT + r'\s' + FLOAT + r'\s' +
     r'wt1\s([0-1]{1})\s' + FLOAT + r'\s' + FLOAT + r'\s' +
     r'wt2\s([0-1]{1})\s' + FLOAT + r'\s' + FLOAT + r'\s' +
-    r'fc1\s([0-1]{1})\s' + FLOAT + r'\s' + FLOAT + r'\s' +
-    r'fc2\s([0-1]{1})\s' + FLOAT + r'\s' + FLOAT + r'\s' +
+    r'fc1\s([0-1]{1})\s' + FLTINT + r'\s' + FLOAT + r'\s' +
+    r'fc2\s([0-1]{1})\s' + FLTINT + r'\s' + FLOAT + r'\s' +
     r'bt1\s' + FLOAT + r'\s' + FLOAT + r'\s' + FLOAT + r'\s' +
     r'bt2\s' + FLOAT + r'\s' + FLOAT + r'\s' + FLOAT + r'\s' +
     r'bt3\s' + FLOAT + r'\s' + FLOAT + r'\s' + FLOAT + r'\s' +
@@ -211,6 +211,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(pwrsys.data.toJSON())
+
 
 if __name__ == '__main__':
     main()

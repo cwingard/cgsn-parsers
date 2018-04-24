@@ -10,6 +10,7 @@ pipelines:
           caches:
             - conda
           script:
+            - conda update -n base conda
             - conda config --add channels conda-forge
             - conda install --yes --file requirements.txt
             - python -m unittest discover
