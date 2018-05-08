@@ -3,16 +3,11 @@
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
 version: 2
+
 jobs:
   build:
     docker:
       - image: continuumio/miniconda3
-
-  dependencies:
-    pre:
-      - mkdir -p ~/cgsn-parsers/caches
-    cache_directories:
-      - "~/cgsn-parsers/caches"
 
     working_directory: ~/cgsn-parsers
 
@@ -23,9 +18,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - parsers-dependencies-{{ checksum "requirements.txt" }}
+          - parsers-{{ checksum "requirements.txt" }}
           # fallback to using the latest cache if no exact match is found
-          - parsers-dependencies-
+          - parsers-
 
       - run:
           name: install dependencies
@@ -36,7 +31,9 @@ jobs:
             conda env create --yes --file requirements.txt -n cgsn-parsers
 
       - save_cache:
-          key: parsers-dependencies-{{ checksum "requirements.txt" }}
+          key: parsers-{{ checksum "requirements.txt" }}
+          paths:
+            - ~/cgsn-parsers/caches
 
       - run:
           name: run tests
