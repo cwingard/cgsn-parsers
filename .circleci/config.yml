@@ -8,12 +8,18 @@ jobs:
     docker:
       - image: continuumio/miniconda3
 
+  dependencies:
+    pre:
+      - mkdir -p ~/cgsn-parsers/caches
+    cache_directories:
+      - "~/cgsn-parsers/caches"
+
     working_directory: ~/cgsn-parsers
 
     steps:
       - checkout
       - run: echo "A first hello"
-      
+
       # Download and cache dependencies
       - restore_cache:
           keys:
