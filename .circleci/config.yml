@@ -28,7 +28,7 @@ jobs:
             conda update -n base conda
             conda config --add channels conda-forge
             conda install --yes circleci-helpers
-            conda env create --yes --file requirements.txt -n cgsn-parsers
+            conda create --yes --file requirements.txt -n cgsn-parsers
 
       - save_cache:
           key: parsers-{{ checksum "requirements.txt" }}
