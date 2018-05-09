@@ -1,0 +1,46 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: continuumio/miniconda3
+
+    working_directory: ~/cgsn-parsers
+
+    steps:
+      - checkout
+      - run: echo "A first hello"
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - parsers-{{ checksum "requirements.txt" }}
+          # fallback to using the latest cache if no exact match is found
+          - parsers-
+
+      - run:
+          name: install dependencies
+          command: |
+            conda update -n base conda
+            conda config --add channels conda-forge
+            conda install --yes circleci-helpers
+            conda create --yes --file requirements.txt -n cgsn-parsers
+
+      - save_cache:
+          key: parsers-{{ checksum "requirements.txt" }}
+          paths:
+            - ~/cgsn-parsers/caches
+
+      - run:
+          name: run tests
+          command: |
+            source activate cgsn-parsers
+            python -m unittest discover
+
+      - store_artifacts:
+          path: test-reports
+          destination: test-reports
