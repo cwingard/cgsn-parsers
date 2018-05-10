@@ -12,7 +12,7 @@ if [ $# -ne 7 ]; then
     echo "directory name, the subassembly [buoy/nsif/mfn] location of the NUTNR, a switch to"
     echo "indicate what data is available (condensed or full) in the data files, and the name "
     echo "of the file to process."
-    echo "     example: $0 ce01issm D00001 dcl16 nutnr nsif 0 20150505.nutnr.log"
+    echo "     example: $0 ce01issm D00001 dcl16 nutnr nsif isus_condensed 20150505.nutnr.log"
     exit 1
 fi
 PLATFORM=${1,,}

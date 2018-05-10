@@ -27,7 +27,7 @@ $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm1 buoy $FNAME.superv.log
 
 # DCL17
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl17 buoy $FNAME.superv.log
-$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl17 ctdbp3 buoy 3 $FNAME.ctdbp3.log
+$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl17 ctdbp3 buoy flort $FNAME.ctdbp3.log
 for mopak in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl17/mopak/$FNAME*.mopak.log; do
     if [ -e $mopak ]; then
         SIZE=`du -k "$mopak" | cut -f1`
@@ -40,9 +40,9 @@ $HARVEST/harvest_velpt.sh $PLATFORM $DEPLOY dcl17 velpt1 buoy $FNAME.velpt1.log
 
 # DCL16
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl16 nsif $FNAME.superv.log
-$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl16 ctdbp1 nsif 2 $FNAME.ctdbp1.log
+$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl16 ctdbp1 nsif dosta $FNAME.ctdbp1.log
 $HARVEST/harvest_flort.sh $PLATFORM $DEPLOY dcl16 flort nsif $FNAME.flort.log
-$HARVEST/harvest_suna.sh $PLATFORM $DEPLOY dcl16 nutnr nsif $FNAME.nutnr.log
+$HARVEST/harvest_nutnr.sh $PLATFORM $DEPLOY dcl16 nutnr nsif suna $FNAME.nutnr.log
 $HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl16 pco2w1 nsif $FNAME.pco2w1.log
 $HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl16 phsen1 nsif $FNAME.phsen1.log
 for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl16/optaa1/$FNAME*.optaa1.log; do
@@ -76,7 +76,7 @@ done
 
 # DCL37
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl37 mfn $FNAME.superv.log
-$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl37 ctdbp2 mfn 2 $FNAME.ctdbp2.log
+$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl37 ctdbp2 mfn dosta $FNAME.ctdbp2.log
 for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl37/optaa2/$FNAME*.optaa2.log; do
     if [ -e $optaa ]; then
         SIZE=`du -k "$optaa" | cut -f1`
