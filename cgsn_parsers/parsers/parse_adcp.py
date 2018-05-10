@@ -301,18 +301,18 @@ class Parser(ParserCommon):
     A Parser class that extracts the data records from either PD0 or PD8 data packets produced by a Teledyne RDI
     Workhorse ADCP.
     """
-    def __init__(self, infile, pd_type=0):
+    def __init__(self, infile, pd_type='pd0'):
         # set the infile name and path
         self.infile = infile
-        self.pd_type = pd_type      # using the switch input option to specify the output data format, default is PD0
+        self.pd_type = pd_type.lower()  # using switch to specify the output data format, default is PD0
 
         # initialize the data dictionary using the names defined above
-        if self.pd_type == 0:
+        if self.pd_type == 'pd0':
             data = ParameterNamesPD0()
-        elif self.pd_type == 8:
+        elif self.pd_type == 'pd8':
             data = ParameterNamesPD8()
         else:
-            raise ValueError("Unrecognized PD data type, Options are 0 for PD0, or 8 for PD8.")
+            raise ValueError("Unrecognized PD data type, Options are pd0, or pd8.")
 
         self.data = data.create_dict()
         self.raw = None
@@ -323,11 +323,11 @@ class Parser(ParserCommon):
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
         """
-        if self.pd_type == 0:
+        if self.pd_type == 'pd0':
             for match in PD0_REGEX.findall(self.raw):
                 self._build_parsed_values_pd0(match)
 
-        if self.pd_type == 8:
+        if self.pd_type == 'pd8':
             for match in PD8_BLOCKS.findall(self.raw):
                 self._build_parsed_values_pd8(match)
 
@@ -817,6 +817,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(adcp.data.toJSON())
+
 
 if __name__ == '__main__':
     main()

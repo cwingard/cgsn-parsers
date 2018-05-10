@@ -136,19 +136,19 @@ def inputs(argv=None):
     if argv is None:
         argv = sys.argv[1:]
         
-    # initialize arguement parser
+    # initialize argument parser
     parser = argparse.ArgumentParser(description="""Parse data files from DCL
                                      formatted daily or hourly log files""",
                                      epilog="""Parses the data file""")
 
-    # assign arguements for the infile and outfile and a generi switch that can
-    # be used, if needed, to set different options (e.g. if switch == 1, do
+    # assign arguments for the infile and outfile and a generic switch that can
+    # be used, if needed, to set different options (e.g. if switch == 'foo', do
     # this or that).
     parser.add_argument("-i", "--infile", dest="infile", type=str, required=True)
     parser.add_argument("-o", "--outfile", dest="outfile", type=str, required=True)
-    parser.add_argument("-s", "--switch", dest="switch", type=int, default=0)
+    parser.add_argument("-s", "--switch", dest="switch", type=str, default=None)
 
-    # parse the input arguements and create a parser object
+    # parse the input arguments and create a parser object
     args = parser.parse_args(argv)
 
     return args

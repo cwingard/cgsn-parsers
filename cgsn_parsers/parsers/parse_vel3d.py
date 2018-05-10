@@ -341,12 +341,13 @@ class Parser(ParserCommon):
         c += 10 * (cBCD >> 4)
         return c
 
+
 def main(argv=None):
     # load the input arguments
     args = inputs(argv)
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
-    sample_rate = args.switch
+    sample_rate = int(args.switch)
 
     # initialize the Parser object for vel3d
     vel3d = Parser(infile, sample_rate)
@@ -360,6 +361,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(vel3d.data.toJSON())
+
 
 if __name__ == '__main__':
     main()

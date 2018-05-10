@@ -34,8 +34,8 @@ class TestParsingUnit(unittest.TestCase):
         output arrays.
         """
         # initialize Parser objects for the CTDBP types defined above.
-        self.adcp_pd0 = Parser(TESTDATA_PD0, 0)
-        self.adcp_pd8 = Parser(TESTDATA_PD8, 8)
+        self.adcp_pd0 = Parser(TESTDATA_PD0, 'pd0')
+        self.adcp_pd8 = Parser(TESTDATA_PD8, 'pd8')
 
         # Set the expected output arrays for the PD0 formatted data. Expected data created using WinADCP on recovered
         # data from the Spring 2016 deployment of CE02SHSM, focusing specifically on data from 2016-06-17. Source data

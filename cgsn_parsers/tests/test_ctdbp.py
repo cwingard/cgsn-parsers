@@ -15,56 +15,48 @@ from os import path
 from cgsn_parsers.parsers.parse_ctdbp import Parser
 
 
-TESTDATA_CTDBP_TYPE1 = path.join(path.dirname(__file__), 'ctdbp/20161219.ctdbp1.log')
-TESTDATA_CTDBP_TYPE2 = path.join(path.dirname(__file__), 'ctdbp/20161219.ctdbp2.log')
-TESTDATA_CTDBP_TYPE3 = path.join(path.dirname(__file__), 'ctdbp/20161110.ctdbp3.log')
+TESTDATA_CTDBP_SOLO = path.join(path.dirname(__file__), 'ctdbp/20161219.ctdbp1.log')
+TESTDATA_CTDBP_DOSTA = path.join(path.dirname(__file__), 'ctdbp/20161219.ctdbp2.log')
+TESTDATA_CTDBP_FLORT = path.join(path.dirname(__file__), 'ctdbp/20161110.ctdbp3.log')
 
 
 @attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
-    OOI Endurance and Pioneer moorings use the Sea-Bird Electronics 16Plus V2
-    CTDs, on the Buoy, NSIF and MFN instrument frames, configured in one of 3
-    ways. All units are set to report conductivity, temperature and pressure in
-    engineering units.
+    OOI Endurance and Pioneer moorings use the Sea-Bird Electronics 16Plus V2 CTDs, on the Buoy, NSIF and MFN
+    instrument frames, configured in one of 3 ways. All units are set to report conductivity, temperature and
+    pressure in engineering units.
 
-    On the NSIF, for all the CSMs, the CTD is programmed to output measurements
-    every 10 s for 3 minutes every 15 minutes. Pioneer moorings configure the
-    CTD on the MFN in the same way. This is CTDBP Type 1.
+    On the NSIF, for all the CSMs, the CTD is standalone, or sole, and is programmed to output measurements every 10
+    s for 3 minutes every 15 minutes. Pioneer moorings configure the CTD on the MFN in the same way.
 
-    On the NSIF, for the Endurance ISSM, the CTD includes an Aanderaa Optode
-    4831 measurement (reports O2 concentration in uMol/L). The units are
-    programmed to autonomously record a 10 s averaged measurement every 15
-    minutes in addition to being polled (via the TS command) every hour at the
-    bottom of the hour. The 4 Endurance MFN units are programmed the same way.
-    This is CTDBP Type 2.
+    On the NSIF, for the Endurance ISSM, the CTD includes an Aanderaa Optode 4831 measurement (reports O2
+    concentration in uMol/L). The units are programmed to autonomously record a 10 s averaged measurement every 15
+    minutes in addition to being polled (via the TS command) every hour at the bottom of the hour. The 4 Endurance
+    MFN units are programmed the same way.
 
-    On the buoy instrument frame (approximately 1 m below the surface), for the
-    Endurance ISSM only, the CTD includes a WET Labs ECO Triplet (FLORT)
-    fluorometer measuring chlorohyll and CDOM fluroescence and optical
-    backscatter (values are reported in counts). The units are programmed to
-    autonomously record a 10 s averaged measurement every 30 minutes in
-    addition to being polled (via the TS command) every hour at the bottom of
-    the hour. This is CTDBP Type 3.
+    On the buoy instrument frame (approximately 1 m below the surface), for the Endurance ISSM only, the CTD includes
+    a WET Labs ECO Triplet (FLORT) fluorometer measuring chlorohyll and CDOM fluroescence and optical backscatter (
+    values are reported in counts). The units are programmed to autonomously record a 10 s averaged measurement every
+    30 minutes in addition to being polled (via the TS command) every hour at the bottom of the hour.
 
-    This test class will parse and compare the outputs from all three types of
-    CTDBPs to confirm the parser functions as expected.
+    This test class will parse and compare the outputs from all three CTDBP types to confirm the parser functions
+    as expected.
     """
     def setUp(self):
         """
-        Using sample data files, initialize the Parser objects for each of the
-        3 CTDBP types and set the expected output arrays.
+        Using sample data files, initialize the Parser objects for each of the 3 CTDBP types and set the expected
+        output arrays.
         """
         # initialize Parser objects for the CTDBP types defined above.
-        self.ctdbp_type1 = Parser(TESTDATA_CTDBP_TYPE1, 1)
-        self.ctdbp_type2 = Parser(TESTDATA_CTDBP_TYPE2, 2)
-        self.ctdbp_type3 = Parser(TESTDATA_CTDBP_TYPE3, 3)
+        self.ctdbp_solo = Parser(TESTDATA_CTDBP_SOLO, 'solo')
+        self.ctdbp_dosta = Parser(TESTDATA_CTDBP_DOSTA, 'dosta')
+        self.ctdbp_flort = Parser(TESTDATA_CTDBP_FLORT, 'flort')
 
-        # set the expected output arrays for the each of the CTDBP types using
-        # the raw data minus the date/time strings (data copied directly from
-        # the raw files and reformatted into arrays). For CTDBP type 1 data,
+        # set the expected output arrays for the each of the CTDBP types using the raw data minus the date/time
+        # strings (data copied directly from the raw files and reformatted into arrays). For CTDBP type 1 data,
         # just using the first burst of data.
-        self.type1_expected = np.array([
+        self.solo_expected = np.array([
             [9.6259, 3.13279, 7.185],
             [9.6320, 3.13309, 6.602],
             [9.6247, 3.13116, 6.928],
@@ -84,7 +76,7 @@ class TestParsingUnit(unittest.TestCase):
             [9.6002, 3.12410, 6.832],
             [9.6075, 3.12734, 6.937]])
 
-        self.type2_expected = np.array([
+        self.dosta_expected = np.array([
             [10.1877,  3.66669,   88.598,  188.850],
             [10.1725,  3.66563,   88.409,  190.529],
             [10.1930,  3.66693,   87.201,  191.661],
@@ -109,7 +101,7 @@ class TestParsingUnit(unittest.TestCase):
             [10.3692,  3.67758,   88.174,  203.001],
             [10.3595,  3.67698,   88.965,  201.765]])
 
-        self.type3_expected = np.array([
+        self.flort_expected = np.array([
             [14.1337,  3.78478,    1.015, 2511, 117, 76],
             [14.0952,  3.79011,    1.002, 2413, 112, 76],
             [14.0918,  3.79235,    1.019, 2280, 112, 75],
@@ -135,45 +127,45 @@ class TestParsingUnit(unittest.TestCase):
             [14.1231,  3.78034,    0.958, 1683, 129, 74],
             [14.1303,  3.78248,    0.969, 1897, 129, 75]])
 
-    def test_parse_ctdbp_type1(self):
+    def test_parse_ctdbp_solo(self):
         """
         Test parsing of a Type 1 CTDBP (no DOSTA or FLORT)
         """
-        self.ctdbp_type1.load_ascii()
-        self.ctdbp_type1.parse_data()
-        parsed = self.ctdbp_type1.data.toDict()
+        self.ctdbp_solo.load_ascii()
+        self.ctdbp_solo.parse_data()
+        parsed = self.ctdbp_solo.data.toDict()
 
-        np.testing.assert_array_equal(parsed['temperature'][:18], self.type1_expected[:, 0])
-        np.testing.assert_array_equal(parsed['conductivity'][:18], self.type1_expected[:, 1])
-        np.testing.assert_array_equal(parsed['pressure'][:18], self.type1_expected[:, 2])
+        np.testing.assert_array_equal(parsed['temperature'][:18], self.solo_expected[:, 0])
+        np.testing.assert_array_equal(parsed['conductivity'][:18], self.solo_expected[:, 1])
+        np.testing.assert_array_equal(parsed['pressure'][:18], self.solo_expected[:, 2])
 
-    def test_parse_ctdbp_type2(self):
+    def test_parse_ctdbp_dosta(self):
         """
         Test parsing of a Type 2 CTDBP (with DOSTA)
         """
-        self.ctdbp_type2.load_ascii()
-        self.ctdbp_type2.parse_data()
-        parsed = self.ctdbp_type2.data.toDict()
+        self.ctdbp_dosta.load_ascii()
+        self.ctdbp_dosta.parse_data()
+        parsed = self.ctdbp_dosta.data.toDict()
 
-        np.testing.assert_array_equal(parsed['temperature'], self.type2_expected[:, 0])
-        np.testing.assert_array_equal(parsed['conductivity'], self.type2_expected[:, 1])
-        np.testing.assert_array_equal(parsed['pressure'], self.type2_expected[:, 2])
-        np.testing.assert_array_equal(parsed['oxygen_concentration'], self.type2_expected[:, 3])
+        np.testing.assert_array_equal(parsed['temperature'], self.dosta_expected[:, 0])
+        np.testing.assert_array_equal(parsed['conductivity'], self.dosta_expected[:, 1])
+        np.testing.assert_array_equal(parsed['pressure'], self.dosta_expected[:, 2])
+        np.testing.assert_array_equal(parsed['oxygen_concentration'], self.dosta_expected[:, 3])
 
-    def test_parse_ctdbp_type3(self):
+    def test_parse_ctdbp_flort(self):
         """
         Test parsing of a Type 3 CTDBP (with FLORT)
         """
-        self.ctdbp_type3.load_ascii()
-        self.ctdbp_type3.parse_data()
-        parsed = self.ctdbp_type3.data.toDict()
+        self.ctdbp_flort.load_ascii()
+        self.ctdbp_flort.parse_data()
+        parsed = self.ctdbp_flort.data.toDict()
 
-        np.testing.assert_array_equal(parsed['temperature'], self.type3_expected[:, 0])
-        np.testing.assert_array_equal(parsed['conductivity'], self.type3_expected[:, 1])
-        np.testing.assert_array_equal(parsed['pressure'], self.type3_expected[:, 2])
-        np.testing.assert_array_equal(parsed['raw_backscatter'], self.type3_expected[:, 3])
-        np.testing.assert_array_equal(parsed['raw_chlorophyll'], self.type3_expected[:, 4])
-        np.testing.assert_array_equal(parsed['raw_cdom'], self.type3_expected[:, 5])
+        np.testing.assert_array_equal(parsed['temperature'], self.flort_expected[:, 0])
+        np.testing.assert_array_equal(parsed['conductivity'], self.flort_expected[:, 1])
+        np.testing.assert_array_equal(parsed['pressure'], self.flort_expected[:, 2])
+        np.testing.assert_array_equal(parsed['raw_backscatter'], self.flort_expected[:, 3])
+        np.testing.assert_array_equal(parsed['raw_chlorophyll'], self.flort_expected[:, 4])
+        np.testing.assert_array_equal(parsed['raw_cdom'], self.flort_expected[:, 5])
 
 
 if __name__ == '__main__':
