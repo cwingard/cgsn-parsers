@@ -301,19 +301,26 @@ class Parser(ParserCommon):
     A Parser class that extracts the data records from either PD0 or PD8 data packets produced by a Teledyne RDI
     Workhorse ADCP.
     """
-    def __init__(self, infile, pd_type='pd0'):
-        # set the infile name and path
-        self.infile = infile
-        self.pd_type = pd_type.lower()  # using switch to specify the output data format, default is PD0
+    def __init__(self, infile, pd_type):
+        # test the pd_type to make sure it is a string
+        try:
+            pd_type = pd_type.lower()
+        except ValueError as e:
+            print('Be sure PD data type is set correctly via the switch argument as either pd0 or pd8 (case insensitive).')
 
-        # initialize the data dictionary using the names defined above
-        if self.pd_type == 'pd0':
-            data = ParameterNamesPD0()
-        elif self.pd_type == 'pd8':
-            data = ParameterNamesPD8()
+        # test pd_type to make sure it is one of our recognized configurations
+        if pd_type == 'pd0' or pd_type == 'pd8':
+            self.pd_type = pd_type
+
+            if self.pd_type == 'pd0':
+                data = ParameterNamesPD0()
+
+            if self.pd_type == 'pd8':
+                data = ParameterNamesPD8()
         else:
-            raise ValueError("Unrecognized PD data type, Options are pd0, or pd8.")
+            raise ValueError('The ADCP data format must be a string set to either pd0 or pd8.')
 
+        self.infile = infile
         self.data = data.create_dict()
         self.raw = None
 
@@ -806,7 +813,7 @@ def main(argv=None):
     try:
         adcp = Parser(infile, pd_type)
     except ValueError as e:
-        print("Be sure PD data type is set correctly via switch argument as either 0 (for PD0) or 8 (for PD8) data")
+        print("Be sure PD data type is set correctly via the switch argument as either PD0 or PD8")
         return None
 
     # load the data into a buffered object and parse the data into a dictionary

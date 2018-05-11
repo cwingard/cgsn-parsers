@@ -31,7 +31,7 @@ CTDBP_DOSTA = BASE_PATTERN + DOSTA + CTD_DATE + NEWLINE
 CTDBP_FLORT = BASE_PATTERN + FLORT + CTD_DATE + NEWLINE
 
 
-def _get_parameter_names_ctdbp(ctd_type):
+def _parameter_names_ctdbp(ctd_type):
     parameter_names = [
         'dcl_date_time_string',
         'temperature',
@@ -67,8 +67,18 @@ class Parser(ParserCommon):
     and extracts the CTDBP data records from the DCL daily log files.
     """
     def __init__(self, infile, ctd_type):
-        self.initialize(infile, _get_parameter_names_ctdbp(ctd_type))
-        self.ctd_type = ctd_type
+        # test the ctd_type to make sure it is a string
+        try:
+            ctd_type = ctd_type.lower()
+        except ValueError as e:
+            print('The CTDBP configuration must be a string set as either solo, dosta or flort (case insensitive).')
+
+        # test ctd_type to make sure it is one of our recognized configurations
+        if ctd_type == 'solo' or ctd_type == 'dosta' or ctd_type == 'flort':
+            self.ctd_type = ctd_type
+            self.initialize(infile, _parameter_names_ctdbp(self.ctd_type))
+        else:
+            raise ValueError('The CTDBP configuration must be a string set as either solo, dosta or flort.')
 
     def parse_data(self):
         """
@@ -76,16 +86,16 @@ class Parser(ParserCommon):
         data into a pre-defined dictionary object created using the Bunch class.
         """
         if self.ctd_type == 'solo':
-            REGEX = re.compile(CTDBP_SOLO, re.DOTALL)
+            regex = re.compile(CTDBP_SOLO, re.DOTALL)
 
         if self.ctd_type == 'dosta':
-            REGEX = re.compile(CTDBP_DOSTA, re.DOTALL)
+            regex = re.compile(CTDBP_DOSTA, re.DOTALL)
 
         if self.ctd_type == 'flort':
-            REGEX = re.compile(CTDBP_FLORT, re.DOTALL)
+            regex = re.compile(CTDBP_FLORT, re.DOTALL)
 
         for line in self.raw:
-            match = REGEX.match(line)
+            match = regex.match(line)
             if match:
                 self._build_parsed_values(match)
 
@@ -126,7 +136,11 @@ def main(argv=None):
     ctd_type = args.switch
 
     # initialize the Parser object for CTDBP
-    ctdbp = Parser(infile, ctd_type)
+    try:
+        ctdbp = Parser(infile, ctd_type)
+    except ValueError as e:
+        print('Be sure the CTDBP configuration is set via the switch string.')
+        return None
 
     # load the data into a buffered object and parse the data into a dictionary
     ctdbp.load_ascii()

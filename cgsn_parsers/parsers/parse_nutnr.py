@@ -63,7 +63,7 @@ def _parameter_names_nutnr(nutnr_type):
                 'channel_measurements'
             ])
 
-    elif nutnr_type == 'suna':
+    if nutnr_type == 'suna':
         # otherwise we are working with a SUNA, which has ...
         parameter_names.extend([
             'nitrogen_in_nitrate',
@@ -90,9 +90,6 @@ def _parameter_names_nutnr(nutnr_type):
             'fit_rmse'
         ])
 
-    else:
-        raise ValueError('The nutnr_type must be set as either ''isus'', ''isus_condensed'' or ''suna''.')
-
     return parameter_names
 
 
@@ -102,14 +99,23 @@ class Parser(ParserCommon):
     the NUTNR data records from the DCL daily log files.
     """
     def __init__(self, infile, nutnr_type):
-        self.nutnr_type = nutnr_type.lower()
-        self.initialize(infile, _parameter_names_nutnr(self.nutnr_type))
+        # test the nutnr_type to make sure it is a string
+        try:
+            nutnr_type = nutnr_type.lower()
+        except ValueError as e:
+            print('The NUTNR instrument type must be a string set as either isus, isus_condensed or suna.')
+
+        # test nutnr_type to make sure it is one of our recognized instruments
+        if nutnr_type == 'suna' or nutnr_type == 'isus' or nutnr_type == 'isus_condensed':
+            self.nutnr_type = nutnr_type
+            self.initialize(infile, _parameter_names_nutnr(self.nutnr_type))
+        else:
+            raise ValueError('The NUTNR instrument type must be a string set as either isus, isus_condensed or suna.')
 
     def parse_data(self):
         """
-        Iterate through the record lines (defined via the regex expression
-        above) in the data object, and parse the data into a pre-defined
-        dictionary object created using the Bunch class.
+        Iterate through the record lines (defined via the regex expression above) in the data object, and parse the
+        data into a pre-defined dictionary object created using the Bunch class.
         """
         for line in self.raw:
             match = REGEX.match(line)
@@ -194,7 +200,11 @@ def main(argv=None):
     nutnr_type = args.switch
 
     # initialize the Parser object for NUTNR
-    nutnr = Parser(infile, nutnr_type)
+    try:
+        nutnr = Parser(infile, nutnr_type)
+    except ValueError as e:
+        print('The NUTNR instrument type must be set correctly.')
+        return None
 
     # load the data into a buffered object and parse the data into a dictionary
     nutnr.load_ascii()

@@ -34,5 +34,5 @@ fi
 # Parse the file
 if [ -e $IN ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    python -m cgsn_parsers.parsers.parse_adcp -i $IN -o $OUT
+    python -m cgsn_parsers.parsers.parse_adcp -i $IN -o $OUT -s pd0
 fi
