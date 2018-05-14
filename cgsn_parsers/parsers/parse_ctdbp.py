@@ -81,7 +81,7 @@ class Parser(ParserCommon):
             self.ctd_type = ctd_type
             self.initialize(infile, _parameter_names_ctdbp(self.ctd_type))
         else:
-            raise ValueError('The CTDBP configuration must be a string set as either solo, dosta or flort.')
+            raise ValueError(SWITCH_ERROR)
 
     def parse_data(self):
         """
