@@ -27,8 +27,10 @@ class TestParsingUnit(unittest.TestCase):
     instrument frames, configured in one of 3 ways. All units are set to report conductivity, temperature and
     pressure in engineering units.
 
-    On the NSIF, for all the CSMs, the CTD is standalone, or sole, and is programmed to output measurements every 10
-    s for 3 minutes every 15 minutes. Pioneer moorings configure the CTD on the MFN in the same way.
+    On the NSIF, for all the CSMs, the CTD is standalone, or solo, and is programmed to output measurements every 10
+    s for 3 minutes every 15 minutes. The CTDBP on the Pioneer mooring MFNs are also standalone units, however they
+    are configured to sample autonomously every 15 minutes, with the data logger recorded data from them on an hourly
+    schedule.
 
     On the NSIF, for the Endurance ISSM, the CTD includes an Aanderaa Optode 4831 measurement (reports O2
     concentration in uMol/L). The units are programmed to autonomously record a 10 s averaged measurement every 15
