@@ -38,6 +38,9 @@ PATTERN = (
 )
 PD8_BLOCKS = re.compile(PATTERN, re.MULTILINE)
 
+# Set an error message string for use when testing the parser switch.
+SWITCH_ERROR = 'Be sure PD data type is set correctly, via the switch argument, as either pd0 or pd8 (case insensitive).'
+
 
 class ParameterNamesPD0(object):
     """
@@ -306,7 +309,7 @@ class Parser(ParserCommon):
         try:
             pd_type = pd_type.lower()
         except ValueError as e:
-            print('Be sure PD data type is set correctly via the switch argument as either pd0 or pd8 (case insensitive).')
+            print(SWITCH_ERROR)
 
         # test pd_type to make sure it is one of our recognized configurations
         if pd_type == 'pd0' or pd_type == 'pd8':
@@ -809,12 +812,15 @@ def main(argv=None):
     outfile = os.path.abspath(args.outfile)
     pd_type = args.switch
 
-    # initialize the Parser object for the ADCP
-    try:
-        adcp = Parser(infile, pd_type)
-    except ValueError as e:
-        print("Be sure PD data type is set correctly via the switch argument as either PD0 or PD8")
-        return None
+    # initialize the Parser object for the ADCP, set default type to PD0 if no switch was input
+    if pd_type:
+        try:
+            adcp = Parser(infile, pd_type)
+        except ValueError as e:
+            print(SWITCH_ERROR)
+            return None
+    else:
+        adcp = Parser(infile, 'pd0')
 
     # load the data into a buffered object and parse the data into a dictionary
     adcp.load_binary()

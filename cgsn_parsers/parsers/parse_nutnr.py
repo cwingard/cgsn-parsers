@@ -21,6 +21,9 @@ PATTERN = (
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
+# Set an error message string for use when testing the parser switch.
+SWITCH_ERROR = 'The NUTNR instrument type must be a string set as either isus, isus_condensed or suna.'
+
 
 def _parameter_names_nutnr(nutnr_type):
     """
@@ -103,14 +106,14 @@ class Parser(ParserCommon):
         try:
             nutnr_type = nutnr_type.lower()
         except ValueError as e:
-            print('The NUTNR instrument type must be a string set as either isus, isus_condensed or suna.')
+            print(SWITCH_ERROR)
 
         # test nutnr_type to make sure it is one of our recognized instruments
         if nutnr_type == 'suna' or nutnr_type == 'isus' or nutnr_type == 'isus_condensed':
             self.nutnr_type = nutnr_type
             self.initialize(infile, _parameter_names_nutnr(self.nutnr_type))
         else:
-            raise ValueError('The NUTNR instrument type must be a string set as either isus, isus_condensed or suna.')
+            raise ValueError()
 
     def parse_data(self):
         """
@@ -199,12 +202,15 @@ def main(argv=None):
     outfile = os.path.abspath(args.outfile)
     nutnr_type = args.switch
 
-    # initialize the Parser object for NUTNR
-    try:
-        nutnr = Parser(infile, nutnr_type)
-    except ValueError as e:
-        print('The NUTNR instrument type must be set correctly.')
-        return None
+    # initialize the Parser object for NUTNR, set default type to SUNA if no switch was input
+    if nutnr_type:
+        try:
+            nutnr = Parser(infile, nutnr_type)
+        except ValueError as e:
+            print(SWITCH_ERROR)
+            return None
+    else:
+        nutnr = Parser(infile, 'suna')
 
     # load the data into a buffered object and parse the data into a dictionary
     nutnr.load_ascii()
@@ -213,7 +219,7 @@ def main(argv=None):
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
-        f.write(nutnr.data.toJSON(sort_keys=True, indent=4))
+        f.write(nutnr.data.toJSON())
 
 
 if __name__ == '__main__':

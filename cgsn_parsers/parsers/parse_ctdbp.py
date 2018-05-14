@@ -30,6 +30,9 @@ CTDBP_SOLO = BASE_PATTERN + CTD_DATE + NEWLINE
 CTDBP_DOSTA = BASE_PATTERN + DOSTA + CTD_DATE + NEWLINE
 CTDBP_FLORT = BASE_PATTERN + FLORT + CTD_DATE + NEWLINE
 
+# Set an error message string for use when testing the parser switch.
+SWITCH_ERROR = 'The CTDBP configuration must be a string set as either solo, dosta or flort (case insensitive).'
+
 
 def _parameter_names_ctdbp(ctd_type):
     parameter_names = [
@@ -71,7 +74,7 @@ class Parser(ParserCommon):
         try:
             ctd_type = ctd_type.lower()
         except ValueError as e:
-            print('The CTDBP configuration must be a string set as either solo, dosta or flort (case insensitive).')
+            print(SWITCH_ERROR)
 
         # test ctd_type to make sure it is one of our recognized configurations
         if ctd_type == 'solo' or ctd_type == 'dosta' or ctd_type == 'flort':
@@ -135,12 +138,15 @@ def main(argv=None):
     outfile = os.path.abspath(args.outfile)
     ctd_type = args.switch
 
-    # initialize the Parser object for CTDBP
-    try:
-        ctdbp = Parser(infile, ctd_type)
-    except ValueError as e:
-        print('Be sure the CTDBP configuration is set via the switch string.')
-        return None
+    # initialize the Parser object for CTDBP, set default type to solo if no switch was input
+    if ctd_type:
+        try:
+            ctdbp = Parser(infile, ctd_type)
+        except ValueError as e:
+            print(SWITCH_ERROR)
+            return None
+    else:
+        ctdbp = Parser(infile, 'solo')
 
     # load the data into a buffered object and parse the data into a dictionary
     ctdbp.load_ascii()
