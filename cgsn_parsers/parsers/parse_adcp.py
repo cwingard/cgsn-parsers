@@ -321,7 +321,7 @@ class Parser(ParserCommon):
             if self.pd_type == 'pd8':
                 data = ParameterNamesPD8()
         else:
-            raise ValueError('The ADCP data format must be a string set to either pd0 or pd8.')
+            raise ValueError(SWITCH_ERROR)
 
         self.infile = infile
         self.data = data.create_dict()
