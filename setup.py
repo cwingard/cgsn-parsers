@@ -1,12 +1,15 @@
 from setuptools import setup, find_packages
 
+
 def readme():
     with open('README.md') as f:
         return f.read()
 
+
 def version():
     with open('VERSION.txt') as f:
         return f.read().strip()
+
 
 setup(name='cgsn_parsers',
       version=version(),
