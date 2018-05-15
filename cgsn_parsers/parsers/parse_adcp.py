@@ -38,6 +38,9 @@ PATTERN = (
 )
 PD8_BLOCKS = re.compile(PATTERN, re.MULTILINE)
 
+# Set an error message string for use when testing the parser switch.
+SWITCH_ERROR = 'Be sure PD data type is set correctly, via the switch argument, as either pd0 or pd8 (case insensitive).'
+
 
 class ParameterNamesPD0(object):
     """
@@ -301,19 +304,26 @@ class Parser(ParserCommon):
     A Parser class that extracts the data records from either PD0 or PD8 data packets produced by a Teledyne RDI
     Workhorse ADCP.
     """
-    def __init__(self, infile, pd_type=0):
-        # set the infile name and path
-        self.infile = infile
-        self.pd_type = pd_type      # using the switch input option to specify the output data format, default is PD0
+    def __init__(self, infile, pd_type):
+        # test the pd_type to make sure it is a string
+        try:
+            pd_type = pd_type.lower()
+        except ValueError as e:
+            print(SWITCH_ERROR)
 
-        # initialize the data dictionary using the names defined above
-        if self.pd_type == 0:
-            data = ParameterNamesPD0()
-        elif self.pd_type == 8:
-            data = ParameterNamesPD8()
+        # test pd_type to make sure it is one of our recognized configurations
+        if pd_type in ['pd0', 'pd8']:
+            self.pd_type = pd_type
+
+            if self.pd_type == 'pd0':
+                data = ParameterNamesPD0()
+
+            if self.pd_type == 'pd8':
+                data = ParameterNamesPD8()
         else:
-            raise ValueError("Unrecognized PD data type, Options are 0 for PD0, or 8 for PD8.")
+            raise ValueError(SWITCH_ERROR)
 
+        self.infile = infile
         self.data = data.create_dict()
         self.raw = None
 
@@ -323,11 +333,11 @@ class Parser(ParserCommon):
         above) in the data object, and parse the data file into a pre-defined
         dictionary object created using the Bunch class.
         """
-        if self.pd_type == 0:
+        if self.pd_type == 'pd0':
             for match in PD0_REGEX.findall(self.raw):
                 self._build_parsed_values_pd0(match)
 
-        if self.pd_type == 8:
+        if self.pd_type == 'pd8':
             for match in PD8_BLOCKS.findall(self.raw):
                 self._build_parsed_values_pd8(match)
 
@@ -802,12 +812,15 @@ def main(argv=None):
     outfile = os.path.abspath(args.outfile)
     pd_type = args.switch
 
-    # initialize the Parser object for the ADCP
-    try:
-        adcp = Parser(infile, pd_type)
-    except ValueError as e:
-        print("Be sure PD data type is set correctly via switch argument as either 0 (for PD0) or 8 (for PD8) data")
-        return None
+    # initialize the Parser object for the ADCP, set default type to PD0 if no switch was input
+    if pd_type:
+        try:
+            adcp = Parser(infile, pd_type)
+        except ValueError as e:
+            print(SWITCH_ERROR)
+            return None
+    else:
+        adcp = Parser(infile, 'pd0')
 
     # load the data into a buffered object and parse the data into a dictionary
     adcp.load_binary()
@@ -817,6 +830,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(adcp.data.toJSON())
+
 
 if __name__ == '__main__':
     main()

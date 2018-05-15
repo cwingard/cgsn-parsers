@@ -26,12 +26,15 @@ BASE_PATTERN = (
     FLOAT + r',\s+'             # pressure
 )
 
-CTDBP1 = BASE_PATTERN + CTD_DATE + NEWLINE
-CTDBP2 = BASE_PATTERN + DOSTA + CTD_DATE + NEWLINE
-CTDBP3 = BASE_PATTERN + FLORT + CTD_DATE + NEWLINE
+CTDBP_SOLO = BASE_PATTERN + CTD_DATE + NEWLINE
+CTDBP_DOSTA = BASE_PATTERN + DOSTA + CTD_DATE + NEWLINE
+CTDBP_FLORT = BASE_PATTERN + FLORT + CTD_DATE + NEWLINE
+
+# Set an error message string for use when testing the parser switch.
+SWITCH_ERROR = 'The CTDBP configuration must be a string set as either solo, dosta or flort (case insensitive).'
 
 
-def _get_parameter_names_ctdbp(ctd_type):
+def _parameter_names_ctdbp(ctd_type):
     parameter_names = [
         'dcl_date_time_string',
         'temperature',
@@ -39,18 +42,18 @@ def _get_parameter_names_ctdbp(ctd_type):
         'pressure'
         ]
 
-    if ctd_type == 1:
+    if ctd_type == 'solo':
         parameter_names.extend([
             'ctd_date_time_string'
         ])
 
-    if ctd_type == 2:
+    if ctd_type == 'dosta':
         parameter_names.extend([
             'oxygen_concentration',
             'ctd_date_time_string'
         ])
 
-    if ctd_type == 3:
+    if ctd_type == 'flort':
         parameter_names.extend([
             'raw_backscatter',
             'raw_chlorophyll',
@@ -63,38 +66,45 @@ def _get_parameter_names_ctdbp(ctd_type):
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the Parser base class, adds the CTDBP specific
-    methods to parse the data, and extracts the CTDBP data records from the DCL
-    daily log files.
+    A Parser subclass that calls the Parser base class, adds the CTDBP specific methods to parse the data,
+    and extracts the CTDBP data records from the DCL daily log files.
     """
     def __init__(self, infile, ctd_type):
-        self.initialize(infile, _get_parameter_names_ctdbp(ctd_type))
-        self.ctd_type = ctd_type
+        # test the ctd_type to make sure it is a string
+        try:
+            ctd_type = ctd_type.lower()
+        except ValueError as e:
+            print(SWITCH_ERROR)
+
+        # test ctd_type to make sure it is one of our recognized configurations
+        if ctd_type in ['solo', 'dosta', 'flort']:
+            self.ctd_type = ctd_type
+            self.initialize(infile, _parameter_names_ctdbp(self.ctd_type))
+        else:
+            raise ValueError(SWITCH_ERROR)
 
     def parse_data(self):
         """
-        Iterate through the record lines (defined via the regex expression
-        above) in the data object, and parse the data into a pre-defined
-        dictionary object created using the Bunch class.
+        Iterate through the record lines (defined via the regex expression above) in the data object, and parse the
+        data into a pre-defined dictionary object created using the Bunch class.
         """
-        if self.ctd_type == 1:
-            REGEX = re.compile(CTDBP1, re.DOTALL)
+        if self.ctd_type == 'solo':
+            regex = re.compile(CTDBP_SOLO, re.DOTALL)
 
-        if self.ctd_type == 2:
-            REGEX = re.compile(CTDBP2, re.DOTALL)
+        if self.ctd_type == 'dosta':
+            regex = re.compile(CTDBP_DOSTA, re.DOTALL)
 
-        if self.ctd_type == 3:
-            REGEX = re.compile(CTDBP3, re.DOTALL)
+        if self.ctd_type == 'flort':
+            regex = re.compile(CTDBP_FLORT, re.DOTALL)
 
         for line in self.raw:
-            match = REGEX.match(line)
+            match = regex.match(line)
             if match:
                 self._build_parsed_values(match)
 
     def _build_parsed_values(self, match):
         """
-        Extract the data from the relevant regex groups and assign to elements
-        of the data dictionary.
+        Extract the data from the relevant regex groups and assign to elements of the data dictionary.
         """
         # Use the date_time_string to calculate an epoch timestamp (seconds since
         # 1970-01-01)
@@ -107,14 +117,14 @@ class Parser(ParserCommon):
         self.data.conductivity.append(float(match.group(3)))
         self.data.pressure.append(float(match.group(4)))
 
-        if self.ctd_type == 1:
+        if self.ctd_type == 'solo':
             self.data.ctd_date_time_string.append(str(match.group(5)))
 
-        if self.ctd_type == 2:
+        if self.ctd_type == 'dosta':
             self.data.oxygen_concentration.append(float(match.group(5)))
             self.data.ctd_date_time_string.append(str(match.group(6)))
 
-        if self.ctd_type == 3:
+        if self.ctd_type == 'flort':
             self.data.raw_backscatter.append(int(match.group(5)))
             self.data.raw_chlorophyll.append(int(match.group(6)))
             self.data.raw_cdom.append(int(match.group(7)))
@@ -128,17 +138,25 @@ def main(argv=None):
     outfile = os.path.abspath(args.outfile)
     ctd_type = args.switch
 
-    # initialize the Parser object for CTDBP
-    ctdbp = Parser(infile, ctd_type)
+    # initialize the Parser object for CTDBP, set default type to solo if no switch was input
+    if ctd_type:
+        try:
+            ctdbp = Parser(infile, ctd_type)
+        except ValueError as e:
+            print(SWITCH_ERROR)
+            return None
+    else:
+        ctdbp = Parser(infile, 'solo')
 
     # load the data into a buffered object and parse the data into a dictionary
     ctdbp.load_ascii()
     ctdbp.parse_data()
 
-    # write the resulting Bunch object via the toJSON method to a JSON
-    # formatted data file (note, no pretty-printing keeping things compact)
+    # write the resulting Bunch object via the toJSON method to a JSON formatted data file (note, no pretty-printing
+    # keeping things compact)
     with open(outfile, 'w') as f:
         f.write(ctdbp.data.toJSON())
+
 
 if __name__ == '__main__':
     main()

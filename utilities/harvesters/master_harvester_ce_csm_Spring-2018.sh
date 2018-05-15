@@ -91,14 +91,14 @@ $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm2 nsif $FNAME.superv.log
 # DCL26
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl26 nsif $FNAME.superv.log
 $HARVEST/harvest_adcp.sh $PLATFORM $DEPLOY dcl26 $ADCP1 nsif $FNAME.$ADCP1.log
-$HARVEST/harvest_suna.sh $PLATFORM $DEPLOY dcl26 nutnr nsif $FNAME.nutnr.log
+$HARVEST/harvest_nutnr.sh $PLATFORM $DEPLOY dcl26 nutnr nsif suna $FNAME.nutnr.log
 $HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl26 $PHSEN1 nsif $FNAME.$PHSEN1.log
 $HARVEST/harvest_spkir.sh $PLATFORM $DEPLOY dcl26 spkir nsif $FNAME.spkir.log
 $HARVEST/harvest_velpt.sh $PLATFORM $DEPLOY dcl26 velpt2 nsif $FNAME.velpt2.log
 
 # DCL27
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl27 nsif $FNAME.superv.log
-$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl27 $CTDBP1 nsif 1 $FNAME.$CTDBP1.log
+$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl27 $CTDBP1 nsif solo $FNAME.$CTDBP1.log
 $HARVEST/harvest_dosta.sh $PLATFORM $DEPLOY dcl27 dosta nsif $FNAME.dosta.log
 if [ $PLATFORM = "ce02shsm" ]; then
     $HARVEST/harvest_dosta.sh $PLATFORM $DEPLOY dcl27 testO2 nsif $FNAME.testO2.log
@@ -136,7 +136,7 @@ if [ $MFN_FLAG -eq 1 ]; then
 
     # DCL37
     $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl37 mfn $FNAME.superv.log
-    $HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl37 $CTDBP2 mfn 2 $FNAME.$CTDBP2.log
+    $HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl37 $CTDBP2 mfn dosta $FNAME.$CTDBP2.log
     for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl37/$OPTAA2/$FNAME*.$OPTAA2.log; do
         if [ -e $optaa ]; then
             SIZE=`du -k "$optaa" | cut -f1`

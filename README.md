@@ -10,7 +10,7 @@ raw data file is reported in counts, the parser does not convert that measuremen
 
 An exception to the above conversion applies to calculating an Epoch time stamp (seconds since 1970-01-01) from the date
 and time string information contained in the files. The preferred source of time is the DCL timestamp as those systems
-are synced to GPS via a LAN NTP server and are accurate to with a few milliseconds.
+are synced to GPS via a LAN NTP server and are accurate to within a few milliseconds.
 
 # Usage
 
@@ -44,17 +44,13 @@ user and system in mind. Others will need to adapt these scripts to fit their ow
 This code was written and tested against Python 3.5.2 using Anaconda from [Continuum Analytics](https://www.continuum.io/).
 The code has been used on Windows machines (7 and 10), as well as Linux servers running CentOS 6 and 7 and Debian 8.
 
-The following additional python packages, beyond those provided by anaconda are used
+The following additional python packages, beyond those provided by anaconda or miniconda are used
 by this code:
 
-   * munch >= 2.1.0 
-
-If starting from miniconda, you will need to add:
-
-   * nose
-   * numpy
+   * nose (provided in anaconda)
+   * numpy (provided in anaconda)
    * munch >= 2.1.0
-   * pytz
+   * pytz (provided in anaconda)
 
 # Contributing
 

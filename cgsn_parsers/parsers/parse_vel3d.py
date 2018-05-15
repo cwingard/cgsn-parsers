@@ -341,6 +341,7 @@ class Parser(ParserCommon):
         c += 10 * (cBCD >> 4)
         return c
 
+
 def main(argv=None):
     # load the input arguments
     args = inputs(argv)
@@ -348,8 +349,15 @@ def main(argv=None):
     outfile = os.path.abspath(args.outfile)
     sample_rate = args.switch
 
-    # initialize the Parser object for vel3d
-    vel3d = Parser(infile, sample_rate)
+    # initialize the Parser object for vel3d, setting a default sample rate if none is provided.
+    if sample_rate:
+        try:
+            vel3d = Parser(infile, int(sample_rate))
+        except ValueError as e:
+            print('The VEL3D sample rate must be set as an integer')
+            return None
+    else:
+        vel3d = Parser(infile, 8)
 
     # load the data into a buffered object and parse the data into dictionaries
     vel3d.load_binary()
@@ -360,6 +368,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(vel3d.data.toJSON())
+
 
 if __name__ == '__main__':
     main()
