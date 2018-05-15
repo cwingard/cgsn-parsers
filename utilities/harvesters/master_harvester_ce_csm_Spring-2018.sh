@@ -55,11 +55,10 @@ esac
 
 # CPM1
 $HARVEST/harvest_gps.sh $PLATFORM $DEPLOY $FNAME.gps.log
-$HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY $FNAME.pwrsys.log
+$HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY psc $FNAME.pwrsys.log
 $HARVEST/harvest_syslog_fb250.sh $PLATFORM $DEPLOY $FNAME.syslog.log
 $HARVEST/harvest_syslog_irid.sh $PLATFORM $DEPLOY $FNAME.syslog.log
 $HARVEST/harvest_syslog_rda.sh $PLATFORM $DEPLOY $FNAME.syslog.log
-$HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY $FNAME.pwrsys.log
 $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm1 buoy $FNAME.superv.log
 
 # DCL11
@@ -117,7 +116,7 @@ done
 if [ $MFN_FLAG -eq 1 ]; then
     # CPM3
     $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm3 mfn $FNAME.superv.log
-    $HARVEST/harvest_mpea.sh $PLATFORM $DEPLOY $FNAME.pwrsys.log
+    $HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY mpea $FNAME.pwrsys.log
 
     # DCL36
     $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl36 mfn $FNAME.superv.log
