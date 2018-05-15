@@ -77,7 +77,7 @@ class Parser(ParserCommon):
             print(SWITCH_ERROR)
 
         # test ctd_type to make sure it is one of our recognized configurations
-        if ctd_type == 'solo' or ctd_type == 'dosta' or ctd_type == 'flort':
+        if ctd_type in ['solo', 'dosta', 'flort']:
             self.ctd_type = ctd_type
             self.initialize(infile, _parameter_names_ctdbp(self.ctd_type))
         else:

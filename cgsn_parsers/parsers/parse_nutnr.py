@@ -109,11 +109,11 @@ class Parser(ParserCommon):
             print(SWITCH_ERROR)
 
         # test nutnr_type to make sure it is one of our recognized instruments
-        if nutnr_type == 'suna' or nutnr_type == 'isus' or nutnr_type == 'isus_condensed':
+        if nutnr_type in ['suna', 'isus', 'isus_condensed']:
             self.nutnr_type = nutnr_type
             self.initialize(infile, _parameter_names_nutnr(self.nutnr_type))
         else:
-            raise ValueError()
+            raise ValueError(SWITCH_ERROR)
 
     def parse_data(self):
         """

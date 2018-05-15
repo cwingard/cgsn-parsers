@@ -312,7 +312,7 @@ class Parser(ParserCommon):
             print(SWITCH_ERROR)
 
         # test pd_type to make sure it is one of our recognized configurations
-        if pd_type == 'pd0' or pd_type == 'pd8':
+        if pd_type in ['pd0', 'pd8']:
             self.pd_type = pd_type
 
             if self.pd_type == 'pd0':
