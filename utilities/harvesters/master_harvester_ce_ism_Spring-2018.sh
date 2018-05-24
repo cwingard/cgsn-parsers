@@ -61,7 +61,7 @@ $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm3 mfn $FNAME.superv.log
 
 # DCL36
 $HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl36 mfn $FNAME.superv.log
-$HARVEST/harvest_adcp.sh $PLATFORM $DEPLOY dcl36 adcpt mfn $FNAME.adcpt.log
+$HARVEST/harvest_adcp.sh $PLATFORM $DEPLOY dcl36 adcpt mfn pd0 $FNAME.adcpt.log
 $HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl36 pco2w2 mfn $FNAME.pco2w2.log
 $HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY dcl36 phsen2 mfn $FNAME.phsen2.log
 $HARVEST/harvest_presf.sh $PLATFORM $DEPLOY dcl36 $FNAME.presf.log
