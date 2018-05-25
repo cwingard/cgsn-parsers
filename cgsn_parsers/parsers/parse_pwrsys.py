@@ -194,7 +194,7 @@ class Parser(ParserCommon):
         above) in the data object, and parse the data into a pre-defined
         dictionary object created using the Bunch class.
         """
-        if self.pwrsys == 'mpea':
+        if self.pwrsys_type == 'mpea':
             regex = re.compile(PATTERN_MPEA, re.DOTALL)
 
         if self.pwrsys_type == 'psc':

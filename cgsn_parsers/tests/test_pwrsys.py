@@ -16,121 +16,139 @@ from cgsn_parsers.parsers.parse_pwrsys import Parser
 
 # Test data files obtained from the raw data server at https://rawdata.oceanobservatories.org/files.
 
-# Test data - CE07SHSM/D00007/cg_data/pwrsys/20180330.pwrsys.log
+# Test data PSC - CE07SHSM/D00007/cg_data/pwrsys/20180330.pwrsys.log
 # Expected data - 
-TEST_DATA_PWRSYS_COND = path.join(path.dirname(__file__), 'pwrsys/20180330.pwrsys.log')
-EXPECTED_DATA_PWRSYS_COND = path.join(path.dirname(__file__), '')
+TEST_DATA_PWRSYS_PSC = path.join(path.dirname(__file__), 'pwrsys/20180330.pwrsys.log')
 
-# Test data - CE07SHSM/D00007/cg_data/pwrsys/20180405.pwrsys.log
+# Test data MPEA - CE07SHSM/D00007/cg_data/cpm3/pwrsys/20180405.pwrsys.log
 # Expected data -
-TEST_DATA_pwrsys_ISUS = path.join(path.dirname(__file__), 'pwrsys/20180405.pwrsys.log')
-EXPECTED_DATA_pwrsys_ISUS = path.join(path.dirname(__file__), '')
+TEST_DATA_PWRSYS_MPEA = path.join(path.dirname(__file__), 'pwrsys/20180405.pwrsys.log')
 
 
 @attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
-
-    This test class will parse and compare the outputs from the two types of power systems to data reorganized into a
-    CSV file using Excel to remove all text.
+    This test class will parse and compare the outputs from the two types of power systems to data loaded via the numpy
+    genfromtxt function. A mapping of the columns in the raw files to the array indices in the expected data was created
+    using Excel to look at the files and number/label the columns.
     """
     def setUp(self):
         """
         Using sample data files from above, initialize the Parser objects for each of the 3 pwrsys data output formats
         and setup the expected output arrays.
         """
-
         # Initialize Parser objects for the pwrsys types defined above.
-        self.pwrsys_cond = Parser(TEST_DATA_pwrsys_COND, 'isus_condensed')
-        self.pwrsys_isus = Parser(TEST_DATA_pwrsys_ISUS, 'isus')
-        self.pwrsys_suna = Parser(TEST_DATA_pwrsys_SUNA, 'suna')
+        self.pwrsys_psc = Parser(TEST_DATA_PWRSYS_PSC, 'psc')
+        self.pwrsys_mpea = Parser(TEST_DATA_PWRSYS_MPEA, 'mpea')
 
-        # Set the expected output arrays for the each of the pwrsys output formats.
-        data = np.genfromtxt(EXPECTED_DATA_pwrsys_COND, skip_header=12, delimiter=',')
-        fr, _ = np.modf(data[:, 2])  # return fractional part of decimal hours time stamp
-        n = fr >= 0.5   # setup boolean indices for samples collected at the bottom of the hour (>= 0.5)
-        self.cond_expected = data[n, :]  # keep expected data collected only at the bottom of the hour
-        self.isus_expected = np.genfromtxt(EXPECTED_DATA_pwrsys_ISUS, skip_header=12, delimiter=',')
-        self.suna_expected = np.genfromtxt(EXPECTED_DATA_pwrsys_SUNA, skip_header=14, delimiter=',')
+        # Set the expected output arrays for the each of the pwrsys output formats. Import the data as strings, these
+        # can then be compared to the data on a case-by-case basis per data type.
+        self.psc_expected = np.genfromtxt(TEST_DATA_PWRSYS_PSC, dtype=np.str, delimiter=' ')
+        self.mpea_expected = np.genfromtxt(TEST_DATA_PWRSYS_MPEA, dtype=np.str, delimiter=' ')
 
-    def test_parse_pwrsys_cond(self):
+    def test_parse_pwrsys_psc(self):
         """
-        Test parsing of an ISUS outputting condensed ASCII frames as recorded by the DCL versus recovered instrument
-        data loaded from a CSV file per basic processing from above
+        Compare the Power System Controller (PSC) data parsed into a JSON object with the same data pulled in via the
+        numpy genfromtxt method.
         """
-        self.pwrsys_cond.load_ascii()
-        self.pwrsys_cond.parse_data()
-        parsed = self.pwrsys_cond.data.toDict()
+        self.pwrsys_psc.load_ascii()
+        self.pwrsys_psc.parse_data()
+        parsed = self.pwrsys_psc.data.toDict()
 
-        np.testing.assert_array_equal(parsed['decimal_hours'], self.cond_expected[:, 2])
-        np.testing.assert_array_equal(parsed['nitrate_concentration'], self.cond_expected[:, 3])
-        np.testing.assert_array_equal(parsed['auxiliary_fit_1st'], self.cond_expected[:, 4])
-        np.testing.assert_array_equal(parsed['auxiliary_fit_2nd'], self.cond_expected[:, 5])
-        np.testing.assert_array_equal(parsed['auxiliary_fit_3rd'], self.cond_expected[:, 6])
-        np.testing.assert_array_equal(parsed['rms_error'], self.cond_expected[:, 7])
+        np.testing.assert_array_equal(parsed['main_voltage'], (self.psc_expected[:, 4]).astype(np.float))
+        np.testing.assert_array_equal(parsed['main_current'], (self.psc_expected[:, 5]).astype(np.float))
+        np.testing.assert_array_equal(parsed['percent_charge'], (self.psc_expected[:, 6]).astype(np.float))
+        np.testing.assert_array_equal(parsed['override_flag'], self.psc_expected[:, 7])
+        np.testing.assert_array_equal(parsed['error_flag1'], self.psc_expected[:, 8])
+        np.testing.assert_array_equal(parsed['error_flag2'], self.psc_expected[:, 9])
+        np.testing.assert_array_equal(parsed['solar_panel1_state'], (self.psc_expected[:, 11]).astype(np.int))
+        np.testing.assert_array_equal(parsed['solar_panel1_voltage'], (self.psc_expected[:, 12]).astype(np.float))
+        np.testing.assert_array_equal(parsed['solar_panel1_current'], (self.psc_expected[:, 13]).astype(np.float))
+        np.testing.assert_array_equal(parsed['solar_panel2_state'], (self.psc_expected[:, 15]).astype(np.int))
+        np.testing.assert_array_equal(parsed['solar_panel2_voltage'], (self.psc_expected[:, 16]).astype(np.float))
+        np.testing.assert_array_equal(parsed['solar_panel2_current'], (self.psc_expected[:, 17]).astype(np.float))
+        np.testing.assert_array_equal(parsed['solar_panel3_state'], (self.psc_expected[:, 19]).astype(np.int))
+        np.testing.assert_array_equal(parsed['solar_panel3_voltage'], (self.psc_expected[:, 20]).astype(np.float))
+        np.testing.assert_array_equal(parsed['solar_panel3_current'], (self.psc_expected[:, 21]).astype(np.float))
+        np.testing.assert_array_equal(parsed['solar_panel4_state'], (self.psc_expected[:, 23]).astype(np.int))
+        np.testing.assert_array_equal(parsed['solar_panel4_voltage'], (self.psc_expected[:, 24]).astype(np.float))
+        np.testing.assert_array_equal(parsed['solar_panel4_current'], (self.psc_expected[:, 25]).astype(np.float))
+        np.testing.assert_array_equal(parsed['wind_turbine1_state'], (self.psc_expected[:, 27]).astype(np.int))
+        np.testing.assert_array_equal(parsed['wind_turbine1_voltage'], (self.psc_expected[:, 28]).astype(np.float))
+        np.testing.assert_array_equal(parsed['wind_turbine1_current'], (self.psc_expected[:, 29]).astype(np.float))
+        np.testing.assert_array_equal(parsed['wind_turbine2_state'], (self.psc_expected[:, 31]).astype(np.int))
+        np.testing.assert_array_equal(parsed['wind_turbine2_voltage'], (self.psc_expected[:, 32]).astype(np.float))
+        np.testing.assert_array_equal(parsed['wind_turbine2_current'], (self.psc_expected[:, 33]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank1_temperature'], (self.psc_expected[:, 43]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank1_voltage'], (self.psc_expected[:, 44]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank1_current'], (self.psc_expected[:, 45]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank2_temperature'], (self.psc_expected[:, 47]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank2_voltage'], (self.psc_expected[:, 48]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank2_current'], (self.psc_expected[:, 49]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank3_temperature'], (self.psc_expected[:, 51]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank3_voltage'], (self.psc_expected[:, 52]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank3_current'], (self.psc_expected[:, 53]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank4_temperature'], (self.psc_expected[:, 55]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank4_voltage'], (self.psc_expected[:, 56]).astype(np.float))
+        np.testing.assert_array_equal(parsed['battery_bank4_current'], (self.psc_expected[:, 57]).astype(np.float))
+        np.testing.assert_array_equal(parsed['external_voltage'], (self.psc_expected[:, 59]).astype(np.float))
+        np.testing.assert_array_equal(parsed['external_current'], (self.psc_expected[:, 60]).astype(np.float))
+        np.testing.assert_array_equal(parsed['internal_voltage'], (self.psc_expected[:, 62]).astype(np.float))
+        np.testing.assert_array_equal(parsed['internal_current'], (self.psc_expected[:, 63]).astype(np.float))
+        np.testing.assert_array_equal(parsed['internal_temperature'], (self.psc_expected[:, 64]).astype(np.float))
+        np.testing.assert_array_equal(parsed['seawater_ground_state'], (self.psc_expected[:, 68]).astype(np.int))
+        np.testing.assert_array_equal(parsed['seawater_ground_positve'], (self.psc_expected[:, 69]).astype(np.float))
+        np.testing.assert_array_equal(parsed['seawater_ground_negative'], (self.psc_expected[:, 70]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cvt_state'], (self.psc_expected[:, 72]).astype(np.int))
+        np.testing.assert_array_equal(parsed['cvt_voltage'], (self.psc_expected[:,73]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cvt_current'], (self.psc_expected[:, 74]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cvt_interlock'], (self.psc_expected[:, 75]).astype(np.int))
+        np.testing.assert_array_equal(parsed['cvt_temperature'], (self.psc_expected[:, 76]).astype(np.float))
+        np.testing.assert_array_equal(parsed['error_flag3'], (self.psc_expected[:, 77]))
 
-    def test_parse_pwrsys_isus(self):
+    def test_parse_pwrsys_mpea(self):
         """
-        Test parsing of an ISUS outputting full ASCII frames as recorded by the DCL versus recovered instrument
-        data loaded from a CSV file per basic processing from above
+        Compare the MFN Power and ?? Adapter (MPEA) data parsed into a JSON object with the same data pulled in via the
+        numpy genfromtxt method.
         """
-        self.pwrsys_isus.load_ascii()
-        self.pwrsys_isus.parse_data()
-        parsed = self.pwrsys_isus.data.toDict()
+        self.pwrsys_mpea.load_ascii()
+        self.pwrsys_mpea.parse_data()
+        parsed = self.pwrsys_mpea.data.toDict()
 
-        np.testing.assert_array_equal(parsed['decimal_hours'], self.isus_expected[:, 2])
-        np.testing.assert_array_equal(parsed['nitrate_concentration'], self.isus_expected[:, 3])
-        np.testing.assert_array_equal(parsed['auxiliary_fit_1st'], self.isus_expected[:, 4])
-        np.testing.assert_array_equal(parsed['auxiliary_fit_2nd'], self.isus_expected[:, 5])
-        np.testing.assert_array_equal(parsed['auxiliary_fit_3rd'], self.isus_expected[:, 6])
-        np.testing.assert_array_equal(parsed['rms_error'], self.isus_expected[:, 7])
-        np.testing.assert_array_equal(parsed['temperature_internal'], self.isus_expected[:, 8])
-        np.testing.assert_array_equal(parsed['temperature_spectrometer'], self.isus_expected[:, 9])
-        np.testing.assert_array_equal(parsed['temperature_lamp'], self.isus_expected[:, 10])
-        np.testing.assert_array_equal(parsed['lamp_on_time'], self.isus_expected[:, 11])
-        np.testing.assert_array_equal(parsed['humidity'], self.isus_expected[:, 12])
-        np.testing.assert_array_equal(parsed['voltage_lamp'], self.isus_expected[:, 13])
-        np.testing.assert_array_equal(parsed['voltage_analog'], self.isus_expected[:, 14])
-        np.testing.assert_array_equal(parsed['voltage_main'], self.isus_expected[:, 15])
-        np.testing.assert_array_equal(parsed['average_reference'], self.isus_expected[:, 16])
-        np.testing.assert_array_equal(parsed['variance_reference'], self.isus_expected[:, 17])
-        np.testing.assert_array_equal(parsed['seawater_dark'], self.isus_expected[:, 18])
-        np.testing.assert_array_equal(parsed['spectral_average'], self.isus_expected[:, 19])
-        np.testing.assert_array_equal(np.array(parsed['channel_measurements']), self.isus_expected[:, 20:-1])
-
-    def test_parse_pwrsys_suna(self):
-        """
-        Test parsing of a SUNA outputting full ASCII frames as recorded by the DCL versus recovered instrument
-        data loaded from a CSV file per basic processing from above
-        """
-        self.pwrsys_suna.load_ascii()
-        self.pwrsys_suna.parse_data()
-        parsed = self.pwrsys_suna.data.toDict()
-
-        np.testing.assert_array_equal(parsed['decimal_hours'], self.suna_expected[:, 2])
-        np.testing.assert_array_equal(parsed['nitrate_concentration'], self.suna_expected[:, 3])
-        np.testing.assert_array_equal(parsed['nitrogen_in_nitrate'], self.suna_expected[:, 4])
-        np.testing.assert_array_equal(parsed['absorbance_254'], self.suna_expected[:, 5])
-        np.testing.assert_array_equal(parsed['absorbance_250'], self.suna_expected[:, 6])
-        np.testing.assert_array_equal(parsed['bromide_trace'], self.suna_expected[:, 7])
-        np.testing.assert_array_equal(parsed['spectral_average'], self.suna_expected[:, 8])
-        np.testing.assert_array_equal(parsed['dark_value'], self.suna_expected[:, 9])
-        np.testing.assert_array_equal(parsed['integration_factor'], self.suna_expected[:, 10])
-        np.testing.assert_array_equal(parsed['channel_measurements'], self.suna_expected[:, 11:267])
-        np.testing.assert_array_equal(parsed['temperature_internal'], self.suna_expected[:, 267])
-        np.testing.assert_array_equal(parsed['temperature_spectrometer'], self.suna_expected[:, 268])
-        np.testing.assert_array_equal(parsed['temperature_lamp'], self.suna_expected[:, 269])
-        np.testing.assert_array_equal(parsed['lamp_on_time'], self.suna_expected[:, 270])
-        np.testing.assert_array_equal(parsed['humidity'], self.suna_expected[:, 271])
-        np.testing.assert_array_equal(parsed['voltage_main'], self.suna_expected[:, 272])
-        np.testing.assert_array_equal(parsed['voltage_lamp'], self.suna_expected[:, 273])
-        np.testing.assert_array_equal(parsed['voltage_internal'], self.suna_expected[:, 274])
-        np.testing.assert_array_equal(parsed['main_current'], self.suna_expected[:, 275])
-        np.testing.assert_array_equal(parsed['fit_auxiliary_1'], self.suna_expected[:, 276])
-        np.testing.assert_array_equal(parsed['fit_auxiliary_2'], self.suna_expected[:, 277])
-        np.testing.assert_array_equal(parsed['fit_base_1'], self.suna_expected[:, 278])
-        np.testing.assert_array_equal(parsed['fit_base_2'], self.suna_expected[:, 279])
-        np.testing.assert_array_equal(parsed['fit_rmse'], self.suna_expected[:, 280])
+        np.testing.assert_array_equal(parsed['main_voltage'], (self.mpea_expected[:, 4]).astype(np.float))
+        np.testing.assert_array_equal(parsed['main_current'], (self.mpea_expected[:, 5]).astype(np.float))
+        np.testing.assert_array_equal(parsed['error_flag1'], self.mpea_expected[:, 6])
+        np.testing.assert_array_equal(parsed['error_flag2'], self.mpea_expected[:, 7])
+        np.testing.assert_array_equal(parsed['cv1_state'], (self.mpea_expected[:, 9]).astype(np.int))
+        np.testing.assert_array_equal(parsed['cv1_voltage'], (self.mpea_expected[:, 10]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv1_current'], (self.mpea_expected[:, 11]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv2_state'], (self.mpea_expected[:, 13]).astype(np.int))
+        np.testing.assert_array_equal(parsed['cv2_voltage'], (self.mpea_expected[:, 14]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv2_current'], (self.mpea_expected[:, 15]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv3_state'], (self.mpea_expected[:, 17]).astype(np.int))
+        np.testing.assert_array_equal(parsed['cv3_voltage'], (self.mpea_expected[:, 18]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv3_current'], (self.mpea_expected[:, 19]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv4_state'], (self.mpea_expected[:, 21]).astype(np.int))
+        np.testing.assert_array_equal(parsed['cv4_voltage'], (self.mpea_expected[:, 22]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv4_current'], (self.mpea_expected[:, 23]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv5_state'], (self.mpea_expected[:, 25]).astype(np.int))
+        np.testing.assert_array_equal(parsed['cv5_voltage'], (self.mpea_expected[:, 26]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv5_current'], (self.mpea_expected[:, 27]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv6_state'], (self.mpea_expected[:, 29]).astype(np.int))
+        np.testing.assert_array_equal(parsed['cv6_voltage'], (self.mpea_expected[:, 30]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv6_current'], (self.mpea_expected[:, 31]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv7_state'], (self.mpea_expected[:, 33]).astype(np.int))
+        np.testing.assert_array_equal(parsed['cv7_voltage'], (self.mpea_expected[:, 34]).astype(np.float))
+        np.testing.assert_array_equal(parsed['cv7_current'], (self.mpea_expected[:, 35]).astype(np.float))
+        np.testing.assert_array_equal(parsed['auxiliary_state'], (self.mpea_expected[:, 37]).astype(np.int))
+        np.testing.assert_array_equal(parsed['auxiliary_voltage'], (self.mpea_expected[:, 38]).astype(np.float))
+        np.testing.assert_array_equal(parsed['auxiliary_current'], (self.mpea_expected[:, 39]).astype(np.float))
+        np.testing.assert_array_equal(parsed['hotel_5v_voltage'], (self.mpea_expected[:, 41]).astype(np.float))
+        np.testing.assert_array_equal(parsed['hotel_5v_current'], (self.mpea_expected[:, 42]).astype(np.float))
+        np.testing.assert_array_equal(parsed['temperature'], (self.mpea_expected[:, 43]).astype(np.float))
+        np.testing.assert_array_equal(parsed['relative_humidity'], (self.mpea_expected[:, 44]).astype(np.float))
+        np.testing.assert_array_equal(parsed['leak_detect'], (self.mpea_expected[:, 45]).astype(np.float))
+        np.testing.assert_array_equal(parsed['internal_pressure'], (self.mpea_expected[:, 46]).astype(np.float))
 
 
 if __name__ == '__main__':
