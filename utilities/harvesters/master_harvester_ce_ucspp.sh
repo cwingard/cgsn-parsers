@@ -22,7 +22,9 @@ if [ ! -d $PROC ]; then
     # Make the output directory, if it doesn't exist
     /bin/mkdir -p $PROC
 fi
+
 # set the python version
+source activate ooi
 
 case $FTYPE in
     "ACS" )

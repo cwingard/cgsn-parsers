@@ -71,7 +71,7 @@ for file in $RAW/E*.DAT; do
 
         # check to see if we already have created TIMETAGS2.TXT, don't want to overwrite
         if [ -f $PROC/TIMETAGS2.TXT ]; then
-            /bin/cp $PROC/TIMETAGS2.TXT tmp
+            /bin/cp $PROC/TIMETAGS2.TXT timetags
         fi
 
         # generate the TIMETAGS2.TXT file
@@ -81,18 +81,18 @@ for file in $RAW/E*.DAT; do
         # check to see if we were successful
         if [ $? -eq 0 ]; then
             # Success!
-            if [ -f tmp ]; then
+            if [ -f timetags ]; then
                 # If we already have an existing TIMETAGS2 file, append results
-                /usr/bin/tail -1 $PROC/TIMETAGS2.TXT >> tmp
-                /bin/mv tmp $PROC/TIMETAGS2.TXT
+                /usr/bin/tail -1 $PROC/TIMETAGS2.TXT >> timetags
+                /bin/mv timetags $PROC/TIMETAGS2.TXT
             fi
         else
             # Extract failed, create empty file indicating failure and skip to next file
             /bin/echo -e "\tCorrupted file, skipping file"
             /bin/touch $PROC/${out%.DAT}.TXT.failed
-            if [ -f tmp ]; then
+            if [ -f timetags ]; then
                 # replace TIMETAGS2
-                /bin/mv tmp $PROC/TIMETAGS2.TXT
+                /bin/mv timetags $PROC/TIMETAGS2.TXT
             fi
             continue
         fi
@@ -101,6 +101,7 @@ for file in $RAW/E*.DAT; do
         ### Engineering and ECO Triplet data
         /bin/echo -e "\tExtracting Engineering and ECO Triplet"
         $UNPACK $PROC $file
+        declare -i count=1
 
         ### CTD and Oxygen data
         if [ -f ${file/E/C} ]; then
@@ -111,6 +112,8 @@ for file in $RAW/E*.DAT; do
             if [ $? -ne 0 ]; then
                 # extract failed
                 /bin/mv $ctd $ctd.failed
+            else
+                count=$count+1
             fi
         fi
 
@@ -124,17 +127,21 @@ for file in $RAW/E*.DAT; do
             if [ $? -ne 0 ]; then
                 # extract failed
                 /bin/mv $vel $vel.failed
+            else
+                count=$count+1
             fi
         fi
 
         ### And now we can create our JSON formatted file
-        infile=$PROC/${out%.DAT}.TXT
-        outfile=${infile/E/P}
-        outfile=${outfile%.TXT}.json
-        cd /home/ooiuser/code/cgsn-parsers
-        python -m cgsn_parsers.parsers.parse_mmp_coastal -i $infile -o $outfile
+        if [ $count -eq 3 ]; then
+            infile=$PROC/${out%.DAT}.TXT
+            outfile=${infile/E/P}
+            outfile=${outfile%.TXT}.json
+            cd /home/ooiuser/code/cgsn-parsers
+            python -m cgsn_parsers.parsers.parse_mmp_coastal -i $infile -o $outfile
+        fi
     fi
 done
 
 # clean up
-/bin/rm -f tmp
+/bin/rm -f timetags
