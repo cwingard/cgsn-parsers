@@ -64,12 +64,12 @@ SWITCH_ERROR = 'The PWRSYS type must be a string set as either psc or mpea (case
 def _parameter_names_pwrsys(pwrsys_type):
     parameter_names = [
         'dcl_date_time_string',
+        'main_voltage',
+        'main_current'
     ]
 
     if pwrsys_type == 'mpea':
         parameter_names.extend([
-            'main_voltage',
-            'main_current',
             'error_flag1',
             'error_flag2',
             'cv1_state',
@@ -106,9 +106,6 @@ def _parameter_names_pwrsys(pwrsys_type):
 
     if pwrsys_type == 'psc':
         parameter_names.extend([
-            'dcl_date_time_string',
-            'main_voltage',
-            'main_current',
             'percent_charge',
             'override_flag',
             'error_flag1',
@@ -215,11 +212,11 @@ class Parser(ParserCommon):
         epts = dcl_to_epoch(match.group(1))
         self.data.time.append(epts)
         self.data.dcl_date_time_string.append(str(match.group(1)))
+        self.data.main_voltage.append(float(match.group(2)))
+        self.data.main_current.append(float(match.group(3)))
 
         if self.pwrsys_type == 'mpea':
             # Assign the remaining MPEA data to the named parameters
-            self.data.main_voltage.append(float(match.group(2)))
-            self.data.main_current.append(float(match.group(3)))
             self.data.error_flag1.append(str(match.group(4)))
             self.data.error_flag2.append(str(match.group(5)))
             self.data.cv1_state.append(int(match.group(6)))
@@ -255,8 +252,6 @@ class Parser(ParserCommon):
 
         if self.pwrsys_type == 'psc':
             # Assign the remaining PSC data to the named parameters
-            self.data.main_voltage.append(float(match.group(2)))
-            self.data.main_current.append(float(match.group(3)))
             self.data.percent_charge.append(float(match.group(4)))
             self.data.override_flag.append(str(match.group(5)))
             self.data.error_flag1.append(str(match.group(6)))
