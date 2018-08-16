@@ -89,24 +89,22 @@ class Parser(ParserCommon):
 
     def _build_parsed_values(self, match, new_flag):
         """
-        Extract the data from the relevant regex groups and assign to elements
-        of the data dictionary.
+        Extract the data from the relevant regex groups and assign to elements of the data dictionary.
         """
-        # Use the date_time_string to calculate an epoch timestamp (seconds since
-        # 1970-01-01)
+        # Use the DCL date_time_string to calculate an epoch timestamp (seconds since 1970-01-01)
         epts = dcl_to_epoch(match.group(1))
         self.data.time.append(epts)
         self.data.dcl_date_time_string.append(str(match.group(1)))
 
         # Assign the remaining PCO2A data to the named parameters
-        if new_flag:    # reconstruct the datetime string from the comma-delimited components
+        if new_flag:    # based on new firmware, reconstruct the datetime string from the comma-delimited components
             self.data.co2_source.append(str(match.group(2)))
             date_string = (match.group(3) + '/' + match.group(4) + '/' + match.group(5) + ' ' +
                            match.group(6) + ':' + match.group(7) + ':' + match.group(8))
             self.data.co2_date_time_string.append(str(date_string))
             n = 8
         else:
-            self.data.co2_source.append(str(match.group(-1)))
+            self.data.co2_source.append(str(match.group(12)))
             self.data.co2_date_time_string.append(str(match.group(2)))
             n = 2
 
