@@ -12,23 +12,19 @@ import re
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
+from cgsn_parsers.parsers.common import inputs
 
 # Two regex patterns for the Optode data from the uCSPP Optode data files (with or without the percent saturation
 PATTERN = (
-    FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
-    INTEGER + r'\s+' + INTEGER + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    NEWLINE
+        r'^(\d+.\d+)\t(\d+.\d+)\t([y|n])\t(\d+)\t(\d+)\t' +
+        r'(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)\t' +
+        r'(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)$'
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 PATTERN_SANS = (
-    FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
-    INTEGER + r'\s+' + INTEGER + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
-    NEWLINE
+        r'^(\d+.\d+)\t(\d+.\d+)\t([y|n])\t(\d+)\t(\d+)\t' +
+        r'(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)\t' +
+        r'(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)\t(\d+.\d+)$'
 )
 REGEX_SANS = re.compile(PATTERN_SANS, re.DOTALL)
 
