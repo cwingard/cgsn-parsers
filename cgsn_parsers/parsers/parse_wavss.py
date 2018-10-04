@@ -103,7 +103,7 @@ def _parameter_names_wavss(nmea_sentence):
 class Parser(ParserCommon):
     """
     A Parser subclass that calls the Parser base class, adds the WAVSS specific methods to parse the data,
-    and extracts the differenct wavss data records from the DCL daily log files.
+    and extracts the different wavss data records from the DCL daily log files.
     """
     def __init__(self, infile, nmea_sentence):
         # test the nmea_sentence to make sure it is a string
