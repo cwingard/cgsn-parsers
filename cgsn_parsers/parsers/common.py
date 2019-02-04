@@ -8,7 +8,7 @@
 """
 import argparse
 import datetime
-import re
+import pandas as pd
 import sys
 
 from munch import Munch as Bunch
@@ -24,6 +24,9 @@ FLTNAN = r'([+-]?\d+.\d+[Ee]?[+-]?\d*|NaN)'     # matches a float or a NaN, incl
 STRING = r'(\S+)'
 INTEGER = r'([+-]?[0-9]+)'
 NEWLINE = r'(?:\r\n|\n)?'
+
+# Set the timezone used for all date/time conversions
+UTC = timezone('UTC')
 
 
 class ParameterNames(object):
@@ -97,18 +100,18 @@ def dcl_to_epoch(time_string):
     """
     # find and replace the incorrectly formatted cases where the seconds are
     # incorrectly set to 60.000 (seconds must be between 00 and 59).
-    if re.match(r'(\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}:60.\d{3})', time_string):
-        time_string = re.sub('60.\d{3}', '00.000', time_string)
+    if time_string[-6:] == '60.000':
+        time_string = time_string[:-6] + '00.000'
         tplus = 60.0
     else:
         tplus = 0.0
 
-    # convert the date and time string into a datetime object
-    dcl = datetime.datetime.strptime(time_string, '%Y/%m/%d %H:%M:%S.%f')
-    utc = dcl.replace(tzinfo=timezone('UTC'))
+    # convert the date and time string into a pandas datetime64 object
+    dt = pd.Timestamp(time_string)
 
     # calculate the epoch time as seconds since 1970-01-01 in UTC
-    epts = timegm(utc.timetuple()) + (utc.microsecond / 1e6) + tplus
+    epts = (dt.value / 1e9) + tplus
+
     return epts
 
 
@@ -118,7 +121,7 @@ def logfilename_to_epoch(time_string):
     calculate an epoch timestamp (seconds since 1970-01-01)
     """
     dt_filename = datetime.datetime.strptime(time_string, '%Y%m%d_%H%M%S')
-    utc = dt_filename.replace(tzinfo=timezone('UTC'))
+    utc = dt_filename.replace(tzinfo=UTC)
     # calculate the epoch time as seconds since 1970-01-01 in UTC
     epts = timegm(utc.timetuple())
 

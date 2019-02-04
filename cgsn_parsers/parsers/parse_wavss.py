@@ -139,7 +139,7 @@ class Parser(ParserCommon):
             pattern = (
                 DCL_TIMESTAMP + r'\s+' +       # DCL Time-Stamp
                 r'\$TSPWA,(\d{8}),(\d{6}),' +  # NMEA sentence header and date and time
-                r'(\d{5}),buoyID,,,' +         # Tri-Axys unit serial number
+                r'(\d{5}),(?:buoyID)?,,,' +    # Tri-Axys unit serial number
                 INTEGER + r',' +               # Number of Zero Crossings
                 FLOAT + r',' +                 # Average wave height (Havg)
                 FLOAT + r',' +                 # Tz (Mean Spectral  Period)
@@ -162,7 +162,7 @@ class Parser(ParserCommon):
             pattern = (
                 DCL_TIMESTAMP + r'\s+' +       # DCL Time-Stamp
                 r'\$TSPNA,(\d{8}),(\d{6}),' +  # NMEA sentence header and date and time
-                r'(\d{5}),buoyID,,,' +         # Tri-Axys unit serial number
+                r'(\d{5}),(?:buoyID)?,,,' +    # Tri-Axys unit serial number
                 INTEGER + r',' +               # Number of bands
                 FLOAT + r',' + FLOAT + r',' +  # Initial frequency and frequency spacing
                 STRING + NEWLINE               # rest of the data, including the checksum, comma separated
@@ -173,7 +173,7 @@ class Parser(ParserCommon):
             pattern = (
                 DCL_TIMESTAMP + r'\s+' +       # DCL Time-Stamp
                 r'\$TSPMA,(\d{8}),(\d{6}),' +  # NMEA sentence header and date and time
-                r'(\d{5}),buoyID,,,' +         # Tri-Axys unit serial number
+                r'(\d{5}),(?:buoyID)?,,,' +    # Tri-Axys unit serial number
                 INTEGER + r',' +               # Number of bands
                 FLOAT + r','+ FLOAT + r',' +   # Initial frequency and frequency spacing
                 FLOAT + r','+ FLOAT + r',' +   # Mean average direction and spread direction
@@ -185,7 +185,7 @@ class Parser(ParserCommon):
             pattern = (
                 DCL_TIMESTAMP + r'\s+' +       # DCL Time-Stamp
                 r'\$TSPFB,(\d{8}),(\d{6}),' +  # NMEA sentence header and date and time
-                r'(\d{5}),buoyID,,,' +         # Tri-Axys unit serial number
+                r'(\d{5}),(?:buoyID)?,,,' +    # Tri-Axys unit serial number
                 INTEGER + r',' +               # Number of bands
                 FLOAT + r',' + FLOAT + r',' +  # Initial frequency and frequency spacing
                 INTEGER + r',' +               # Number of directional bands
@@ -198,7 +198,7 @@ class Parser(ParserCommon):
             pattern = (
                 DCL_TIMESTAMP + r'\s+' +       # DCL Time-Stamp
                 r'\$TSPHA,(\d{8}),(\d{6}),' +  # NMEA sentence header and date and time
-                r'(\d{5}),buoyID,,,' +         # Tri-Axys unit serial number
+                r'(\d{5}),(?:buoyID)?,,,' +    # Tri-Axys unit serial number
                 INTEGER + r',' +               # Number of samples
                 FLOAT + r',' + FLOAT + r',' +  # Initial time and time spacing
                 INTEGER + r',' +               # M33 status
