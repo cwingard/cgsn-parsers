@@ -34,6 +34,7 @@ setup(name='cgsn_parsers',
           'nose',
           'numpy',
           'munch >= 2.1.0',
+          'pandas',
           'pytz'
       ],
       include_package_data=True,
