@@ -69,50 +69,61 @@ class Parser(ParserCommon):
         record_marker = [m.start() for m in REGEX.finditer(self.raw)]
 
         # if we have mopak records, then parse them one-by-one
+        accxs, accys, acczs = [], [], []
+        angxs, angys, angzs = [], [], []
+        magxs, magys, magzs = [], [], []
+        times, timers = [], []
+
         while record_marker:
             # set the start and stop points of the packet
             start = record_marker[0]
             stop = start + 43
 
             # parse the packet
-            self._build_parsed_values(self.raw[start:stop], epts)
+            packet = self.raw[start:stop]
+
+            # unpack the packet
+            (_, accx, accy, accz, angx, angy, angz,
+             magx, magy, magz, timer, check) = MOPAK.unpack(packet)
+
+            # Check the size
+            if len(packet) != 43:
+                print("Incorrect packet size")
+                print("MOPAK data packet failed to parse")
+                continue
+
+            # Check the checksum
+            if check != self._calc_checksum(packet[:-2]):
+                print("Checksum mismatch")
+                continue
+
+            times.append(epts + (timer / 62500.))
+            accxs.append(accx)
+            accys.append(accy)
+            acczs.append(accz)
+            angxs.append(angx)
+            angys.append(angy)
+            angzs.append(angz)
+            magxs.append(magx)
+            magys.append(magy)
+            magzs.append(magz)
+            timers.append(timer / 62500.)
 
             # grab the next packet
             record_marker.pop(0)
 
-    def _build_parsed_values(self, packet, epts):
-        """
-        Extract the data from the relevant byte groupings and assign to
-        elements of the data dictionary.
-        """
-        # unpack the packet
-        (_, accx, accy, accz, angx, angy, angz,
-         magx, magy, magz, timer, check) = MOPAK.unpack(packet)
-
-        # Check the size
-        if len(packet) != 43:
-            print("Incorrect packet size")
-            print("mopak data packet failed to parse")
-            return False
-
-        # Check the checksums
-        if check != self._calc_checksum(packet[:-2]):
-            print("Checksum mismatch")
-            return False
-
-        # assign the MOPAK header data to the named parameters
-        self.data.time.append(epts + (timer / 62500.))
-        self.data.acceleration_x.append(accx)
-        self.data.acceleration_y.append(accy)
-        self.data.acceleration_z.append(accz)
-        self.data.angular_rate_x.append(angx)
-        self.data.angular_rate_y.append(angy)
-        self.data.angular_rate_z.append(angz)
-        self.data.magnetometer_x.append(magx)
-        self.data.magnetometer_y.append(magz)
-        self.data.magnetometer_z.append(magz)
-        self.data.timer.append(timer / 62500.)
-        return True
+        # assign the accumulated MOPAK data to the named parameters
+        self.data.time = times
+        self.data.acceleration_x = accxs
+        self.data.acceleration_y = accys
+        self.data.acceleration_z = acczs
+        self.data.angular_rate_x = angxs
+        self.data.angular_rate_y = angys
+        self.data.angular_rate_z = angzs
+        self.data.magnetometer_x = magxs
+        self.data.magnetometer_y = magys
+        self.data.magnetometer_z = magzs
+        self.data.timer = timers
 
     @staticmethod
     def _calc_checksum(packet):
@@ -124,6 +135,7 @@ class Parser(ParserCommon):
         # reduce checksum to 2 significant bytes
         checksum &= 65535
         return checksum
+
 
 def main(argv=None):
     # load the input arguments
@@ -142,6 +154,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(mopak.data.toJSON())
+
 
 if __name__ == '__main__':
     main()
