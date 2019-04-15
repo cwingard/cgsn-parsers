@@ -79,8 +79,9 @@ class Parser(ParserCommon):
             start = record_marker[0]
             stop = start + 43
 
-            # parse the packet
+            # create the packet and setup to grab the next one
             packet = self.raw[start:stop]
+            record_marker.pop(0)
 
             # unpack the packet
             (_, accx, accy, accz, angx, angy, angz,
@@ -108,9 +109,6 @@ class Parser(ParserCommon):
             magys.append(magy)
             magzs.append(magz)
             timers.append(timer / 62500.)
-
-            # grab the next packet
-            record_marker.pop(0)
 
         # assign the accumulated MOPAK data to the named parameters
         self.data.time = times
