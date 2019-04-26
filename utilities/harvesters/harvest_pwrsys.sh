@@ -23,8 +23,17 @@ RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/proc"
 
 # Setup the input and output filenames as well as the absolute paths
-IN="$RAW/$PLATFORM/$DEPLOY/cg_data/pwrsys/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/pwrsys/${FILE%.log}.json"
+case $SWITCH in
+    "psc" )
+        IN="$RAW/$PLATFORM/$DEPLOY/cg_data/pwrsys/$FILE"
+        OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/pwrsys/${FILE%.log}.json" ;;
+    "mpea" )
+        IN="$RAW/$PLATFORM/$DEPLOY/cg_data/cpm3/pwrsys/$FILE"
+        OUT="$PARSED/$PLATFORM/$DEPLOY/mfn/pwrsys/${FILE%.log}.json" ;;
+    * )
+        echo "Unknown platform, please check the name again"
+        exit 0 ;;
+esac
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi
