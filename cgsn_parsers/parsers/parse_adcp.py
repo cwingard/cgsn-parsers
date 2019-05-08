@@ -34,9 +34,9 @@ PD0_REGEX = re.compile(PATTERN, re.DOTALL)
 
 # Regex set to find the text block(s) that comprise the PD8 formatted output data
 PATTERN = (
-    b'.*power on message\n(.*?\r\n(?:(?!.*power off message).*?\r\n)*)'
+    b'.*power on message.*\n(.*?\r\n(?:(?!.*power off message).*?\r\n)*)'
 )
-PD8_BLOCKS = re.compile(PATTERN, re.MULTILINE)
+PD8_BLOCKS = re.compile(PATTERN, re.MULTILINE | re.IGNORECASE)
 
 # Set an error message string for use when testing the parser switch.
 SWITCH_ERROR = 'Be sure PD data type is set correctly, via the switch argument, as either pd0 or pd8 (case insensitive).'
