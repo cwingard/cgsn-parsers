@@ -161,6 +161,7 @@ class Parser(object):
         # Use the ctd time to calculate an epoch timestamp (seconds since 1970-01-01)
         self.data.ctd.time.append(ctd_time + BASE)
 
+
 def main(argv=None):
     # load the input arguments
     args = inputs(argv)
@@ -179,6 +180,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(ctd.data.toJSON())
+
 
 if __name__ == '__main__':
     main()

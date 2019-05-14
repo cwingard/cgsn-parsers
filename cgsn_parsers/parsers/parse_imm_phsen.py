@@ -96,6 +96,7 @@ class Parser(ParserCommon):
         # set the time to seconds since 1970-01-01
         self.data.time.append(int(match.group(5), 16) + BASE)
 
+
 def main(argv=None):
     # load the input arguments
     args = inputs(argv)
@@ -113,6 +114,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(phsen.data.toJSON())
+
 
 if __name__ == '__main__':
     main()

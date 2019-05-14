@@ -25,6 +25,7 @@ REGEX_START = re.compile(PATTERN_START, re.DOTALL)
 
 _parameter_names_phsen = [
         'dcl_date_time_string',
+        'unique_id',
         'record_length',
         'record_type',
         'record_time',
@@ -95,6 +96,7 @@ class Parser(ParserCommon):
         self.data.time.append(epts)
         self.data.dcl_date_time_string.append(timestamp)
 
+        self.data.unique_id.append(int(sample[1:3], 16))
         self.data.record_length.append(int(sample[3:5], 16))
         self.data.record_type.append(int(sample[5:7], 16))
         self.data.record_time.append(int(sample[7:15], 16))
@@ -138,6 +140,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(phsen.data.toJSON())
+
 
 if __name__ == '__main__':
     main()
