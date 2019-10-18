@@ -86,7 +86,7 @@ class Parser(ParserCommon):
             marker = auto_marker
             regex = AUTO_REGEX
 
-        # if we have found polled record markers, work through the data...
+        # if we have found polled or autonomous record markers, work through the data...
         while marker:
             # for each record marker, set the start and stop points of the sample
             start = marker[0]
