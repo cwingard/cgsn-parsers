@@ -21,7 +21,7 @@ setup(name='cgsn_parsers',
       classifiers=[
           'Development Status :: 3 - Alpha',
           'License :: OSI Approved :: MIT License',
-          'Programming Language :: Python :: 3.7',
+          'Programming Language :: Python :: 3.5',
           'Topic :: Data Parsing :: JSON :: Scientific :: OOI',
       ],
       keywords='OOI Endurance Global Pioneer raw data parsing',
