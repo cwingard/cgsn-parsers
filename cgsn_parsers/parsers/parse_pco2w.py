@@ -13,17 +13,24 @@ import re
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP
 
-# Regex pattern for a line with a DCL time stamp, the "*" character, 4 unknown
-# characters (2 for a 1 byte hash of the unit serial number and calibration,
-# and 2 for the length byte), and a '11' (indicating a Type 11, or Device 1,
-# data record), all of which combine to denote the start of a sampling record.
-PATTERN = (
-    DCL_TIMESTAMP + r'\s+' +                  # DCL Time-Stamp
-    r'(\*[A-F0-9]{4}11[A-F0-9]+)' + r'\s' +   # Device 1 (external pump) sample collection
-    DCL_TIMESTAMP + r'\s+' +                  # DCL Time-Stamp
-    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)' + r'\s'     # Device 0 sample processing
+# Regex patterns for PCO2W data logged either via direct polling...
+POLLED_PATTERN = (
+    DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
+    r'(\*[A-F0-9]{4}11[A-F0-9]+)' + r'\s' +         # Device 1 (external pump) sample collection
+    DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
+    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
 )
-REGEX = re.compile(PATTERN, re.DOTALL)
+POLLED_REGEX = re.compile(POLLED_PATTERN, re.DOTALL)
+
+# ...or if the unit is configured to run autonomously.
+AUTO_PATTERN = (
+    DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
+    r'(\*[A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
+    r'[\s\S]*?' +                                    # Nonessential text and lines between samples
+    DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
+    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
+)
+AUTO_REGEX = re.compile(AUTO_PATTERN, re.DOTALL)
 
 _parameter_names_pco2w = [
     'collect_date_time',
@@ -67,35 +74,46 @@ class Parser(ParserCommon):
         dictionary object created using the Bunch class.
         """
         raw = ''.join(self.raw)
-        record_marker = [m.start() for m in REGEX.finditer(raw)]
+        polled_marker = [m.start() for m in POLLED_REGEX.finditer(raw)]
+        auto_marker = [m.start() for m in AUTO_REGEX.finditer(raw)]
+        marker = None
+        regex = None
 
-        # if we have found record markers, work through the data
-        while record_marker:
+        if polled_marker:
+            marker = polled_marker
+            regex = POLLED_REGEX
+        elif auto_marker:
+            marker = auto_marker
+            regex = AUTO_REGEX
+
+        # if we have found polled or autonomous record markers, work through the data...
+        while marker:
             # for each record marker, set the start and stop points of the sample
-            start = record_marker[0]
-            if len(record_marker) > 1:
+            start = marker[0]
+            if len(marker) > 1:
                 # stopping point is the next record marker
-                stop = record_marker[1]
+                stop = marker[1]
             else:
                 # stopping point is the end of the file
                 stop = len(raw)
 
-            # now create the initial sample string
+            # now create the initial sampling string
             sample = raw[start:stop]
-            match = REGEX.match(sample)
+            match = regex.match(sample)
 
-            # pull out of the sample string the DCL timestamps and a cleaned sample string
-            collect_time = match.group(1)
-            process_time = match.group(3)
-            sample = match.group(4) + match.group(5) + match.group(6)
+            if match:
+                # pull out of the initial sample string the DCL timestamps and a cleaned sample string
+                collect_time = match.group(1)
+                process_time = match.group(3)
+                cleaned = match.group(4) + match.group(5) + match.group(6)
 
-            # if we have a complete sample, process it.
-            if len(sample) == 81:
-                # print '%s --- %s\n' % (timestamp, sample)
-                self._build_parsed_values(collect_time, process_time, sample)
+                # if we have a complete sample, process it.
+                if len(cleaned) == 81:
+                    # print '%s --- %s\n' % (timestamp, sample)
+                    self._build_parsed_values(collect_time, process_time, cleaned)
 
             # bump to the next marker
-            record_marker.pop(0)
+            marker.pop(0)
 
     def _build_parsed_values(self, collect_time, process_time, sample):
         """
