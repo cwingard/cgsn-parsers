@@ -22,7 +22,7 @@ PATTERN = (
 REGEX = re.compile(PATTERN, re.DOTALL)
 
 # object from the struct class to read the binary portion of the data
-PD12 = struct.Struct('<2HI3BH6B4hi3B')
+PD12 = struct.Struct('<2HI3BH6BH3hi3B')
 VEL = struct.Struct('<4h')
 
 # assign parameter names
