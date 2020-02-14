@@ -22,11 +22,12 @@ PATTERN = (
 REGEX = re.compile(PATTERN, re.DOTALL)
 
 # object from the struct class to read the binary portion of the data
-PD12 = struct.Struct('<2HI3BH6BH3hi3B')
+PD12 = struct.Struct('<2HI3BH6B4hi3B')
 VEL = struct.Struct('<4h')
 
+# assign parameter names
 _parameter_names_pd12 = [
-    'record_number',
+    'imm_record_number',
     'ensemble_number',
     'unit_id',
     'cpu_firmware_version',
@@ -67,25 +68,41 @@ class Parser(ParserCommon):
         data into a pre-defined dictionary object created using the Bunch class.
         """
         for match in REGEX.findall(self.raw):
-            self._build_parsed_values(match)
+            try:
+                self._build_parsed_values(match)
+            except ValueError as e:
+                print(e)
+                continue
 
     def _build_parsed_values(self, match):
         """
         Extract the data from the relevant regex groups and assign to elements of the data dictionary.
         """
-        # record the record number
-        self.data.record_number.append(int(match[1]))
-
         # parse the binary data packet -- part 1 of 2
-        (_, _, ensemble_number, unit_id, cpu_firmware_version,
-         cpu_firmware_revision, year, month, day, hour,
-         minute, second, csecond, heading, pitch,
-         roll, temperature, pressure, _, start_bin, bins) = PD12.unpack(match[2][:34])
+        (packet_id, length, ensemble_number, unit_id, cpu_firmware_version,
+         cpu_firmware_revision, year, month, day, hour, minute, second, csecond,
+         heading, pitch, roll, temperature, pressure, _, start_bin, bins) = PD12.unpack(match[1][:34])
+
+        # Do we have a valid packet?
+        if packet_id != struct.unpack('<H', b'\x6E\x7F')[0]:
+            raise ValueError("Packet ID mismatch, excluding packet from IMM record %d" % int(match[0]))
+
+        # Calculate the checksum and test if we have a good packet
+        total = 0
+        for i in range(0, length):
+            total += match[1][i]
+
+        checksum = total & 65535    # bitwise and with 65535
+        if checksum != struct.unpack("<H", match[1][-2:])[0]:
+            raise ValueError("Checksum mismatch, excluding packet from IMM record %d" % int(match[0]))
 
         # construct date/time string
         dt_str = ("%4d/%02d/%02d %02d:%02d:%05.3f" % (year, month, day, hour, minute, (second + (csecond / 100))))
         epts = dcl_to_epoch(dt_str)     # convert to epoch time (seconds since 1970-01-01)
         self.data.time.append(epts)
+
+        # record the IMM record number
+        self.data.imm_record_number.append(int(match[0]))
 
         # assign the parameters
         self.data.ensemble_number.append(ensemble_number)
@@ -131,6 +148,7 @@ class Parser(ParserCommon):
         self.data.vertical_velocity.append(vertical)
         self.data.error_velocity.append(error)
 
+
 def main(argv=None):
     # load the input arguments
     args = inputs(argv)
@@ -148,6 +166,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(adcp.data.toJSON())
+
 
 if __name__ == '__main__':
     main()
