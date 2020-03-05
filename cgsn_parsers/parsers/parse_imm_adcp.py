@@ -30,8 +30,8 @@ _parameter_names_pd12 = [
     'imm_record_number',
     'ensemble_number',
     'unit_id',
-    'cpu_firmware_version',
-    'cpu_firmware_revision',
+    'firmware_version',
+    'firmware_revision',
     'year',
     'month',
     'day',
@@ -58,7 +58,6 @@ class Parser(ParserCommon):
     A Parser subclass that calls the ParserCommon base class, adds the ADCP PD12 specific methods to parse the data,
     and extracts the ADCP data records from the IMM log files.
     """
-
     def __init__(self, infile):
         self.initialize(infile, _parameter_names_pd12)
 
@@ -79,8 +78,8 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements of the data dictionary.
         """
         # parse the binary data packet -- part 1 of 2
-        (packet_id, length, ensemble_number, unit_id, cpu_firmware_version,
-         cpu_firmware_revision, year, month, day, hour, minute, second, csecond,
+        (packet_id, length, ensemble_number, unit_id, firmware_version,
+         firmware_revision, year, month, day, hour, minute, second, csecond,
          heading, pitch, roll, temperature, pressure, _, start_bin, bins) = PD12.unpack(match[1][:34])
 
         # Do we have a valid packet?
@@ -107,8 +106,8 @@ class Parser(ParserCommon):
         # assign the parameters
         self.data.ensemble_number.append(ensemble_number)
         self.data.unit_id.append(unit_id)
-        self.data.cpu_firmware_version.append(cpu_firmware_revision)
-        self.data.cpu_firmware_revision.append(cpu_firmware_version)
+        self.data.firmware_version.append(firmware_revision)
+        self.data.firmware_revision.append(firmware_version)
         self.data.year.append(year)
         self.data.month.append(month)
         self.data.day.append(day)
@@ -120,7 +119,7 @@ class Parser(ParserCommon):
         self.data.pitch.append(pitch * 0.01)
         self.data.roll.append(roll * 0.01)
         self.data.temperature.append(temperature * 0.01)
-        self.data.pressure.append(pressure * 0.01)
+        self.data.pressure.append(pressure)
         self.data.start_bin.append(start_bin)
         self.data.bins.append(bins)
 
@@ -134,7 +133,7 @@ class Parser(ParserCommon):
         north = []
         vertical = []
         error = []
-        for i in range(1, n):
+        for i in range(0, n):
             (a, b, c, d) = VEL.unpack(chunk[offset: offset + 8])
             east.append(a)
             north.append(b)
