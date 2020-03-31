@@ -106,8 +106,8 @@ class Parser(ParserCommon):
         # assign the parameters
         self.data.ensemble_number.append(ensemble_number)
         self.data.unit_id.append(unit_id)
-        self.data.firmware_version.append(firmware_revision)
-        self.data.firmware_revision.append(firmware_version)
+        self.data.firmware_version.append(firmware_version)
+        self.data.firmware_revision.append(firmware_revision)
         self.data.year.append(year)
         self.data.month.append(month)
         self.data.day.append(day)
