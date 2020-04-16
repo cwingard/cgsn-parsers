@@ -11,12 +11,12 @@ import re
 
 from munch import Munch as Bunch
 from calendar import timegm
-from datetime import datetime
+from datetime import datetime, timedelta
 from pytz import timezone
 from struct import unpack
 
 # Import common utilities and base classes
-from cgsn_parsers.parsers.common import ParserCommon, inputs
+from cgsn_parsers.parsers.common import ParserCommon, inputs, logfilename_to_nearest_half_hour, LOGFILENAME_TIMESTAMP
 
 # Regex pattern for a binary VEL3D data packet;
 VELOCITY_REGEX = b'(\xa5\x10)([\x00-\xff]{22})'     # velocity data packets
@@ -94,9 +94,8 @@ class ParameterNames(object):
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the Parser base class, adds the VEL3D specific
-    methods to parse the data, and extracts the VEL3D data records from the DCL
-    hourly log files.
+    A Parser subclass that calls the Parser base class, adds the VEL3D specific methods to parse the data,
+    and extracts the VEL3D data records from the DCL hourly log files.
     """
     def __init__(self, infile, sample_rate):
         # set the infile name and path
@@ -107,6 +106,20 @@ class Parser(ParserCommon):
         data = ParameterNames()
         self.data = data.create_dict()
         self.raw = None
+
+        # Determine the instrument start time from the file name (the date/time in the filename marks when the file
+        # was created). This timestamp is not entirely accurate. The first instance of a file created with a driver
+        # set to record hourly files gets time stamped for when the driver starts, which is shortly after the DCL
+        # boots up. After that, the files are generally time-stamped correctly (the first time the instrument is
+        # started during that hourly interval). Our problem is we are always restarting the DCL just before sampling,
+        # so we are always off by a couple of minutes. The solution is to round the file timestamp to the nearest
+        # half-hour. Since we always start this particular instrument class (used by EA only) at the bottom of the
+        # hour, this works out nicely and gets the instrument start time to within a few seconds of the actual start
+        # time.
+        dt_regex = re.compile(LOGFILENAME_TIMESTAMP, re.DOTALL)
+        match = dt_regex.search(infile)
+        self.file_start = logfilename_to_nearest_half_hour(match.group(1))
+        self.seconds = 0
 
     def parse_header(self):
         """
@@ -221,7 +234,12 @@ class Parser(ParserCommon):
         minute = self._convert_bcd(minute)
         second = self._convert_bcd(second)
         utc = datetime(year, month, day, hour, minute, second, tzinfo=timezone('UTC'))
+
+        # correct the instrument clock, using an offset to the file start time
+        utc = utc + abs(utc - self.file_start) + timedelta(seconds=self.seconds)
         epts = timegm(utc.timetuple())
+
+        # save the original clock data so we can cross-compare clock offsets and drift later
         date_array = [year, month, day, hour, minute, second]
 
         # assign the VEL3D header data to the named parameters
@@ -265,7 +283,13 @@ class Parser(ParserCommon):
         minute = self._convert_bcd(minute)
         second = self._convert_bcd(second)
         utc = datetime(year, month, day, hour, minute, second, tzinfo=timezone('UTC'))
+
+        # correct the instrument clock, using an offset to the file start time
+        utc = utc + abs(utc - self.file_start) + timedelta(seconds=self.seconds)
         epts = timegm(utc.timetuple())
+        self.seconds += 1   # increment seconds, system packets are recorded at 1 Hz
+
+        # save the original clock data so we can cross-compare clock offsets and drift later
         date_array = [year, month, day, hour, minute, second]
 
         # Assign the VEL3D system data to the named parameters

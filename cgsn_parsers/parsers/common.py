@@ -127,6 +127,20 @@ def logfilename_to_epoch(time_string):
 
     return epts
 
+def logfilename_to_nearest_half_hour(time_string):
+    """
+    Use the date and time string extracted from an hourly log filename to
+    calculate an epoch timestamp (seconds since 1970-01-01) with the minutes
+    rounded to the nearest half hour.
+    """
+    # convert file name date/time string to date/time object
+    dt_filename = datetime.datetime.strptime(time_string, '%Y%m%d_%H%M%S')
+    utc = dt_filename.replace(tzinfo=UTC)
+
+    # round to the nearest half hour
+    utc = pd.Timestamp(utc.isoformat()).round('30Min')
+    return utc
+
 
 def inputs(argv=None):
     """
