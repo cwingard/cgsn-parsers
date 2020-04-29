@@ -4,16 +4,14 @@
 @package cgsn_parsers.parsers.common
 @file cgsn_parsers/parsers/common.py
 @author Christopher Wingard
-@brief Provides common base classes, definitions and other utlities for all parsers.
+@brief Provides common base classes, definitions and other utilities for all parsers.
 """
 import argparse
-import datetime
 import pandas as pd
 import sys
 
 from munch import Munch as Bunch
 from calendar import timegm
-from pytz import timezone
 
 # Regex strings for use with the majority of parsers
 DCL_TIMESTAMP = r'(\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})'
@@ -24,9 +22,6 @@ FLTNAN = r'([+-]?\d+.\d+[Ee]?[+-]?\d*|NaN)'     # matches a float or a NaN, incl
 STRING = r'(\S+)'
 INTEGER = r'([+-]?[0-9]+)'
 NEWLINE = r'(?:\r\n|\n)?'
-
-# Set the timezone used for all date/time conversions
-UTC = timezone('UTC')
 
 
 class ParameterNames(object):
@@ -106,11 +101,11 @@ def dcl_to_epoch(time_string):
     else:
         tplus = 0.0
 
-    # convert the date and time string into a pandas datetime64 object
-    dt = pd.Timestamp(time_string)
+    # convert file name date/time string to a pandas.Timestamp date/time object
+    utc = pd.to_datetime(time_string, format='%Y/%m/%d %H:%M:%S.%f', utc=True)
 
     # calculate the epoch time as seconds since 1970-01-01 in UTC
-    epts = (dt.value / 1e9) + tplus
+    epts = timegm(utc.timetuple()) + tplus
 
     return epts
 
@@ -120,8 +115,9 @@ def logfilename_to_epoch(time_string):
     Use the date and time string extracted from an hourly log filename to 
     calculate an epoch timestamp (seconds since 1970-01-01)
     """
-    dt_filename = datetime.datetime.strptime(time_string, '%Y%m%d_%H%M%S')
-    utc = dt_filename.replace(tzinfo=UTC)
+    # convert file name date/time string to a pandas.Timestamp date/time object
+    utc = pd.to_datetime(time_string, format='%Y%m%d_%H%M%S', utc=True)
+
     # calculate the epoch time as seconds since 1970-01-01 in UTC
     epts = timegm(utc.timetuple())
 
@@ -130,15 +126,14 @@ def logfilename_to_epoch(time_string):
 def logfilename_to_nearest_half_hour(time_string):
     """
     Use the date and time string extracted from an hourly log filename to
-    calculate an epoch timestamp (seconds since 1970-01-01) with the minutes
-    rounded to the nearest half hour.
+    create a datetime object with the minutes rounded to the nearest half hour.
     """
-    # convert file name date/time string to date/time object
-    dt_filename = datetime.datetime.strptime(time_string, '%Y%m%d_%H%M%S')
-    utc = dt_filename.replace(tzinfo=UTC)
+    # convert file name date/time string to pandas.Timestamp date/time object
+    utc = pd.to_datetime(time_string, format='%Y%m%d_%H%M%S', utc=True)
 
     # round to the nearest half hour
-    utc = pd.Timestamp(utc.isoformat()).round('30Min')
+    utc = utc.round('30Min')
+
     return utc
 
 
