@@ -159,7 +159,7 @@ class Parser(ParserCommon):
         self.data.ground_fault_main.append(float(match.group(14)))
         self.data.ground_fault_sensors.append(float(match.group(15)))
 
-        self.data.leak_detect_enable.append(int(match.group(16), 16))
+        self.data.leak_detect_enable.append(int(match.group(16)))
         self.data.leak_detect_voltage1.append(int(match.group(17)))
         self.data.leak_detect_voltage2.append(int(match.group(18)))
 
@@ -207,7 +207,7 @@ class Parser(ParserCommon):
         self.data.heartbeat_delta.append(int(match.group(52)))
         self.data.heartbeat_threshold.append(int(match.group(53)))
 
-        self.data.wake_code.append(int(match.group(54)))
+        self.data.wake_code.append(int(match.group(54), 16))
         self.data.wake_time_count.append(float(match.group(55)))
         self.data.wake_power_count.append(int(match.group(56)))
 

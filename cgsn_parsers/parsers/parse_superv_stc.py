@@ -140,7 +140,7 @@ class Parser(ParserCommon):
         # Assign the remaining data to the named parameters
         self.data.main_voltage.append(float(match.group(2)))
         self.data.main_current.append(float(match.group(3)))
-        self.data.error_flags1.append(str(match.group(4)))
+        self.data.error_flags1.append(int(match.group(4)), 16)
 
         self.data.temperature1.append(float(match.group(5)))
         self.data.temperature2.append(float(match.group(6)))
@@ -162,7 +162,7 @@ class Parser(ParserCommon):
         self.data.heartbeat_delta.append(int(match.group(18)))
         self.data.heartbeat_threshold.append(int(match.group(19)))
 
-        self.data.wake_code.append(int(match.group(20)))
+        self.data.wake_code.append(int(match.group(20), 16))
 
         self.data.iridium_power_state.append(int(match.group(21)))
         self.data.iridium_voltage.append(float(match.group(22)))
@@ -189,7 +189,7 @@ class Parser(ParserCommon):
 
         self.data.dsl_power_state.append(int(match.group(37)))
 
-        self.data.error_flags2.append(str(match.group(38)))
+        self.data.error_flags2.append(int(match.group(38), 16))
 
         self.data.port1_power_state.append(int(match.group(39)))
         self.data.port1_voltage.append(float(match.group(40)))
