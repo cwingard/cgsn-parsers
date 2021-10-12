@@ -1,7 +1,7 @@
 # CGSN Parsers
 
 Python modules and shell script utilities used to parse the raw data files logged by the custom built CGSN data logger
-systems. Resulting parsed data is saved in .JSON files for further processing, analysis and plotting.
+systems. Resulting parsed data is saved in JSON files for further processing, analysis and plotting.
 
 The parsers convert the data from the different formats found in the raw log files (binary, ASCII, ASCIIHEX, mixed 
 ASCII/binary) into a common format (JSON) that can be used for further processing and analysis. They do not convert the
@@ -9,8 +9,8 @@ data values (for the most part) found within the raw data. In other words, if a 
 raw data file is reported in counts, the parser does not convert that measurement to scientific units.
 
 An exception to the above conversion applies to calculating an Epoch time stamp (seconds since 1970-01-01) from the date
-and time string information contained in the files. The preferred source of time is the DCL timestamp as those systems
-are synced to GPS via a LAN NTP server and are accurate to within a few milliseconds.
+and time string information contained in the files. The preferred source of time is the DCL timestamp as the DCL systems
+are synced to GPS via a LAN NTP server and their clocks are accurate to within a few milliseconds.
 
 # Usage
 
@@ -27,8 +27,8 @@ This code is provided "as-is" for other users who may wish to interact directly 
 
 # Directory Organization
 
-The python code for this project is available in the cgsn_parsers/parsers directory. Unit tests are available in the 
-cgsn_parsers/tests directory.
+The python code for this project is available in the cgsn_parsers/parsers directory. A limited number of unit tests are 
+available in the cgsn_parsers/tests directory.
 
 Examples for how to work with some of the parsers are presented in the notebooks directory using 
 [Jupyter](http://jupyter.org/) Notebooks.
@@ -42,14 +42,15 @@ user and system in mind. Others will need to adapt these scripts to fit their ow
 # Requirements
 
 This code was written and tested against Python 3.5.2 using Anaconda from [Continuum Analytics](https://www.continuum.io/).
-The code has been used on Windows machines (7 and 10), as well as Linux servers running CentOS 6 and 7 and Debian 8.
+The code has been used on Windows machines (7 and 10), as well as Linux servers running CentOS 6, 7 and 8, Ubuntu 20.
+04, and Debian 8.
 
-The following additional python packages, beyond those provided by anaconda or miniconda are used
-by this code:
+The following python packages are used by this code:
 
    * nose (provided in anaconda)
    * numpy (provided in anaconda)
    * munch >= 2.1.0
+   * pandas
    * pytz (provided in anaconda)
 
 # Contributing
