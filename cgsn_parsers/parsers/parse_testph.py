@@ -14,44 +14,51 @@ from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, INTEGER, NEWLINE
 
 # Set regex strings to find the pH data from the sensors.
-pattern = (
-    DCL_TIMESTAMP + r'\s+' +        # DCL Time-Stamp
-    FLOAT + r'\s+' +                # pressure (dbar)
-    FLOAT + r'\s+' +                # Temperature (degC)
-    FLOAT + r'\s+' +                # conductivity (S/cm)
-    FLOAT + r'\s+' +                # salinity (psu)
-    FLOAT + r'\s+' +                # oxygen (%)
-    FLOAT + r'\s+' +                # oxygen (ppm)
-    FLOAT + r'\s+' +                # pH
-    FLOAT + r'\s+' +                # external reference
+IDRON_REGEX = (
+    DCL_TIMESTAMP + r'\s*' +        # DCL Time-Stamp
+    FLOAT + r'\s*' +                # pressure (dbar)
+    FLOAT + r'\s*' +                # Temperature (degC)
+    FLOAT + r'\s*' +                # conductivity (S/m)
+    FLOAT + r'\s*' +                # salinity (psu)
+    FLOAT + r'\s*' +                # oxygen (%)
+    FLOAT + r'\s*' +                # oxygen (ppm)
+    FLOAT + r'\s*' +                # pH
+    FLOAT + r'\s*' +                # external reference
     r'(\d{2}:\d{2}:\d{2}.\d{2})' +  # instrument clock
-    r'(\w{2})' + NEWLINE            # memory status
+    r'(\S{2})' + NEWLINE            # memory status
 )
-IDRON_REGEX = re.compile(pattern, re.DOTALL)
 
-pattern = (
-    DCL_TIMESTAMP + r'\s+' +        # DCL Time-Stamp
-    r'DSPHOX(\d{5})' + r',\s+' +    # Serial number
-    r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})' + r',\s+' +  # Instrument clock
-    INTEGER + r',\s+' +             # Sample Number
-    INTEGER + r',\s+' +             # Error code
-    FLOAT + r',\s+' +               # Temperature (degC)
-    FLOAT + r',\s+' +               # pH
-    FLOAT + r',\s+' +               # external reference electrode (volts)
-    FLOAT + r',\s+' +               # pressure (dbar)
-    FLOAT + r',\s+' +               # salinity (psu)
-    FLOAT + r',\s+' +               # conductivity (mS/cm)
-    FLOAT + r',\s+' +               # oxygen (mL/L)
-    FLOAT + r',\s+' +               # internal relative humidity (%)
+SPHOX_REGEX = (
+    DCL_TIMESTAMP + r'\s*' +        # DCL Time-Stamp
+    r'DSPHOX(\d{5}),' + r'\s*' +    # Serial number
+    r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}),' + r'\s*' +  # Instrument clock
+    INTEGER + r',\s*' +             # Sample Number
+    INTEGER + r',\s*' +             # Error code
+    FLOAT + r',\s*' +               # Temperature (degC)
+    FLOAT + r',\s*' +               # pH
+    FLOAT + r',\s*' +               # external reference electrode (volts)
+    FLOAT + r',\s*' +               # pressure (dbar)
+    FLOAT + r',\s*' +               # salinity (psu)
+    FLOAT + r',\s*' +               # conductivity (mS/cm)
+    FLOAT + r',\s*' +               # oxygen (mL/L)
+    FLOAT + r',\s*' +               # internal relative humidity (%)
     FLOAT + NEWLINE                 # internal temperature (degC)
 )
-SPHOX_REGEX = re.compile(pattern, re.DOTALL)
 
 # Set an error message string for use when testing the parser switch.
 SWITCH_ERROR = 'The test pH sensor must be a string set as either idron or sphox (case insensitive).'
 
 
 def _parameter_names_phtest(ph_type):
+    """
+    Create the list of parameter names corresponding to the pH sensor being
+    used for the test. Options are either the Idronaut Ocean Seven 310, or the
+    Sea-Bird Deep SeapHOx V2.
+
+    :param ph_type: string indicating the ph sensor type
+    :return parameter_names: list of parameter names
+    """
+    parameter_names = None
 
     if ph_type == 'idron':
         parameter_names = [
@@ -114,6 +121,8 @@ class Parser(ParserCommon):
         Iterate through the record lines (defined via the regex expression above) in the data object, and parse the
         data into a pre-defined dictionary object created using the Bunch class.
         """
+        regex = None
+
         if self.ph_type == 'idron':
             regex = re.compile(IDRON_REGEX, re.DOTALL)
 
@@ -148,10 +157,10 @@ class Parser(ParserCommon):
             self.data.memory_status.append(str(match.group(11)))
 
         if self.ph_type == 'sphox':
-            self.data.serial_number.append(int(match.group(2)))
+            self.data.serial_number.append(str(match.group(2)))
             self.data.sphox_date_time_string.append(str(match.group(3)))
             self.data.sample_number.append(int(match.group(4)))
-            self.data.error_flag.append(int(match.group(5)))
+            self.data.error_flag.append(str(match.group(5)))
             self.data.temperature.append(float(match.group(6)))
             self.data.seawater_ph.append(float(match.group(7)))
             self.data.external_reference.append(float(match.group(8)))
@@ -170,21 +179,21 @@ def main(argv=None):
     outfile = os.path.abspath(args.outfile)
     ph_type = args.switch
 
-    # initialize the Parser object for pH data, set default type to solo if no switch was input
+    # initialize the Parser object for the pH data
     try:
-        phtest = Parser(infile, ph_type)
+        ph = Parser(infile, ph_type)
     except ValueError as e:
         print(SWITCH_ERROR)
         return None
 
     # load the data into a buffered object and parse the data into a dictionary
-    phtest.load_ascii()
-    phtest.parse_data()
+    ph.load_ascii()
+    ph.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON formatted data file (note, no pretty-printing
     # keeping things compact)
     with open(outfile, 'w') as f:
-        f.write(phtest.data.toJSON())
+        f.write(ph.data.toJSON())
 
 
 if __name__ == '__main__':
