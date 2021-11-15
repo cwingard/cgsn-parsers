@@ -74,8 +74,7 @@ def _parameter_names_phtest(ph_type):
             'idron_time_string',
             'memory_status'
         ]
-
-    if ph_type == 'sphox':
+    elif ph_type == 'sphox':
         parameter_names = [
             'dcl_date_time_string',
             'serial_number',
@@ -92,6 +91,8 @@ def _parameter_names_phtest(ph_type):
             'internal_humidity',
             'internal_temperature'
         ]
+    else:
+        raise ValueError(SWITCH_ERROR)
 
     return parameter_names
 
