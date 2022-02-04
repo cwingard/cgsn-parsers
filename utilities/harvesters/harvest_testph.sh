@@ -34,5 +34,5 @@ fi
 # Parse the file
 if [ -e $IN ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    python -m cgsn_parsers.parsers.parse_phtest -i $IN -o $OUT -s $PHTEST
+    python -m cgsn_parsers.parsers.parse_testph -i $IN -o $OUT -s $PHTEST
 fi
