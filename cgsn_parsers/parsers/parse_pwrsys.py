@@ -217,8 +217,8 @@ class Parser(ParserCommon):
 
         if self.pwrsys_type == 'mpea':
             # Assign the remaining MPEA data to the named parameters
-            self.data.error_flag1.append(str(match.group(4)))
-            self.data.error_flag2.append(str(match.group(5)))
+            self.data.error_flag1.append(int(match.group(4), 16))
+            self.data.error_flag2.append(int(match.group(5), 16))
             self.data.cv1_state.append(int(match.group(6)))
             self.data.cv1_voltage.append(float(match.group(7)))
             self.data.cv1_current.append(float(match.group(8)))
@@ -253,9 +253,9 @@ class Parser(ParserCommon):
         if self.pwrsys_type == 'psc':
             # Assign the remaining PSC data to the named parameters
             self.data.percent_charge.append(float(match.group(4)))
-            self.data.override_flag.append(str(match.group(5)))
-            self.data.error_flag1.append(str(match.group(6)))
-            self.data.error_flag2.append(str(match.group(7)))
+            self.data.override_flag.append(int(match.group(5), 16))
+            self.data.error_flag1.append(int(match.group(6), 16))
+            self.data.error_flag2.append(int(match.group(7), 16))
             self.data.solar_panel1_state.append(int(match.group(8)))
             self.data.solar_panel1_voltage.append(float(match.group(9)))
             self.data.solar_panel1_current.append(float(match.group(10)))
@@ -306,7 +306,7 @@ class Parser(ParserCommon):
             self.data.cvt_current.append(float(match.group(55)))
             self.data.cvt_interlock.append(int(match.group(56)))
             self.data.cvt_temperature.append(float(match.group(57)))
-            self.data.error_flag3.append(str(match.group(58)))
+            self.data.error_flag3.append(int(match.group(58), 16))
 
 
 def main(argv=None):

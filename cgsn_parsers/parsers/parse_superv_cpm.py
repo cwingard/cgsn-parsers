@@ -131,7 +131,7 @@ class Parser(ParserCommon):
         self.data.ground_fault_main.append(float(match.group(14)))
         self.data.ground_fault_9522_fw.append(float(match.group(15)))
 
-        self.data.leak_detect_enable.append(int(match.group(16), 16))
+        self.data.leak_detect_enable.append(int(match.group(16)))
         self.data.leak_detect_voltage1.append(int(match.group(17)))
         self.data.leak_detect_voltage2.append(int(match.group(18)))
 
@@ -139,14 +139,14 @@ class Parser(ParserCommon):
         self.data.heartbeat_delta.append(int(match.group(20)))
         self.data.heartbeat_threshold.append(int(match.group(21)))
 
-        self.data.wake_code.append(int(match.group(22)))
+        self.data.wake_code.append(int(match.group(22), 16))
 
         self.data.iridium_power_state.append(int(match.group(23)))
         self.data.iridium_voltage.append(float(match.group(24)))
         self.data.iridium_current.append(float(match.group(25)))
         self.data.iridium_error_flag.append(int(match.group(26)))
 
-        self.data.fwwf_power_state.append(int(match.group(27), 16))
+        self.data.fwwf_power_state.append(int(match.group(27)))
         self.data.fwwf_voltage.append(float(match.group(28)))
         self.data.fwwf_current.append(float(match.group(29)))
         self.data.fwwf_power_flag.append(int(match.group(30)))
@@ -162,7 +162,7 @@ class Parser(ParserCommon):
         self.data.wake_time_count.append(float(match.group(36)))
         self.data.wake_power_count.append(int(match.group(37)))
 
-        self.data.esw_power_state.append(int(match.group(38), 16))
+        self.data.esw_power_state.append(int(match.group(38)))
 
         self.data.dsl_power_state.append(int(match.group(39)))
 

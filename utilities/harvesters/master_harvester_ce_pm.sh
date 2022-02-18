@@ -51,7 +51,7 @@ fi
 
 # And now process the MMP data, first setting the MMP input and output directories
 RAW="/home/ooiuser/data/raw/$PLATFORM/$DEPLOY/imm/mmp"
-PROC="/home/ooiuser/data/proc/$PLATFORM/$DEPLOY/imm/mmp"
+PROC="/home/ooiuser/data/parsed/$PLATFORM/$DEPLOY/imm/mmp"
 if [ ! -d $PROC ]; then
     # Make the output directory, if it doesn't exist
     /bin/mkdir -p $PROC

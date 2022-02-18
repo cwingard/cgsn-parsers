@@ -17,7 +17,7 @@ FILE=`basename $3`
 RAW=`dirname $3`
 
 # Set the default directory paths
-PARSED="/home/ooiuser/data/proc"
+PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/3dmgx3/${FILE%.log}.json"

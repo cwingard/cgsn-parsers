@@ -22,7 +22,7 @@ FILE=`basename $6`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
-PARSED="/home/ooiuser/data/proc"
+PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$PHTEST/$FILE"
@@ -34,5 +34,5 @@ fi
 # Parse the file
 if [ -e $IN ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    python -m cgsn_parsers.parsers.parse_phtest -i $IN -o $OUT -s $PHTEST
+    python -m cgsn_parsers.parsers.parse_testph -i $IN -o $OUT -s $PHTEST
 fi
