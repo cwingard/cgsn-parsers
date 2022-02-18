@@ -18,7 +18,7 @@ FILE=`basename $3`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
-PARSED="/home/ooiuser/data/proc"
+PARSED="/home/ooiuser/data/parsed"
 
 IN="$RAW/$PLATFORM/$DEPLOY/syslog/$FILE"
 OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/superv/${FILE%.log}.json"

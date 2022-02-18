@@ -22,7 +22,7 @@ FILE=`basename $5`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
-PARSED="/home/ooiuser/data/proc"
+PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output file names as well as the absolute paths
 if [ $CPM = "cpm1" ]; then

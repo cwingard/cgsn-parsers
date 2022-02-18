@@ -17,7 +17,7 @@ FTYPE=${3^^}
 
 # setup the base directories and the python parser used for creating the JSON formatted file
 RAW="/home/ooiuser/data/raw/$PLATFORM/$DEPLOY/extract"
-PROC="/home/ooiuser/data/proc/$PLATFORM/$DEPLOY"
+PROC="/home/ooiuser/data/parsed/$PLATFORM/$DEPLOY"
 if [ ! -d $PROC ]; then
     # Make the output directory, if it doesn't exist
     /bin/mkdir -p $PROC

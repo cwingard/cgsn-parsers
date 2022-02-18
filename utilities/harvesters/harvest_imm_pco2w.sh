@@ -18,7 +18,7 @@ RAW=`dirname $3`
 PCO2W=`basename $RAW`
 
 # Set the default directory paths
-PARSED="/home/ooiuser/data/proc"
+PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 OUT="$PARSED/$PLATFORM/$DEPLOY/imm/$PCO2W/${FILE%.DAT}.json"

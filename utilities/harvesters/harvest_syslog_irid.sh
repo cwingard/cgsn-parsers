@@ -18,7 +18,7 @@ FILE=`basename $3`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
-PARSED="/home/ooiuser/data/proc"
+PARSED="/home/ooiuser/data/parsed"
 
 if [ -z "${PLATFORM/*pm*}" ]; then
     # path is different for profiler moorings

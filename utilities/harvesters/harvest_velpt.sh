@@ -23,7 +23,7 @@ FILE=`basename $6`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
-PARSED="/home/ooiuser/data/proc"
+PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$VELPT/$FILE"
