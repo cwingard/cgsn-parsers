@@ -71,7 +71,7 @@ def _parameter_names_nutnr(nutnr_type):
         parameter_names.extend([
             'nitrogen_in_nitrate',
             'absorbance_254',
-            'absorbance_250',
+            'absorbance_350',
             'bromide_trace',
             'spectral_average',
             'dark_value',
@@ -173,7 +173,7 @@ class Parser(ParserCommon):
         if self.nutnr_type == 'suna':
             self.data.nitrogen_in_nitrate.append(float(data[3]))
             self.data.absorbance_254.append(float(data[4]))
-            self.data.absorbance_250.append(float(data[5]))
+            self.data.absorbance_350.append(float(data[5]))
             self.data.bromide_trace.append(float(data[6]))
             self.data.spectral_average.append(int(data[7]))
             self.data.dark_value.append(int(data[8]))
