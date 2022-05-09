@@ -120,7 +120,7 @@ class TestParsingUnit(unittest.TestCase):
         np.testing.assert_array_equal(parsed['nitrate_concentration'], self.suna_expected[:, 3])
         np.testing.assert_array_equal(parsed['nitrogen_in_nitrate'], self.suna_expected[:, 4])
         np.testing.assert_array_equal(parsed['absorbance_254'], self.suna_expected[:, 5])
-        np.testing.assert_array_equal(parsed['absorbance_250'], self.suna_expected[:, 6])
+        np.testing.assert_array_equal(parsed['absorbance_350'], self.suna_expected[:, 6])
         np.testing.assert_array_equal(parsed['bromide_trace'], self.suna_expected[:, 7])
         np.testing.assert_array_equal(parsed['spectral_average'], self.suna_expected[:, 8])
         np.testing.assert_array_equal(parsed['dark_value'], self.suna_expected[:, 9])
