@@ -140,7 +140,7 @@ class Parser(ParserCommon):
         # Assign the remaining data to the named parameters
         self.data.main_voltage.append(float(match.group(2)))
         self.data.main_current.append(float(match.group(3)))
-        self.data.error_flags1.append(int(match.group(4)), 16)
+        self.data.error_flags1.append(int(match.group(4), 16))
 
         self.data.temperature1.append(float(match.group(5)))
         self.data.temperature2.append(float(match.group(6)))
@@ -223,7 +223,7 @@ def main(argv=None):
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for METBK
+    # initialize the Parser object for the supervisor log file
     superv = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
@@ -234,6 +234,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(superv.data.toJSON())
+
 
 if __name__ == '__main__':
     main()
