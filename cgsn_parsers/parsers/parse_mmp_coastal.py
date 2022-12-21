@@ -34,6 +34,7 @@ EFILE_MATCHER = re.compile(EPATTERN, re.DOTALL)
 
 # Regex pattern for the CTD and dissolved oxygen data from the 'C' files
 CPATTERN = (
+    r'\s*' +
     FLOAT + r'\s+' +  # conductivity (mmho/cm)
     FLOAT + r'\s+' +  # temperature (degC)
     FLOAT + r'\s+' +  # pressure (dbar)
