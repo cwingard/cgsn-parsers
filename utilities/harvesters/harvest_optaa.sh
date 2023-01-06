@@ -19,13 +19,13 @@ DEPLOY=${2^^}
 DCL=${3,,}
 OPTAA=${4,,}
 SUBASY=${5,,}
-FILE=`basename $6`
+FILEPATH=$6
+FILE=`basename $FILEPATH`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
-IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$OPTAA/$FILE"
 OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/optaa/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
@@ -34,5 +34,5 @@ fi
 # Parse the file
 if [ ! -e $OUT ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    python -m cgsn_parsers.parsers.parse_optaa -i $IN -o $OUT
+    python -m cgsn_parsers.parsers.parse_optaa -i $FILEPATH -o $OUT
 fi
