@@ -16,14 +16,14 @@ fi
 PLATFORM=${1,,}
 DEPLOY=${2^^}
 DCL=${3,,}
-FILE=`basename $4`
+FILEPATH=$4
+FILE=`basename $FILEPATH`
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
-IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/vel3d/$FILE"
 OUT="$PARSED/$PLATFORM/$DEPLOY/mfn/vel3d/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
@@ -32,5 +32,5 @@ fi
 # Parse the file
 if [ ! -e $OUT ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    python -m cgsn_parsers.parsers.parse_vel3d -i $IN -o $OUT -s 8
+    python -m cgsn_parsers.parsers.parse_vel3d -i $FILEPATH -o $OUT -s 8
 fi
