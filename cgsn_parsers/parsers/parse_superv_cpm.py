@@ -15,7 +15,7 @@ from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLO
 
 # Regex pattern for a line with a DCL time stamp
 PATTERN = (
-    DCL_TIMESTAMP + r'\ssuperv\scpm:\s' +
+    DCL_TIMESTAMP + r'\s(?:superv|DAT\sSUPERV)\scpm:\s+' +
     FLOAT + r'\s' + FLOAT + r'\s' + FLOAT + r'\s' + FLOAT + r'\s' + r'([0-9a-f]{8})\s' +
     r't\s' + FLOAT + r'\s' + FLOAT + r'\s' +
     r'h\s' + FLOAT + r'\s' +
@@ -39,46 +39,46 @@ PATTERN = (
 REGEX = re.compile(PATTERN, re.DOTALL)
 
 _parameter_names_superv = [
-        'cpm_date_time_string',
-        'main_voltage',
-        'main_current',
-        'backup_battery_voltage',
-        'backup_battery_current',
-        'error_flags',
-        'temperature1',
-        'temperature2',
-        'humidity',
-        'pressure',
-        'ground_fault_enable',
-        'ground_fault_sbd',
-        'ground_fault_gps',
-        'ground_fault_main',
-        'ground_fault_9522_fw',
-        'leak_detect_enable',
-        'leak_detect_voltage1',
-        'leak_detect_voltage2',
-        'heartbeat_enable',
-        'heartbeat_delta',
-        'heartbeat_threshold',
-        'wake_code',
-        'iridium_power_state',
-        'iridium_voltage',
-        'iridium_current',
-        'iridium_error_flag',
-        'fwwf_power_state',
-        'fwwf_voltage',
-        'fwwf_current',
-        'fwwf_power_flag',
-        'gps_power_state',
-        'sbd_power_state',
-        'sbd_message_pending',
-        'pps_source',
-        'dcl_power_state',
-        'wake_time_count',
-        'wake_power_count',
-        'esw_power_state',
-        'dsl_power_state'
-    ]
+    'cpm_date_time_string',
+    'main_voltage',
+    'main_current',
+    'backup_battery_voltage',
+    'backup_battery_current',
+    'error_flags',
+    'temperature1',
+    'temperature2',
+    'humidity',
+    'pressure',
+    'ground_fault_enable',
+    'ground_fault_sbd',
+    'ground_fault_gps',
+    'ground_fault_main',
+    'ground_fault_9522_fw',
+    'leak_detect_enable',
+    'leak_detect_voltage1',
+    'leak_detect_voltage2',
+    'heartbeat_enable',
+    'heartbeat_delta',
+    'heartbeat_threshold',
+    'wake_code',
+    'iridium_power_state',
+    'iridium_voltage',
+    'iridium_current',
+    'iridium_error_flag',
+    'fwwf_power_state',
+    'fwwf_voltage',
+    'fwwf_current',
+    'fwwf_power_flag',
+    'gps_power_state',
+    'sbd_power_state',
+    'sbd_message_pending',
+    'pps_source',
+    'dcl_power_state',
+    'wake_time_count',
+    'wake_power_count',
+    'esw_power_state',
+    'dsl_power_state'
+]
 
 
 class Parser(ParserCommon):
