@@ -15,7 +15,7 @@ from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLO
 
 # Regex pattern for a DCL supervisor log
 PATTERN = (
-    DCL_TIMESTAMP + r'\s+superv\s+dcl:\s+' +
+    DCL_TIMESTAMP + r'\s+(?:superv|DAT\sSUPERV)\s+dcl:\s+' +
     FLOAT + r'\s+' + FLOAT + r'\s+' + r'([0-9a-f]{8})\s+' +
     r't\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' + FLOAT + r'\s+' +
     r'h\s+' + FLOAT + r'\s+'
