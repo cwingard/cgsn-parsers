@@ -35,7 +35,7 @@ class TestParsingUnit(unittest.TestCase):
     def setUp(self):
         """
         Using sample data files from above, initialize the Parser objects for each of the 3 pwrsys data output formats
-        and setup the expected output arrays.
+        and set up the expected output arrays.
         """
         # Initialize Parser objects for the pwrsys types defined above.
         self.pwrsys_psc = Parser(TEST_DATA_PWRSYS_PSC, 'psc')
