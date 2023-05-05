@@ -8,8 +8,9 @@
 
 # Parse the command line inputs
 if [ $# -ne 4 ]; then
-    echo "$0: required inputs are the platform and deployment names, a string indicating"
-    echo "which type of power system [psc/mpea] is being parsed, and the name of the file to process."
+    echo "$0: required inputs are the platform and deployment names, a string"
+    echo " indicating which type of power system [psc/syslog/mpea] is being"
+    echo " parsed, and the name of the file to process."
     echo "     example: $0 ce07shsm D00005 psc 20150505.pwrsys.log"
     exit 1
 fi
@@ -27,6 +28,9 @@ case $SWITCH in
     "psc" )
         IN="$RAW/$PLATFORM/$DEPLOY/cg_data/pwrsys/$FILE"
         OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/pwrsys/${FILE%.log}.json" ;;
+    "syslog" )
+        IN="$RAW/$PLATFORM/$DEPLOY/cg_data/syslog/$FILE"
+        OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/pwrsys/${FILE%.log}.json" ;;
     "mpea" )
         IN="$RAW/$PLATFORM/$DEPLOY/cg_data/cpm3/pwrsys/$FILE"
         OUT="$PARSED/$PLATFORM/$DEPLOY/mfn/pwrsys/${FILE%.log}.json" ;;
@@ -34,12 +38,12 @@ case $SWITCH in
         echo "Unknown platform, please check the name again"
         exit 0 ;;
 esac
-if [ ! -d `dirname $OUT` ]; then
-    mkdir -p `dirname $OUT`
+if [ ! -d "$(dirname $OUT)" ]; then
+    mkdir -p "$(dirname $OUT)"
 fi
 
 # Parse the file
 if [ -e $IN ]; then
-    cd /home/ooiuser/code/cgsn-parsers
+    cd /home/ooiuser/code/cgsn-parsers || exit
     python -m cgsn_parsers.parsers.parse_pwrsys -i $IN -o $OUT -s $SWITCH
 fi

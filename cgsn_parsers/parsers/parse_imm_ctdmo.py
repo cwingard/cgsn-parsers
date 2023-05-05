@@ -36,7 +36,7 @@ data = (
 )
 DATA = re.compile(data, re.DOTALL)
 
-# setup a base timestamp to convert the CTD time in seconds since 2000 to an epoch timestamp (seconds since 1970)
+# set up a base timestamp to convert the CTD time in seconds since 2000 to an epoch timestamp (seconds since 1970)
 dt = datetime.strptime('2000-01-01', '%Y-%m-%d')
 dt.replace(tzinfo=timezone('UTC'))
 BASE = timegm(dt.timetuple())
@@ -148,14 +148,12 @@ class Parser(object):
         self.data.ctd.raw_conductivity.append(int(match.group(2), 16))
 
         # pressure in reverse byte order
-        swap = array.array('H', unhexlify(match.group(3)))
-        swap.byteswap()
-        self.data.ctd.raw_pressure.append(unpack('>H', swap.tobytes())[0])
+        dbar = bytearray(unhexlify(match.group(3)))
+        self.data.ctd.raw_pressure.append(int.from_bytes(dbar, 'little'))
 
         # ctd time in reverse byte order
-        swap = array.array('I', unhexlify(match.group(4)))
-        swap.byteswap()
-        ctd_time = unpack('>I', swap.tobytes())[0]
+        ctime = bytearray(unhexlify(match.group(4)))
+        ctd_time = int.from_bytes(ctime, 'little')  # seconds since 2000-01-01
         self.data.ctd.ctd_time.append(ctd_time)
 
         # Use the ctd time to calculate an epoch timestamp (seconds since 1970-01-01)

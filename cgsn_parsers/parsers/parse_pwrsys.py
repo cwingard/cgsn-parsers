@@ -15,7 +15,7 @@ from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLO
 
 # Regex pattern for the Power System Controller (PSC) records
 PATTERN_PSC = (
-    DCL_TIMESTAMP + r'\sPwrSys\spsc:\s' +
+    DCL_TIMESTAMP + r'\s(?:PwrSys|DAT\sC_POWER_SYS)\spsc:\s' +
     FLOAT + r'\s' + FLOAT + r'\s' + FLOAT + r'\s' +
     r'([0-9a-f]{4})\s([0-9a-f]{8})\s([0-9a-f]{8})\s' +
     r'pv1\s([0-1]{1})\s' + FLOAT + r'\s' + FLOAT + r'\s' +
