@@ -15,7 +15,7 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 FILE=`basename $3`
 RAW=`dirname $3`
-ADCP='basename $RAW'
+ADCP=`basename $RAW`
 ADCP_NUM=${ADCP##*-}
 
 ADCP="imm-adcp-${ADCP_NUM}"
