@@ -23,13 +23,15 @@ SUBASY=${5,,}
 SWITCH=${6,,}
 FILE=`basename $7`
 
+NUTNR_NUM=${NUTNR##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$NUTNR/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/$NUTNR/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/nutnr-$NUTNR_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

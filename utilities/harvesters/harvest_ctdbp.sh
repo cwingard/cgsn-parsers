@@ -21,13 +21,15 @@ SUBASY=${5,,}
 SWITCH=${6,,}
 FILE=`basename $7`
 
+CTDBP_NUM=${CTDBP##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$CTDBP/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/ctdbp/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/ctdbp-$CTDBP_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

@@ -23,7 +23,7 @@ PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/dcl12/fdchp/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/fdchp/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/fdchp-1/${FILE%.log}.json"
 
 # Parse the file
 if [ -e $IN ]; then

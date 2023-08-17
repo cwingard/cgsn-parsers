@@ -21,6 +21,8 @@ SPKIR=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
+SPKIR_NUM=${SPKIR##*-}
+
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
@@ -28,7 +30,7 @@ PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$SPKIR/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/spkir/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/spkir-$SPKIR_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

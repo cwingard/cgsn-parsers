@@ -21,13 +21,15 @@ PCO2W=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
+PCO2W_NUM=${PCO2W##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$PCO2W/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/pco2w/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/pco2w-$PCO2W_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

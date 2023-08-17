@@ -23,7 +23,7 @@ PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/dcl12/wavss/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/wavss/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/wavss-1/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

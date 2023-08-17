@@ -21,13 +21,15 @@ DOSTA=$4
 SUBASY=${5,,}
 FILE=`basename $6`
 
+DOSTA_NUM=${DOSTA##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$DOSTA/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/dosta/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/dosta-$DOSTA_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

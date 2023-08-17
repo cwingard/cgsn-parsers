@@ -22,11 +22,13 @@ SUBASY=${5,,}
 FILEPATH=$6
 FILE=`basename $FILEPATH`
 
+OPTAA_NUM=${OPTAA##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/optaa/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/optaa-$OPTAA_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

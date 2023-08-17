@@ -21,13 +21,15 @@ FLORT=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
+FLORT_NUM=${FLORT##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$FLORT/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/flort/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/flort-$FLORT_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi
