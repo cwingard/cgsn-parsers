@@ -17,6 +17,10 @@ FILE=`basename $3`
 RAW=`dirname $3`
 PCO2W=`basename $RAW`
 
+PCO2W_NUM=${PCO2W##*-}
+
+PCO2W="imm-pco2w-${PCO2W_NUM}"
+
 # Set the default directory paths
 PARSED="/home/ooiuser/data/parsed"
 

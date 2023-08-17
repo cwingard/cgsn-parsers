@@ -15,12 +15,17 @@ PLATFORM=${1,,}
 DEPLOY=${2^^}
 FILE=`basename $3`
 RAW=`dirname $3`
+ADCP='basename $RAW'
+ADCP_NUM=${ADCP##*-}
+
+ADCP="imm-adcp-${ADCP_NUM}"
+
 
 # Set the default directory paths
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
-OUT="$PARSED/$PLATFORM/$DEPLOY/imm/adcp/${FILE%.DAT}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/imm/${ADCP}/${FILE%.DAT}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

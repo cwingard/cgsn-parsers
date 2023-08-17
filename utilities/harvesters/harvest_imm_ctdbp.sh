@@ -17,6 +17,10 @@ FILE=`basename $3`
 RAW=`dirname $3`
 CTDBP=`basename $RAW`
 
+CTDBP_NUM=${CTDBP##*-}
+
+CTDBP="imm-ctdbp-${CTDBP_NUM}"
+
 # Set the default directory paths
 PARSED="/home/ooiuser/data/parsed"
 

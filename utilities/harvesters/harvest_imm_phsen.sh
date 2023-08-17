@@ -17,6 +17,10 @@ FILE=`basename $3`
 RAW=`dirname $3`
 PHSEN=`basename $RAW`
 
+PHSEN_NUM=${PHSEN##*-}
+
+PHSEN="imm-phsen-${PHSEN_NUM}"
+
 # Set the default directory paths
 PARSED="/home/ooiuser/data/parsed"
 
