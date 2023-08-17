@@ -24,7 +24,7 @@ PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/mopak/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/mopak/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/mopak-1/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

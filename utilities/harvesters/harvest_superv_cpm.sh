@@ -23,6 +23,8 @@ SUBASY=${4,,}
 FLAG=$5
 FILE=`basename $6`
 
+CPM_NUM=${CPM##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
@@ -40,7 +42,7 @@ if [ $CPM = "cpm1" ]; then
 else
     IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$CPM/$SUPER/$FILE"
 fi
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/superv/$CPM/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/superv/cpm-$CPM_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

@@ -19,13 +19,15 @@ DCL=${3,,}
 METBK=${4,,}
 FILE=`basename $5`
 
+METBK_NUM=${METBK##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$METBK/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/$METBK/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/metbk-$METBK_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

@@ -27,7 +27,7 @@ else
     IN="$RAW/$PLATFORM/$DEPLOY/cg_data/syslog/$FILE"
 fi
 
-OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/irid/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/irid-1/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

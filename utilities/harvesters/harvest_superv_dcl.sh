@@ -23,6 +23,8 @@ SUBASY=${4,,}
 FLAG=$5
 FILE=`basename $6`
 
+DCL_NUM=${DCL##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
@@ -36,7 +38,7 @@ fi
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$SUPER/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/superv/$DCL/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/superv/dcl-$DCL_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi
