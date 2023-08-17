@@ -21,13 +21,15 @@ TURBD=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
+TURBD_NUM=${TURBD##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$TURBD/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/turbd/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/turbd-$TURBD_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi

@@ -21,13 +21,15 @@ SUBASY=${5,,}
 SWITCH=${6,,}
 FILE=`basename $7`
 
+ADCP_NUM=${ADCP##*-}
+
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
 PARSED="/home/ooiuser/data/parsed"
 
 # Setup the input and output filenames as well as the absolute paths
 IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/$ADCP/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/adcp/${FILE%.log}.json"
+OUT="$PARSED/$PLATFORM/$DEPLOY/$SUBASY/adcp-$ADCP_NUM/${FILE%.log}.json"
 if [ ! -d `dirname $OUT` ]; then
     mkdir -p `dirname $OUT`
 fi
