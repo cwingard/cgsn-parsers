@@ -1,0 +1,135 @@
+#!/usr/bin/bash -e
+#
+# Parse the various data files for the Global Irminger mooring
+#
+# Mario Carloni 2023-03-07
+
+# Parse the command line inputs
+if [ $# -ne 3 ]; then
+    echo "$0: required inputs are the platform and deployment name, and"
+    echo "the time flag for processing today's file (0) or N days prior"
+    echo "     example: $0 cp01issm D00001 0"
+    exit 1
+fi
+PLATFORM=${1,,}
+DEPLOY=${2^^}
+TIME="-$3 day"
+FNAME=`/bin/date -u +%Y%m%d --date="$TIME"`
+
+RAW="/home/ooiuser/data/raw"
+HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
+
+# source the python environment for all subsequent processing
+source /home/ooiuser/mambaforge/bin/activate ooi
+
+# CPM1
+$HARVEST/harvest_gps.sh $PLATFORM $DEPLOY $FNAME.gps.log
+$HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY psc $FNAME.pwrsys.log
+$HARVEST/harvest_syslog_irid.sh $PLATFORM $DEPLOY $FNAME.syslog.log
+$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm1 buoy 0 $FNAME.superv.log
+
+
+#DCL11
+$HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl11 buoy 0 $FNAME.superv.log
+# If there is any ADCP data sent via the inductive modem, process it now
+if [ -d $RAW/$PLATFORM/$DEPLOY/imm/adcp* ]; then
+    for adcp in $RAW/$PLATFORM/$DEPLOY/imm/adcp*/adcp*_$FNAME*.DAT; do
+        if [ -e $adcp ]; then
+            SIZE=`du -k "$adcp" | cut -f1`
+            if [ $SIZE -gt 0 ]; then
+                $HARVEST/harvest_imm_adcp.sh $PLATFORM $DEPLOY $adcp
+            fi
+        fi
+    done
+fi
+$HARVEST/harvest_imm_ctdbp.sh $PLATFORM $DEPLOY $FNAME.ctdbp1.log
+$HARVEST/harvest_imm_ctdbp.sh $PLATFORM $DEPLOY $FNAME.ctdbp02.log
+$HARVEST/harvest_imm_ctdbp.sh $PLATFORM $DEPLOY $FNAME.ctdbp03.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo01.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo02.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo03.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo04.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo05.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo06.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo07.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo08.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo09.log
+$HARVEST/harvest_imm_ctdmo.sh $PLATFORM $DEPLOY $FNAME.ctdmo10.log
+$HARVEST/harvest_imm_phsen.sh $PLATFORM $DEPLOY $FNAME.phsen01.log
+$HARVEST/harvest_imm_phsen.sh $PLATFORM $DEPLOY $FNAME.phsen02.log
+$HARVEST/harvest_imm_pco2w.sh $PLATFORM $DEPLOY $FNAME.pco2w01.log
+$HARVEST/harvest_imm_pco2w.sh $PLATFORM $DEPLOY $FNAME.pco2w02.log
+$HARVEST/harvest_imm_pco2w.sh $PLATFORM $DEPLOY $FNAME.pco2w03.log
+$HARVEST/harvest_dosta.sh $PLATFORM $DEPLOY dcl11 dosta1 buoy $FNAME.dosta01.log
+$HARVEST/harvest_dosta.sh $PLATFORM $DEPLOY dcl11 dosta2 nsif $FNAME.dosta02.log
+$HARVEST/harvest_hydgn.sh $PLATFORM $DEPLOY dcl11 hyd1 $FNAME.hyd01.log
+$HARVEST/harvest_metbk.sh $PLATFORM $DEPLOY dcl11 metbk1 $FNAME.metbk01.log
+for mopak in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl11/mopak/$FNAME*.mopak.log; do
+    if [ -e $mopak ]; then
+        SIZE=`du -k "$mopak" | cut -f1`
+        if [ $SIZE -gt 0 ]; then
+            $HARVEST/harvest_mopak.sh $PLATFORM $DEPLOY dcl11 $mopak
+        fi
+    fi
+done
+$HARVEST/harvest_nutnr.sh $PLATFORM $DEPLOY dcl11 nutnr1 buoy suna $FNAME.nutnr01.log
+$HARVEST/harvest_spkir.sh $PLATFORM $DEPLOY dcl11 spkir1 buoy $FNAME.spkir01.log
+
+
+#DCL12
+#superv
+$HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl12 buoy 0 $FNAME.superv.log
+#optaa1
+for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl12/optaa1/$FNAME*.optaa1.log; do
+    if [ -e $optaa ]; then
+        SIZE=`du -k "$optaa" | cut -f1`
+        if [ $SIZE -gt 0 ]; then
+            $HARVEST/harvest_optaa.sh $PLATFORM $DEPLOY dcl12 optaa1 nsif $optaa
+        fi
+    fi
+done
+#flort1
+$HARVEST/harvest_flort.sh $PLATFORM $DEPLOY dcl12 flort1 $FNAME.flort01.log
+#hyd2
+$HARVEST/harvest_hydgn.sh $PLATFORM $DEPLOY dcl12 hyd2 $FNAME.hyd02.log
+#pco2a
+$HARVEST/harvest_imm_pco2a.sh $PLATFORM $DEPLOY dcl12 pco2a $FNAME.pco2a.log
+#wavss
+$HARVEST/harvest_wavss.sh $PLATFORM $DEPLOY dcl12 wavss $FNAME.wavss.log
+#metbk2
+$HARVEST/harvest_metbk.sh $PLATFORM $DEPLOY dcl12 metbk2 $FNAME.metbk02.log
+#methr2
+$HARVEST/harvest_methr.sh $PLATFORM $DEPLOY dcl12 methr2 $FNAME.methr02.log
+
+
+#DCL13
+# vics/uvlight instruments not found in omspp.yml
+
+
+#DCL16
+#optaa2
+for optaa in $RAW/$PLATFORM/$DEPLOY/cg_data/dcl16/optaa2/$FNAME*.optaa2.log; do
+    if [ -e $optaa ]; then
+        SIZE=`du -k "$optaa" | cut -f1`
+        if [ $SIZE -gt 0 ]; then
+            $HARVEST/harvest_optaa.sh $PLATFORM $DEPLOY dcl16 optaa2 nsif $optaa
+        fi
+    fi
+done
+#flort2
+$HARVEST/harvest_flort.sh $PLATFORM $DEPLOY dcl16 flort2 $FNAME.flort02.log
+#ctdbp
+$HARVEST/harvest_ctdbp.sh $PLATFORM $DEPLOY dcl16 ctdbp $FNAME.ctdbp.log
+#velpt
+$HARVEST/harvest_velpt.sh $PLATFORM $DEPLOY dcl16 velpt $FNAME.velpt.log
+#pco2w
+$HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY dcl16 pco2w $FNAME.pco2w.log
+#dosta2
+$HARVEST/harvest_dosta.sh $PLATFORM $DEPLOY dcl16 dosta2 $FNAME.dosta02.log
+#nutnr1
+$HARVEST/harvest_nutnr.sh $PLATFORM $DEPLOY dcl16 nutnr1 $FNAME.nutnr01.log
+#nutnr2
+$HARVEST/harvest_nutnr.sh $PLATFORM $DEPLOY dcl16 nutnr2 $FNAME.nutnr02.log
+#spkir2
+$HARVEST/harvest_spkir.sh $PLATFORM $DEPLOY dcl16 spkir2 $FNAME.spkir02.log
+
