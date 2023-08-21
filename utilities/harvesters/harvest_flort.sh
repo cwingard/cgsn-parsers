@@ -22,7 +22,7 @@ SUBASY=${5,,}
 FILE=`basename $6`
 
 FLORT_NUM=${FLORT%%_*}
-FLORT_NUM=$(echo $FLORT | cut -d_ -f1)
+FLORT_NUM=$(echo $FLORT_NUM | cut -d_ -f1)
 FLORT_NUM=${FLORT_NUM##+(0)}
 
 # Set the default directory paths

@@ -22,7 +22,7 @@ SUBASY=${5,,}
 FILE=`basename $6`
 
 VELPT_NUM=${VELPT%%_*}
-VELPT_NUM=$(echo $VELPT | cut -d_ -f1)
+VELPT_NUM=$(echo $VELPT_NUM | cut -d_ -f1)
 VELPT_NUM=${VELPT_NUM##+(0)}
 
 # Set the default directory paths

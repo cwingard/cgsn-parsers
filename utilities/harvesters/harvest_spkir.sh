@@ -22,7 +22,7 @@ SUBASY=${5,,}
 FILE=`basename $6`
 
 SPKIR_NUM=${SPKIR%%_*}
-SPKIR_NUM=$(echo $SPKIR | cut -d_ -f1)
+SPKIR_NUM=$(echo $SPKIR_NUM | cut -d_ -f1)
 SPKIR_NUM=${SPKIR_NUM##+(0)}
 
 

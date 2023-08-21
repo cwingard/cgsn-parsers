@@ -20,7 +20,7 @@ METBK=${4,,}
 FILE=`basename $5`
 
 METBK_NUM=${METBK%%_*}
-METBK_NUM=$(echo $METBK | cut -d_ -f1)
+METBK_NUM=$(echo $METBK_NUM | cut -d_ -f1)
 METBK_NUM=${METBK_NUM##+(0)}
 
 # Set the default directory paths

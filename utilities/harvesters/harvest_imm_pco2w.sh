@@ -18,7 +18,7 @@ RAW=`dirname $3`
 PCO2W=`basename $RAW`
 
 PCO2W_NUM=${PCO2W%%_*}
-PCO2W_NUM=$(echo $PCO2W | cut -d_ -f1)
+PCO2W_NUM=$(echo $PCO2W_NUM | cut -d_ -f1)
 PCO2W_NUM=${PCO2W_NUM##+(0)}
 
 PCO2W="imm-pco2w-${PCO2W_NUM}"

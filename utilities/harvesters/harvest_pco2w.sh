@@ -22,7 +22,7 @@ SUBASY=${5,,}
 FILE=`basename $6`
 
 PCO2W_NUM=${PCO2W%%_*}
-PCO2W_NUM=$(echo $PCO2W | cut -d_ -f1)
+PCO2W_NUM=$(echo $PCO2W_NUM | cut -d_ -f1)
 PCO2W_NUM=${PCO2W_NUM##+(0)}
 
 # Set the default directory paths

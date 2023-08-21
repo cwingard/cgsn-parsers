@@ -24,7 +24,7 @@ FLAG=$5
 FILE=`basename $6`
 
 DCL_NUM=${DCL%%_*}
-DCL_NUM=$(echo $DCL | cut -d_ -f1)
+DCL_NUM=$(echo $DCL_NUM | cut -d_ -f1)
 DCL_NUM=${DCL_NUM##+(0)}
 
 # Set the default directory paths

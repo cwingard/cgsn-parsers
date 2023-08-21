@@ -18,7 +18,7 @@ RAW=`dirname $3`
 CTDMO=`basename $RAW`
 
 CTDMO_NUM=${CTDMO%%_*}
-CTDMO_NUM=$(echo $CTDMO | cut -d_ -f1)
+CTDMO_NUM=$(echo $CTDMO_NUM | cut -d_ -f1)
 CTDMO_NUM=${CTDMO_NUM##+(0)}
 
 CTDMO="imm-ctdmo-${CTDMO_NUM}"

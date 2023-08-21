@@ -22,7 +22,7 @@ SUBASY=${5,,}
 FILE=`basename $6`
 
 DOSTA_NUM=${DOSTA%%_*}
-DOSTA_NUM=$(echo $DOSTA | cut -d_ -f1)
+DOSTA_NUM=$(echo $DOSTA_NUM | cut -d_ -f1)
 DOSTA_NUM=${DOSTA_NUM##+(0)}
 
 # Set the default directory paths

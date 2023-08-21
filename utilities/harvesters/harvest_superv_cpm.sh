@@ -24,7 +24,7 @@ FLAG=$5
 FILE=`basename $6`
 
 CPM_NUM=${CPM%%_*}
-CPM_NUM=$(echo $CPM | cut -d_ -f1)
+CPM_NUM=$(echo $CPM_NUM | cut -d_ -f1)
 CPM_NUM=${CPM_NUM##+(0)}
 
 # Set the default directory paths

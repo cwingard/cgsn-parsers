@@ -24,7 +24,7 @@ SWITCH=${6,,}
 FILE=`basename $7`
 
 NUTNR_NUM=${NUTNR%%_*}
-NUTNR_NUM=$(echo $NUTNR | cut -d_ -f1)
+NUTNR_NUM=$(echo $NUTNR_NUM | cut -d_ -f1)
 NUTNR_NUM=${NUTNR_NUM##+(0)}
 
 # Set the default directory paths
