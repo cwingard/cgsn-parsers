@@ -19,7 +19,7 @@ ADCP=`basename $RAW`
 
 if [[ $FILE =~ adcp([0-9]+)_ ]]; then
     ADCP_NUM="${BASH_REMATCH[1]}"
-    ADCP_NUM=${ADCP_NUM##+(0)}
+    ADCP_NUM=$((10#$ADCP_NUM))
 else
     ADCP_NUM="1"
 fi

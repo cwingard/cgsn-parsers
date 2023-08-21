@@ -23,7 +23,7 @@ FILE=`basename $6`
 
 if [[ $FILE =~ dosta([0-9]+)_ ]]; then
     DOSTA_NUM="${BASH_REMATCH[1]}"
-    DOSTA_NUM=${DOSTA_NUM##+(0)}
+    DOSTA_NUM=$((10#$DOSTA_NUM))
 else
     DOSTA_NUM="1"
 fi

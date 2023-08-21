@@ -23,7 +23,7 @@ FILE=`basename $6`
 
 if [[ $FILE =~ flort([0-9]+)_ ]]; then
     FLORT_NUM="${BASH_REMATCH[1]}"
-    FLORT_NUM=${FLORT_NUM##+(0)}
+    FLORT_NUM=$((10#$FLORT_NUM))
 else
     FLORT_NUM="1"
 fi

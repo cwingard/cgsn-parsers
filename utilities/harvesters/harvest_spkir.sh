@@ -23,7 +23,7 @@ FILE=`basename $6`
 
 if [[ $FILE =~ spkir([0-9]+)_ ]]; then
     SPKIR_NUM="${BASH_REMATCH[1]}"
-    SPKIR_NUM=${SPKIR_NUM##+(0)}
+    SPKIR_NUM=$((10#$SPKIR_NUM))
 else
     SPKIR_NUM="1"
 fi

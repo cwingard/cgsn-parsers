@@ -25,7 +25,7 @@ FILE=`basename $6`
 
 if [[ $FILE =~ dcl([0-9]+)_ ]]; then
     DCL_NUM="${BASH_REMATCH[1]}"
-    DCL_NUM=${DCL_NUM##+(0)}
+    DCL_NUM=$((10#$DCL_NUM))
 else
     DCL_NUM="1"
 fi

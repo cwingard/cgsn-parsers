@@ -19,7 +19,7 @@ PHSEN=`basename $RAW`
 
 if [[ $FILE =~ phsen([0-9]+)_ ]]; then
     PHSEN_NUM="${BASH_REMATCH[1]}"
-    PHSEN_NUM=${PHSEN_NUM##+(0)}
+    PHSEN_NUM=$((10#$PHSEN_NUM))
 else
     PHSEN_NUM="1"
 fi

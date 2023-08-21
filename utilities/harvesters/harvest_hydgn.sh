@@ -21,7 +21,7 @@ FILE=`basename $5`
 
 if [[ $FILE =~ hyd([0-9]+)_ ]]; then
     HYD_NUM="${BASH_REMATCH[1]}"
-    HYD_NUM=${HYD_NUM##+(0)}
+    HYD_NUM=$((10#$HYD_NUM))
 else
     HYD_NUM="1"
 fi

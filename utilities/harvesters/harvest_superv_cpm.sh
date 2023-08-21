@@ -25,7 +25,7 @@ FILE=`basename $6`
 
 if [[ $FILE =~ cpm([0-9]+)_ ]]; then
     CPM_NUM="${BASH_REMATCH[1]}"
-    CPM_NUM=${CPM_NUM##+(0)}
+    CPM_NUM=$((10#$CPM_NUM))
 else
     CPM_NUM="1"
 fi

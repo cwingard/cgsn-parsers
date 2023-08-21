@@ -24,7 +24,7 @@ FILE=`basename $FILEPATH`
 
 if [[ $FILE =~ optaa([0-9]+)_ ]]; then
     OPTAA_NUM="${BASH_REMATCH[1]}"
-    OPTAA_NUM=${OPTAA_NUM##+(0)}
+    OPTAA_NUM=$((10#$OPTAA_NUM))
 else
     OPTAA_NUM="1"
 fi

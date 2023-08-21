@@ -23,7 +23,7 @@ FILE=`basename $6`
 
 if [[ $FILE =~ velpt([0-9]+)_ ]]; then
     VELPT_NUM="${BASH_REMATCH[1]}"
-    VELPT_NUM=${VELPT_NUM##+(0)}
+    VELPT_NUM=$((10#$VELPT_NUM))
 else
     VELPT_NUM="1"
 fi

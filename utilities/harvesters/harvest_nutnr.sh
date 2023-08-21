@@ -25,7 +25,7 @@ FILE=`basename $7`
 
 if [[ $FILE =~ nutnr([0-9]+)_ ]]; then
     NUTNR_NUM="${BASH_REMATCH[1]}"
-    NUTNR_NUM=${NUTNR_NUM##+(0)}
+    NUTNR_NUM=$((10#$NUTNR_NUM))
 else
     NUTNR_NUM="1"
 fi

@@ -23,7 +23,7 @@ FILE=`basename $6`
 
 if [[ $FILE =~ turbid([0-9]+)_ ]]; then
     TURBD_NUM="${BASH_REMATCH[1]}"
-    TURBD_NUM=${TURBD_NUM##+(0)}
+    TURBD_NUM=$((10#$TURBD_NUM))
 else
     TURBD_NUM="1"
 fi

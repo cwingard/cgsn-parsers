@@ -23,7 +23,7 @@ FILE=`basename $7`
 
 if [[ $FILE =~ ctdbp([0-9]+)_ ]]; then
     CTDBP_NUM="${BASH_REMATCH[1]}"
-    CTDBP_NUM=${CTDBP_NUM##+(0)}
+    CTDBP_NUM=$((10#$CTDBP_NUM))
 else
     CTDBP_NUM="1"
 fi

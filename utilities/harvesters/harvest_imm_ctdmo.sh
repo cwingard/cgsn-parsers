@@ -19,7 +19,7 @@ CTDMO=`basename $RAW`
 
 if [[ $FILE =~ ctdmo([0-9]+)_ ]]; then
     CTDMO_NUM="${BASH_REMATCH[1]}"
-    CTDMO_NUM=${CTDMO_NUM##+(0)}
+    CTDMO_NUM=$((10#$CTDMO_NUM))
 else
     CTDMO_NUM="1"
 fi

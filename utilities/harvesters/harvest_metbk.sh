@@ -21,7 +21,7 @@ FILE=`basename $5`
 
 if [[ $FILE =~ metbk([0-9]+)_ ]]; then
     METBK_NUM="${BASH_REMATCH[1]}"
-    METBK_NUM=${METBK_NUM##+(0)}
+    METBK_NUM=$((10#$METBK_NUM))
 else
     METBK_NUM="1"
 fi

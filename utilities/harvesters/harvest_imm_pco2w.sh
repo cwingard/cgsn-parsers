@@ -19,7 +19,7 @@ PCO2W=`basename $RAW`
 
 if [[ $FILE =~ pco2w([0-9]+)_ ]]; then
     PCO2W_NUM="${BASH_REMATCH[1]}"
-    PCO2W_NUM=${PCO2W_NUM##+(0)}
+    PCO2W_NUM=$((10#$PCO2W_NUM))
 else
     PCO2W_NUM="1"
 fi
