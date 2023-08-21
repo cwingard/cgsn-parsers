@@ -21,7 +21,7 @@ SUBASY=${5,,}
 SWITCH=${6,,}
 FILE=`basename $7`
 
-ADCP_NUM=${ADCP%%#0_*}
+ADCP_NUM=${ADCP%%_*}${ADCP%%_*#0}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

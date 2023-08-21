@@ -21,7 +21,7 @@ TURBD=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-TURBD_NUM=${TURBD%%#0_*}
+TURBD_NUM=${TURBD%%_*}${TURBD%%_*#0}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

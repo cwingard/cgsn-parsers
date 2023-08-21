@@ -21,7 +21,7 @@ SPKIR=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-SPKIR_NUM=${SPKIR%%#0_*}
+SPKIR_NUM=${SPKIR%%_*}${SPKIR%%_*#0}
 
 
 # Set the default directory paths

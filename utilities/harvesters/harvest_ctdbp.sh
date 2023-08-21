@@ -21,7 +21,7 @@ SUBASY=${5,,}
 SWITCH=${6,,}
 FILE=`basename $7`
 
-CTDBP_NUM=${CTDBP%%#0_*}
+CTDBP_NUM=${CTDBP%%_*}${CTDBP%%_*#0}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

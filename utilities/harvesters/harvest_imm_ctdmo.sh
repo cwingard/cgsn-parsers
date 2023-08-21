@@ -17,7 +17,7 @@ FILE=`basename $3`
 RAW=`dirname $3`
 CTDMO=`basename $RAW`
 
-CTDMO_NUM=${CTDMO%%#0_*}
+CTDMO_NUM=${CTDMO%%_*}${CTDMO%%_*#0}
 
 CTDMO="imm-ctdmo-${CTDMO_NUM}"
 

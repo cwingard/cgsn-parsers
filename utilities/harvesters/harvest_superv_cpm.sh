@@ -23,7 +23,7 @@ SUBASY=${4,,}
 FLAG=$5
 FILE=`basename $6`
 
-CPM_NUM=${CPM%%#0_*}
+CPM_NUM=${CPM%%_*}${CPM%%_*#0}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
