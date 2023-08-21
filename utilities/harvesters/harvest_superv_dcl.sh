@@ -23,9 +23,12 @@ SUBASY=${4,,}
 FLAG=$5
 FILE=`basename $6`
 
-DCL_NUM=${DCL%%_*}
-DCL_NUM=$(echo $DCL_NUM | cut -d_ -f1)
-DCL_NUM=${DCL_NUM##+(0)}
+if [[ $FILE =~ dcl([0-9]+)_ ]]; then
+    DCL_NUM="${BASH_REMATCH[1]}"
+    DCL_NUM=${DCL_NUM##+(0)}
+else
+    DCL_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

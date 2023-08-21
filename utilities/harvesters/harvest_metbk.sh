@@ -19,9 +19,12 @@ DCL=${3,,}
 METBK=${4,,}
 FILE=`basename $5`
 
-METBK_NUM=${METBK%%_*}
-METBK_NUM=$(echo $METBK_NUM | cut -d_ -f1)
-METBK_NUM=${METBK_NUM##+(0)}
+if [[ $FILE =~ metbk([0-9]+)_ ]]; then
+    METBK_NUM="${BASH_REMATCH[1]}"
+    METBK_NUM=${METBK_NUM##+(0)}
+else
+    METBK_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

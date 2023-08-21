@@ -21,9 +21,12 @@ SPKIR=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-SPKIR_NUM=${SPKIR%%_*}
-SPKIR_NUM=$(echo $SPKIR_NUM | cut -d_ -f1)
-SPKIR_NUM=${SPKIR_NUM##+(0)}
+if [[ $FILE =~ spkir([0-9]+)_ ]]; then
+    SPKIR_NUM="${BASH_REMATCH[1]}"
+    SPKIR_NUM=${SPKIR_NUM##+(0)}
+else
+    SPKIR_NUM="1"
+fi
 
 
 # Set the default directory paths

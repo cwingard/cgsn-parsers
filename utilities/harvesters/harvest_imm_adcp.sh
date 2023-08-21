@@ -16,9 +16,13 @@ DEPLOY=${2^^}
 FILE=`basename $3`
 RAW=`dirname $3`
 ADCP=`basename $RAW`
-ADCP_NUM=${ADCP%%_*}
-ADCP_NUM=$(echo $ADCP_NUM | cut -d_ -f1)
-ADCP_NUM=${ADCP_NUM##+(0)}
+
+if [[ $FILE =~ adcp([0-9]+)_ ]]; then
+    ADCP_NUM="${BASH_REMATCH[1]}"
+    ADCP_NUM=${ADCP_NUM##+(0)}
+else
+    ADCP_NUM="1"
+fi
 
 ADCP="imm-adcp-${ADCP_NUM}"
 

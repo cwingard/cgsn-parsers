@@ -17,9 +17,12 @@ FILE=`basename $3`
 RAW=`dirname $3`
 CTDMO=`basename $RAW`
 
-CTDMO_NUM=${CTDMO%%_*}
-CTDMO_NUM=$(echo $CTDMO_NUM | cut -d_ -f1)
-CTDMO_NUM=${CTDMO_NUM##+(0)}
+if [[ $FILE =~ ctdmo([0-9]+)_ ]]; then
+    CTDMO_NUM="${BASH_REMATCH[1]}"
+    CTDMO_NUM=${CTDMO_NUM##+(0)}
+else
+    CTDMO_NUM="1"
+fi
 
 CTDMO="imm-ctdmo-${CTDMO_NUM}"
 

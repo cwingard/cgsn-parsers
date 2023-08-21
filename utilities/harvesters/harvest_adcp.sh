@@ -21,9 +21,12 @@ SUBASY=${5,,}
 SWITCH=${6,,}
 FILE=`basename $7`
 
-ADCP_NUM=${ADCP%%_*}
-ADCP_NUM=$(echo $ADCP_NUM | cut -d_ -f1)
-ADCP_NUM=${ADCP_NUM##+(0)}
+if [[ $FILE =~ adcp([0-9]+)_ ]]; then
+    ADCP_NUM="${BASH_REMATCH[1]}"
+    ADCP_NUM=${ADCP_NUM##+(0)}
+else
+    ADCP_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

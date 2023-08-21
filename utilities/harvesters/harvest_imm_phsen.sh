@@ -17,9 +17,12 @@ FILE=`basename $3`
 RAW=`dirname $3`
 PHSEN=`basename $RAW`
 
-PHSEN_NUM=${PHSEN%%_*}
-PHSEN_NUM=$(echo $PHSEN_NUM | cut -d_ -f1)
-PHSEN_NUM=${PHSEN_NUM##+(0)}
+if [[ $FILE =~ phsen([0-9]+)_ ]]; then
+    PHSEN_NUM="${BASH_REMATCH[1]}"
+    PHSEN_NUM=${PHSEN_NUM##+(0)}
+else
+    PHSEN_NUM="1"
+fi
 
 PHSEN="imm-phsen-${PHSEN_NUM}"
 

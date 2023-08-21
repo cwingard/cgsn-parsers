@@ -21,9 +21,12 @@ TURBD=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-TURBD_NUM=${TURBD%%_*}
-TURBD_NUM=$(echo $TURBD_NUM | cut -d_ -f1)
-TURBD_NUM=${TURBD_NUM##+(0)}
+if [[ $FILE =~ turbid([0-9]+)_ ]]; then
+    TURBD_NUM="${BASH_REMATCH[1]}"
+    TURBD_NUM=${TURBD_NUM##+(0)}
+else
+    TURBD_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

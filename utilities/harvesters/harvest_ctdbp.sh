@@ -21,9 +21,12 @@ SUBASY=${5,,}
 SWITCH=${6,,}
 FILE=`basename $7`
 
-CTDBP_NUM=${CTDBP%%_*}
-CTDBP_NUM=$(echo $CTDBP_NUM | cut -d_ -f1)
-CTDBP_NUM=${CTDBP_NUM##+(0)}
+if [[ $FILE =~ ctdbp([0-9]+)_ ]]; then
+    CTDBP_NUM="${BASH_REMATCH[1]}"
+    CTDBP_NUM=${CTDBP_NUM##+(0)}
+else
+    CTDBP_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

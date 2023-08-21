@@ -23,9 +23,12 @@ SUBASY=${5,,}
 SWITCH=${6,,}
 FILE=`basename $7`
 
-NUTNR_NUM=${NUTNR%%_*}
-NUTNR_NUM=$(echo $NUTNR_NUM | cut -d_ -f1)
-NUTNR_NUM=${NUTNR_NUM##+(0)}
+if [[ $FILE =~ nutnr([0-9]+)_ ]]; then
+    NUTNR_NUM="${BASH_REMATCH[1]}"
+    NUTNR_NUM=${NUTNR_NUM##+(0)}
+else
+    NUTNR_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

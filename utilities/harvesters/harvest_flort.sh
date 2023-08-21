@@ -21,9 +21,12 @@ FLORT=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-FLORT_NUM=${FLORT%%_*}
-FLORT_NUM=$(echo $FLORT_NUM | cut -d_ -f1)
-FLORT_NUM=${FLORT_NUM##+(0)}
+if [[ $FILE =~ flort([0-9]+)_ ]]; then
+    FLORT_NUM="${BASH_REMATCH[1]}"
+    FLORT_NUM=${FLORT_NUM##+(0)}
+else
+    FLORT_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

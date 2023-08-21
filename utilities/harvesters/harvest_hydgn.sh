@@ -19,9 +19,12 @@ DCL=${3,,}
 HYD=${4,,}
 FILE=`basename $5`
 
-HYD_NUM=${HYD%%_*}
-HYD_NUM=$(echo $HYD_NUM | cut -d_ -f1)
-HYD_NUM=${HYD_NUM##+(0)}
+if [[ $FILE =~ hyd([0-9]+)_ ]]; then
+    HYD_NUM="${BASH_REMATCH[1]}"
+    HYD_NUM=${HYD_NUM##+(0)}
+else
+    HYD_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

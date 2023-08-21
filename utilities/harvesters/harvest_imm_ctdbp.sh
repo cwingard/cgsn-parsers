@@ -17,9 +17,12 @@ FILE=`basename $3`
 RAW=`dirname $3`
 CTDBP=`basename $RAW`
 
-CTDBP_NUM=${CTDBP%%_*}
-CTDBP_NUM=$(echo $CTDBP_NUM | cut -d_ -f1)
-CTDBP_NUM=${CTDBP_NUM##+(0)}
+if [[ $FILE =~ ctdbp([0-9]+)_ ]]; then
+    CTDBP_NUM="${BASH_REMATCH[1]}"
+    CTDBP_NUM=${CTDBP_NUM##+(0)}
+else
+    CTDBP_NUM="1"
+fi
 
 CTDBP="imm-ctdbp-${CTDBP_NUM}"
 

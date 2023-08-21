@@ -23,9 +23,12 @@ SUBASY=${4,,}
 FLAG=$5
 FILE=`basename $6`
 
-CPM_NUM=${CPM%%_*}
-CPM_NUM=$(echo $CPM_NUM | cut -d_ -f1)
-CPM_NUM=${CPM_NUM##+(0)}
+if [[ $FILE =~ cpm([0-9]+)_ ]]; then
+    CPM_NUM="${BASH_REMATCH[1]}"
+    CPM_NUM=${CPM_NUM##+(0)}
+else
+    CPM_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

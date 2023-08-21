@@ -17,9 +17,12 @@ FILE=`basename $3`
 RAW=`dirname $3`
 PCO2W=`basename $RAW`
 
-PCO2W_NUM=${PCO2W%%_*}
-PCO2W_NUM=$(echo $PCO2W_NUM | cut -d_ -f1)
-PCO2W_NUM=${PCO2W_NUM##+(0)}
+if [[ $FILE =~ pco2w([0-9]+)_ ]]; then
+    PCO2W_NUM="${BASH_REMATCH[1]}"
+    PCO2W_NUM=${PCO2W_NUM##+(0)}
+else
+    PCO2W_NUM="1"
+fi
 
 PCO2W="imm-pco2w-${PCO2W_NUM}"
 

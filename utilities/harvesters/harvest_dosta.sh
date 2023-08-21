@@ -21,9 +21,12 @@ DOSTA=$4
 SUBASY=${5,,}
 FILE=`basename $6`
 
-DOSTA_NUM=${DOSTA%%_*}
-DOSTA_NUM=$(echo $DOSTA_NUM | cut -d_ -f1)
-DOSTA_NUM=${DOSTA_NUM##+(0)}
+if [[ $FILE =~ dosta([0-9]+)_ ]]; then
+    DOSTA_NUM="${BASH_REMATCH[1]}"
+    DOSTA_NUM=${DOSTA_NUM##+(0)}
+else
+    DOSTA_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

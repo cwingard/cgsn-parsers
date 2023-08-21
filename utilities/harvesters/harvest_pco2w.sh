@@ -21,9 +21,12 @@ PCO2W=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-PCO2W_NUM=${PCO2W%%_*}
-PCO2W_NUM=$(echo $PCO2W_NUM | cut -d_ -f1)
-PCO2W_NUM=${PCO2W_NUM##+(0)}
+if [[ $FILE =~ pco2w([0-9]+)_ ]]; then
+    PCO2W_NUM="${BASH_REMATCH[1]}"
+    PCO2W_NUM=${PCO2W_NUM##+(0)}
+else
+    PCO2W_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

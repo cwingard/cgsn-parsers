@@ -21,9 +21,12 @@ VELPT=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-VELPT_NUM=${VELPT%%_*}
-VELPT_NUM=$(echo $VELPT_NUM | cut -d_ -f1)
-VELPT_NUM=${VELPT_NUM##+(0)}
+if [[ $FILE =~ velpt([0-9]+)_ ]]; then
+    VELPT_NUM="${BASH_REMATCH[1]}"
+    VELPT_NUM=${VELPT_NUM##+(0)}
+else
+    VELPT_NUM="1"
+fi
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
