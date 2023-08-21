@@ -21,7 +21,7 @@ DOSTA=$4
 SUBASY=${5,,}
 FILE=`basename $6`
 
-DOSTA_NUM=${DOSTA##*-}
+DOSTA_NUM=${DOSTA%%/*}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

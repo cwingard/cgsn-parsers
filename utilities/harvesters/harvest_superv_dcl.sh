@@ -23,7 +23,7 @@ SUBASY=${4,,}
 FLAG=$5
 FILE=`basename $6`
 
-DCL_NUM=${DCL##*-}
+DCL_NUM=${DCL%%/*}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

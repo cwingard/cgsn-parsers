@@ -19,7 +19,7 @@ DCL=${3,,}
 METBK=${4,,}
 FILE=`basename $5`
 
-METBK_NUM=${METBK##*-}
+METBK_NUM=${METBK%%/*}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
