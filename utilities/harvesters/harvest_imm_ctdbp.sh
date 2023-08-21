@@ -17,7 +17,7 @@ FILE=`basename $3`
 RAW=`dirname $3`
 CTDBP=`basename $RAW`
 
-CTDBP_NUM=${CTDBP%%/*}
+CTDBP_NUM=${CTDBP%%#0_*}
 
 CTDBP="imm-ctdbp-${CTDBP_NUM}"
 

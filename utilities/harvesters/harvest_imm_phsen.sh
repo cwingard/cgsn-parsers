@@ -17,7 +17,7 @@ FILE=`basename $3`
 RAW=`dirname $3`
 PHSEN=`basename $RAW`
 
-PHSEN_NUM=${PHSEN%%/*}
+PHSEN_NUM=${PHSEN%%#0_*}
 
 PHSEN="imm-phsen-${PHSEN_NUM}"
 

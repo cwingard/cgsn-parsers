@@ -21,7 +21,7 @@ FLORT=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-FLORT_NUM=${FLORT%%/*}
+FLORT_NUM=${FLORT%%#0_*}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
