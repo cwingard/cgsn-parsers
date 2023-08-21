@@ -21,7 +21,8 @@ PCO2W=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-PCO2W_NUM=${PCO2W%%_*}${PCO2W%%_*#0}
+PCO2W_NUM=${PCO2W%%_*}
+PCO2W_NUM=${PCO2W_NUM#0}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

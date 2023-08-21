@@ -23,7 +23,8 @@ SUBASY=${5,,}
 SWITCH=${6,,}
 FILE=`basename $7`
 
-NUTNR_NUM=${NUTNR%%_*}${NUTNR%%_*#0}
+NUTNR_NUM=${NUTNR%%_*}
+NUTNR_NUM=${NUTNR_NUM#0}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

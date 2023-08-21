@@ -21,7 +21,8 @@ VELPT=${4,,}
 SUBASY=${5,,}
 FILE=`basename $6`
 
-VELPT_NUM=${VELPT%%_*}${VELPT%%_*#0}
+VELPT_NUM=${VELPT%%_*}
+VELPT_NUM=${VELPT_NUM#0}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

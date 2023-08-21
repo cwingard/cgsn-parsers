@@ -19,7 +19,8 @@ DCL=${3,,}
 HYD=${4,,}
 FILE=`basename $5`
 
-HYD_NUM=${HYD%%_*}${HYD%%_*#0}
+HYD_NUM=${HYD%%_*}
+HYD_NUM=${HYD_NUM#0}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

@@ -17,7 +17,8 @@ FILE=`basename $3`
 RAW=`dirname $3`
 PCO2W=`basename $RAW`
 
-PCO2W_NUM=${PCO2W%%_*}${PCO2W%%_*#0}
+PCO2W_NUM=${PCO2W%%_*}
+PCO2W_NUM=${PCO2W_NUM#0}
 
 PCO2W="imm-pco2w-${PCO2W_NUM}"
 

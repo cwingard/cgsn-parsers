@@ -22,7 +22,8 @@ SUBASY=${5,,}
 FILEPATH=$6
 FILE=`basename $FILEPATH`
 
-OPTAA_NUM=${OPTAA%%_*}${OPTAA%%_*#0}
+OPTAA_NUM=${OPTAA%%_*}
+OPTAA_NUM=${OPTAA_NUM#0}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"
