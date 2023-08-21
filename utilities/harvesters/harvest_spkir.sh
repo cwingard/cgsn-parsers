@@ -22,7 +22,8 @@ SUBASY=${5,,}
 FILE=`basename $6`
 
 SPKIR_NUM=${SPKIR%%_*}
-SPKIR_NUM=${SPKIR_NUM#0}
+SPKIR_NUM=$(echo $SPKIR | cut -d_ -f1)
+SPKIR_NUM=${SPKIR_NUM##+(0)}
 
 
 # Set the default directory paths

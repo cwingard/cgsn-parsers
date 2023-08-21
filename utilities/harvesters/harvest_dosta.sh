@@ -22,7 +22,8 @@ SUBASY=${5,,}
 FILE=`basename $6`
 
 DOSTA_NUM=${DOSTA%%_*}
-DOSTA_NUM=${DOSTA_NUM#0}
+DOSTA_NUM=$(echo $DOSTA | cut -d_ -f1)
+DOSTA_NUM=${DOSTA_NUM##+(0)}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

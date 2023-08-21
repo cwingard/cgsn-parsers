@@ -20,7 +20,8 @@ HYD=${4,,}
 FILE=`basename $5`
 
 HYD_NUM=${HYD%%_*}
-HYD_NUM=${HYD_NUM#0}
+HYD_NUM=$(echo $HYD | cut -d_ -f1)
+HYD_NUM=${HYD_NUM##+(0)}
 
 # Set the default directory paths
 RAW="/home/ooiuser/data/raw"

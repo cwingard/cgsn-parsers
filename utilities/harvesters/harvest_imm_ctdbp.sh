@@ -18,7 +18,8 @@ RAW=`dirname $3`
 CTDBP=`basename $RAW`
 
 CTDBP_NUM=${CTDBP%%_*}
-CTDBP_NUM=${CTDBP_NUM#0}
+CTDBP_NUM=$(echo $CTDBP | cut -d_ -f1)
+CTDBP_NUM=${CTDBP_NUM##+(0)}
 
 CTDBP="imm-ctdbp-${CTDBP_NUM}"
 
