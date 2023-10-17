@@ -65,6 +65,8 @@ $HARVEST/harvest_turbid.sh $PLATFORM $DEPLOY dcl16 turbd nsif $FNAME.turbd.log
 # CPM3
 echo "$HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm3 mfn 1 $FNAME.syslog.log"
 $HARVEST/harvest_superv_cpm.sh $PLATFORM $DEPLOY cpm3 mfn 1 $FNAME.syslog.log
+echo "$HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY mpea $FNAME.pwrsys.log"
+$HARVEST/harvest_pwrsys.sh $PLATFORM $DEPLOY mpea $FNAME.pwrsys.log
 
 # DCL36
 echo "$HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY dcl36 mfn 0 $FNAME.superv.log"
