@@ -54,7 +54,7 @@ class FilePointer(object):
     data file. This is used to allow the parser to pick up where it left off
     when the harvester is restarted.
     """
-    def __init__(self, postion_file, last_read):
+    def __init__(self, position_file, last_read):
         # initialize the information needed to define the file pointer
         self.position_file = position_file
         self.last_read = last_read
@@ -62,12 +62,12 @@ class FilePointer(object):
     def load_position(self):
         # load the stream position from a text file
         with open(self.position_file, 'r') as f:
-            self.last_read = f.readlines()
+            self.last_read = int(f.readlines()[0])
 
     def save_position(self):
         # save the stream position to a text file
         with open(self.position_file, 'w') as f:
-            f.write(self.last_read)
+            f.write(str(self.last_read))
 
 
 class ParserCommon(object):
@@ -156,6 +156,7 @@ def logfilename_to_epoch(time_string):
 
     return epts
 
+
 def logfilename_to_nearest_half_hour(time_string):
     """
     Use the date and time string extracted from an hourly log filename to
@@ -174,7 +175,7 @@ def inputs(argv=None):
     """
     Sets the main input arguments for the parser that would be passed by the
     harvester. By default, these are just the input file (raw data file), the
-    the output file, and an optional integer switch that can be used to set
+    output file, and an optional integer switch that can be used to set
     custom options for parsers if needed. File names should include pathnames,
     which can be relative to the harvester.
     """
