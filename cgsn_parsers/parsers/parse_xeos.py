@@ -48,9 +48,9 @@ _parameter_names_xeos = [
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the Parser base class, adds the GPS specific
-    methods to parse the data, and extracts the GPS data records from the DCL
-    daily log files.
+    A Parser subclass that calls the Parser base class, adds the Xeos SBD
+    specific methods to parse the data, and extract the beacon location and
+    watch circle status from the Xeos beacon email.
     """
     def __init__(self, infile, last_read):
         self.initialize(infile, _parameter_names_xeos)
