@@ -4,7 +4,7 @@
 @package cgsn_parsers.parsers.parse_superv_cpm
 @file cgsn_parsers/parsers/parse_superv_cpm.py
 @author Christopher Wingard
-@brief Parses CPM supervisor data logged by the custom built WHOI data loggers.
+@brief Parses the CPM or STC supervisor data emailed to the shore server via SBD messages
 """
 import json
 import os
@@ -22,7 +22,7 @@ CPM_PATTERN = (
     r'MOMSN=' + INTEGER + r',\s(.+),\s' + INTEGER + r'\s-\sTransfer\s(.*),\s' +
     r'bytes=' + INTEGER + r',\sLat:\s' + FLOAT + r'\sLon:\s' + FLOAT + r'\sCEPradius:\s' + INTEGER + r'\s' +
     r'mpic_cpm:\s+' + FLOAT + r'\s' + FLOAT + r'\s0.0\s0.0\s' + r'([0-9a-f]{8})\s' +
-    r't\s' + FLOAT + r'\s' + FLOAT + r'\s' +  r'h\s' + FLOAT + r'\s' + r'p\s' + FLOAT + r'\s' +
+    r't\s' + FLOAT + r'\s' + FLOAT + r'\s' + r'h\s' + FLOAT + r'\s' + r'p\s' + FLOAT + r'\s' +
     r'0.0\s0.0\s0.0\ndata\sndata\sndata\spv\s0\swt\s0\sfc\s0\s' +  # suspect this was meant to be PSC data, just filler
     r'sbd\s' + INTEGER + r'\s' + INTEGER + r'\s' +
     r'gf\s([0-9a-f]{1})\s'
@@ -45,7 +45,7 @@ STC_PATTERN = (
     r'MOMSN=' + INTEGER + r',\s(.+),\s' + INTEGER + r'\s-\sTransfer\s(.*),\s' +
     r'bytes=' + INTEGER + r',\sLat:\s' + FLOAT + r'\sLon:\s' + FLOAT + r'\sCEPradius:\s' + INTEGER + r'\s' +
     r'mpic_stc:\s+' + FLOAT + r'\s' + FLOAT + r'([0-9a-f]{8})\s' +
-    r't\s' + FLOAT + r'\s' + FLOAT + r'\s' +  r'h\s' + FLOAT + r'\s' + r'p\s' + FLOAT + r'\s' +
+    r't\s' + FLOAT + r'\s' + FLOAT + r'\s' + r'h\s' + FLOAT + r'\s' + r'p\s' + FLOAT + r'\s' +
     r'gf\s([0-9a-f]{1})\s' + r'ld\s+([0-9a-f]{1})\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
     r'hb\s+([0-1]+)\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' + r'wake\s+([0-9]+)\s+' +
     r'ir\s([+-]?[0-1]+)\s' + FLOAT + r'\s' + FLOAT + r'\s' + r'([0-2])\s' +
@@ -63,6 +63,7 @@ STC_PATTERN = (
 
 # Set an error message string for use when testing the parser switch.
 SWITCH_ERROR = 'The supervisor type must be a string set as either cpm or stc (case insensitive).'
+
 
 def _parameter_names_pwrsys(superv_type):
     parameter_names = [
@@ -166,7 +167,7 @@ class Parser(ParserCommon):
         # test the supervisor type to make sure it is a string
         try:
             superv_type = superv_type.lower()
-        except ValueError as e:
+        except ValueError:
             print(SWITCH_ERROR)
 
         # test supervisor type to make sure it is one of our recognized configurations
@@ -183,6 +184,7 @@ class Parser(ParserCommon):
         above) in the data object, and parse the data into a pre-defined
         dictionary object created using the Bunch class.
         """
+        regex = None  # initialize the regex object
         if self.superv_type == 'cpm':
             regex = re.compile(CPM_PATTERN, re.DOTALL)
 
@@ -190,7 +192,7 @@ class Parser(ParserCommon):
             regex = re.compile(STC_PATTERN, re.DOTALL)
 
         for line in self.raw:
-            match = REGEX.match(line)
+            match = regex.match(line)
             if match:
                 self._build_parsed_values(match)
 
@@ -307,6 +309,7 @@ def main(argv=None):
     args = inputs(argv)
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
+    superv_type = args.switch
 
     # initialize the file position object
     position_file = os.path.join(os.path.dirname(outfile), 'superv_sbd_log.file_pointer.txt')
@@ -319,7 +322,7 @@ def main(argv=None):
         position.save_position()
 
     # initialize the Parser object for SBD supervisor data
-    superv = Parser(infile, args.superv_type, position.last_read)
+    superv = Parser(infile, superv_type, position.last_read)
 
     # load the data into a buffered object
     superv.load_ascii()

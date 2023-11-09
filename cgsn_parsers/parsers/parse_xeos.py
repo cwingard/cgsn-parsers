@@ -26,6 +26,9 @@ PATTERN = (
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
+# Set an error message string for use when testing the parser switch.
+SWITCH_ERROR = 'The subsurface beacon switch must be set to either 0 (surface) or 1 (subsurface).'
+
 _parameter_names_xeos = [
         'momsn',
         'date_time_email',
@@ -37,6 +40,7 @@ _parameter_names_xeos = [
         'cep_radius',
         'date_time_xeos',
         'watch_circle_status',
+        'subsurface_beacon',
         'latitude',
         'longitude',
         'distance_from_center',
@@ -52,8 +56,13 @@ class Parser(ParserCommon):
     specific methods to parse the data, and extract the beacon location and
     watch circle status from the Xeos beacon email.
     """
-    def __init__(self, infile, last_read):
+    def __init__(self, infile, surface, last_read):
+        # test the subsurface beacon flag to make sure it is an integer, set to either 0 or 1
+        if not isinstance(surface, int) or surface not in [0, 1]:
+            raise ValueError(SWITCH_ERROR)
+
         self.initialize(infile, _parameter_names_xeos)
+        self.surface = surface
         self.last_read = last_read
 
     def parse_data(self):
@@ -102,6 +111,7 @@ class Parser(ParserCommon):
             self.data.watch_circle_status.append(1)
         elif match.group(10) == 'ALARM':
             self.data.watch_circle_status.append(2)
+        self.data.subsurface_beacon.append(self.surface)
         self.data.latitude.append(float(match.group(11)))
         self.data.longitude.append(float(match.group(12)))
         if mode == 'watch':
@@ -127,6 +137,7 @@ def main(argv=None):
     args = inputs(argv)
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
+    surface = args.switch
 
     # initialize the file position object
     position_file = os.path.join(os.path.dirname(outfile), 'xeos_sbd_log.file_pointer.txt')
@@ -139,7 +150,7 @@ def main(argv=None):
         position.save_position()
 
     # initialize the Parser object for the Xeos beacon data
-    xeos = Parser(infile, position.last_read)
+    xeos = Parser(infile, surface, position.last_read)
 
     # load the data into a buffered object and parse the data into a dictionary
     xeos.load_ascii()
