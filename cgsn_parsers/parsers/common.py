@@ -48,6 +48,28 @@ class ParameterNames(object):
         return bunch
 
 
+class FilePointer(object):
+    """
+    JSON object used to store the stream position of the last read line in the
+    data file. This is used to allow the parser to pick up where it left off
+    when the harvester is restarted.
+    """
+    def __init__(self, position_file, last_read):
+        # initialize the information needed to define the file pointer
+        self.position_file = position_file
+        self.last_read = last_read
+
+    def load_position(self):
+        # load the stream position from a text file
+        with open(self.position_file, 'r') as f:
+            self.last_read = int(f.readlines()[0])
+
+    def save_position(self):
+        # save the stream position to a text file
+        with open(self.position_file, 'w') as f:
+            f.write(str(self.last_read))
+
+
 class ParserCommon(object):
     """
     A Parser class that begins the process of extracting data records from the
@@ -69,7 +91,10 @@ class ParserCommon(object):
         # initialize the data dictionary using the names defined above
         data = ParameterNames(parameters)
         self.data = data.create_dict()
+
+        # set raw data contents to None and default last_read (stream position) to 0
         self.raw = None
+        self.last_read = 0
 
     def load_ascii(self):
         """
@@ -77,7 +102,15 @@ class ParserCommon(object):
         the contents
         """
         with open(self.infile, 'r', encoding="latin-1") as fid:
-            self.raw = fid.readlines()
+            # determine the length of the file
+            file_length = len(fid.readlines())
+
+            # reset the file pointer to the last read position and read in the file contents
+            # from the last read position to the end of the file
+            if self.last_read >= 0 & self.last_read < file_length:
+                fid.seek(self.last_read)
+                self.raw = fid.readlines()
+                self.last_read = fid.tell()
 
     def load_binary(self):
         """
@@ -123,6 +156,7 @@ def logfilename_to_epoch(time_string):
 
     return epts
 
+
 def logfilename_to_nearest_half_hour(time_string):
     """
     Use the date and time string extracted from an hourly log filename to
@@ -141,7 +175,7 @@ def inputs(argv=None):
     """
     Sets the main input arguments for the parser that would be passed by the
     harvester. By default, these are just the input file (raw data file), the
-    the output file, and an optional integer switch that can be used to set
+    output file, and an optional integer switch that can be used to set
     custom options for parsers if needed. File names should include pathnames,
     which can be relative to the harvester.
     """
