@@ -6,7 +6,7 @@
 # C. Wingard  2023-11-09
 
 # Parse the command line inputs
-if [ $# -ne 4 ]; then
+if [ $# -ne 5 ]; then
     echo "$0: required inputs are the platform and deployment names, the beacon name"
     echo "(e.g., XEOS1), a flag to indicate if the beacon is subsurface (0), or mounted"
     echo "on the tower (1), and the name of the file with the IMEI number to process."

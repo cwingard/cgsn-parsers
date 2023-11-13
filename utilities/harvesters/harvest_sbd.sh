@@ -7,7 +7,7 @@
 # C. Wingard  2023-11-09
 
 # Parse the command line inputs
-if [ $# -ne 4 ]; then
+if [ $# -ne 5 ]; then
     echo "$0: required inputs are the platform and deployment names, the SBD modem name"
     echo "(e.g., SBD1), a string to indicate if this is coming from a CPM or STC, and the"
     echo "name of the file with the IMEI number to process."
