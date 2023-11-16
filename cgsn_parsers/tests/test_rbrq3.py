@@ -48,8 +48,8 @@ class TestParsingUnit(unittest.TestCase):
         """
        
         #serial_num = np.array(self.rbrq3.data.serial_number)
-        rbrtemp = np.array(self.rbrq3.data.temperature)
-        rbrpressure = np.array(self.rbrq3.data.pressure)
+        rbrtemp = np.array(self.rbrq3.data.temperature_00)
+        rbrpressure = np.array(self.rbrq3.data.pressure_00)
 
         np.testing.assert_array_equal(rbrtemp, self.expected[:, 1])
         np.testing.assert_array_equal(rbrpressure, self.expected[:, 2])

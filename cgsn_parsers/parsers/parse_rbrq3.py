@@ -13,28 +13,45 @@ import re
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT,  NEWLINE
 
+# Regex pattern for a line with the active column list
+
+COLS_PATTERN = (
+    r'(\[\w*:\w*\]:)' +                # DCL logger ID
+    r'# Active channels: ' +           # Line prefix
+    r'(.+)' +
+    NEWLINE
+)
+COLS_REGEX = re.compile( COLS_PATTERN, re.DOTALL )
+
 # Regex pattern for a line with a time stamp, unix time value and
 # up to 7 channel data values. TBD: alter when coniguration known
-PATTERN = (
+
+DATA_PATTERN = (
     r'(\[\w*:\w*\]:)' +                # DCL logger ID
     DCL_TIMESTAMP + r',\s*' +              # PRESF Date and Time
     FLOAT + r',' +                         # PRESF Unix time (milliseconds since 1/1/1970)
-    FLOAT + r',' +                         # channel 1 data
+    r'(.+)' +
+#   FLOAT + r',' +                         # channel 1 data
 #   FLOAT + r',' +                         # channel 2 data
 #   FLOAT + r',' +                         # channel 3 data
 #   FLOAT + r',' +                         # channel 4 data
 #   FLOAT + r',' +                         # channel 5 data
 #   FLOAT + r',' +                         # channel 6 data
-    FLOAT +                                # channel 7 data
+#    FLOAT +                                # channel 7 data
     NEWLINE
 )
-REGEX = re.compile(PATTERN, re.DOTALL)
+DATA_REGEX = re.compile( DATA_PATTERN, re.DOTALL )
 
 _parameter_names_presf = [
         'date_time_string',
         'unix_date_time_ms',
-        'temperature',
-        'pressure'
+        'temperature_00',
+        'pressure_00',
+        'temperature_01',
+        'seapressure_00',
+        'depth_00',
+        'period_00',
+        'period_01'
     ]
 
 
@@ -47,6 +64,9 @@ class Parser(ParserCommon):
     def __init__(self, infile):
         self.initialize(infile, _parameter_names_presf)
 
+        self.numChannels = 7   #default: all channels active
+        self.activeChannels = _parameter_names_presf[ 2: ]
+
     def parse_data(self):
         """
         Iterate through the record lines (defined via the regex expression
@@ -54,9 +74,16 @@ class Parser(ParserCommon):
         dictionary object created using the Bunch class.
         """
         for line in self.raw:
-            match = REGEX.match(line)
+
+            match = COLS_REGEX.match( line )
             if match:
-                self._build_parsed_values(match)
+                self.activeChannels = match.group(2).strip('\n').split('|')
+                self.numChannels = len( self.activeChannels )
+
+            else :
+                match = DATA_REGEX.match(line)
+                if match:
+                    self._build_parsed_values(match)
 
     def _build_parsed_values(self, match):
         """
@@ -69,11 +96,14 @@ class Parser(ParserCommon):
         self.data.time.append(epts)
         self.data.date_time_string.append(str(match.group(2)))
 
-        # Assign the remaining presf data to the named parameters
+        # Assign the unix date time in milliseconds next
         self.data.unix_date_time_ms.append(float(match.group(3)))
-        self.data.temperature.append(float(match.group(4)))
-        self.data.pressure.append(float(match.group(5)))
 
+        # Remaining data correspond to active channels (default or previously read from log)
+        channelDataList = match.group(4).strip('\n').split(',')
+        for i in range(0, len(channelDataList)):
+            self.data[ self.activeChannels[i] ].append( float( channelDataList[i] ))
+        
 def main(argv=None):
     # load the input arguments
     args = inputs(argv)
