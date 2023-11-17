@@ -57,13 +57,19 @@ class Parser(ParserCommon):
     watch circle status from the Xeos beacon email.
     """
     def __init__(self, infile, surface, last_read):
-        # test the subsurface beacon flag to make sure it is an integer, set to either 0 or 1
-        if not isinstance(surface, int) or surface not in [0, 1]:
-            raise ValueError(SWITCH_ERROR)
+        # test the subsurface beacon flag to make sure it can be converted to an integer
+        try:
+            surface = int(surface)
+        except ValueError:
+            print(SWITCH_ERROR)
 
-        self.initialize(infile, _parameter_names_xeos)
-        self.surface = surface
-        self.last_read = last_read
+        # test the subsurface beacon flag to make sure it is set to either 0 or 1
+        if surface in [0, 1]:
+            self.initialize(infile, _parameter_names_xeos)
+            self.surface = int(surface)
+            self.last_read = last_read
+        else:
+            raise ValueError(SWITCH_ERROR)
 
     def parse_data(self):
         """
