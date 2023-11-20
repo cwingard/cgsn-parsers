@@ -1,17 +1,17 @@
 #!/bin/bash
 #
-# Read the raw RBR Quartz3 data files from the Pioneer MAB Surface Moorings and create
-# parsed datasets available in JSON formatted files for further processing and
-# review.
+# Read the raw IFCB header data files from the Pioneer MAB Surface Moorings and
+# create parsed datasets available in JSON formatted files for further 
+# processing and review.
 #
-# P. Whelan  2023-11-13
+# P. Whelan  2023-11-20
 
 # Parse the command line inputs
 if [ $# -ne 6 ]; then
     echo "$0: required inputs are the platform and deployment names, the DCL number, the RBRQ3 "
-    echo "directory name, the subassembly [buoy/nsif/mfn] location of the RBRQ3 and the name"
+    echo "directory name, the subassembly [buoy/nsif/mfn] location of the IFCB and the name"
     echo "of the file to process."
-    echo "     example: $0 cp11cnsm D00001 dcl16 presf nsif 20240505.presf.log"
+    echo "     example: $0 cp11cnsm D00001 dcl16 presf nsif D20240505T122122_IFCB195.hdr
     exit 1
 fi
 PLATFORM=${1,,}
@@ -35,5 +35,5 @@ fi
 # Parse the file
 if [ -e $IN ]; then
     cd /home/ooiuser/code/cgsn-parsers
-    python -m cgsn_parsers.parsers.parse_rbrq3 -i $IN -o $OUT
+    python -m cgsn_parsers.parsers.parse_ifcb -i $IN -o $OUT
 fi
