@@ -5,6 +5,10 @@
 @file cgsn_parsers/parsers/parse_rbrq3.py
 @author Paul Whelan
 @brief Parses RBR Presf Quartz3 data logged by the custom built WHOI data loggers.
+Note: The quartz3 supports configurable, active columns of data. It was therefore necessary
+in the logger to query active columns and log the list of active columns. This parser looks
+for that log entry and will replace the default list of all data columns with those that are
+reported as active. Data in logged data lines is then mapped in order to those column names.
 """
 import os
 import re
@@ -24,23 +28,19 @@ COLS_PATTERN = (
 COLS_REGEX = re.compile( COLS_PATTERN, re.DOTALL )
 
 # Regex pattern for a line with a time stamp, unix time value and
-# up to 7 channel data values. TBD: alter when coniguration known
+# up to 7 channel data values. 
 
 DATA_PATTERN = (
     r'(\[\w*:\w*\]:)' +                # DCL logger ID
     DCL_TIMESTAMP + r',\s*' +              # PRESF Date and Time
     FLOAT + r',' +                         # PRESF Unix time (milliseconds since 1/1/1970)
     r'(.+)' +
-#   FLOAT + r',' +                         # channel 1 data
-#   FLOAT + r',' +                         # channel 2 data
-#   FLOAT + r',' +                         # channel 3 data
-#   FLOAT + r',' +                         # channel 4 data
-#   FLOAT + r',' +                         # channel 5 data
-#   FLOAT + r',' +                         # channel 6 data
-#    FLOAT +                                # channel 7 data
     NEWLINE
 )
 DATA_REGEX = re.compile( DATA_PATTERN, re.DOTALL )
+
+# Default list of reported data columns, in order.
+# Can be overridden with log entry containing active columns
 
 _parameter_names_presf = [
         'date_time_string',
@@ -57,7 +57,7 @@ _parameter_names_presf = [
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the Parser base class, adds the rbr presf specific
+    A Parser subclass that calls the Parser base class, adds the rbr quartz3 presf specific
     methods to parse the data, and extracts the rbr presf data records from the DCL
     daily log files.
     """
