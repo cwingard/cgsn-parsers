@@ -45,12 +45,12 @@ class TestParsingUnit(unittest.TestCase):
         lisst_concentration = np.array(self.lisst.data.lisst_volume_concentration)
         mean_diameter = np.array(self.lisst.data.mean_diameter)
         year = np.array(self.lisst.data.second)
-        pressure = np.array(self.lisst.data.raw_pressure)
+        pressure = np.array(self.lisst.data.pressure)
 
         np.testing.assert_array_equal(lisst_concentration[0, :], self.expected[1:37])
-        np.testing.assert_array_equal(year, self.expected[48])
-        np.testing.assert_array_equal(mean_diameter, self.expected[50])
-        np.testing.assert_array_equal(pressure, self.expected[56])
+        np.testing.assert_array_equal(year, self.expected[47])
+        np.testing.assert_array_equal(mean_diameter, self.expected[48])
+        np.testing.assert_array_equal(pressure, self.expected[51])
 
 
 if __name__ == '__main__':

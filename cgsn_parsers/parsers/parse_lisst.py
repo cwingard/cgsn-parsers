@@ -141,7 +141,7 @@ class Parser(ParserCommon):
             overflow = 65536
         pressure = pressure + overflow
 
-        self.data.raw_pressure.append(int(pressure))
+        self.data.pressure.append(int(pressure))
         self.data.ambient_light.append(int(match.group(27)))
         # self.data.analog_input_3.append(float(match.group(28)))
         self.data.computed_optical_transmission.append(float(match.group(29)))
