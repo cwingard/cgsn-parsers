@@ -117,6 +117,11 @@ def main(argv=None):
     presf.load_ascii()
     presf.parse_data()
 
+    # purge any channels for which no data was provided
+    for ch in _parameter_names_presf :
+        if len( presf.data[ ch ] ) == 0 :
+            del presf.data[ ch ]
+
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
