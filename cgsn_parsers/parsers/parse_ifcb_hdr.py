@@ -205,19 +205,19 @@ class Parser(ParserCommon):
         """
 
         # Get name value pair, then match to known parameters for value typing
-        varName = match.group(1)
-        strValue = match.group(2).strip('\n')
+        var_name = match.group(1)
+        str_value = match.group(2).strip('\n')
 
-        if varName in _param_names_ifcb_dict.keys() :
+        if var_name in _param_names_ifcb_dict.keys() :
 
-            if isinstance( _param_names_ifcb_dict[ varName ], int ) :
-                self.data[ varName ].append( int(strValue) )
+            if isinstance( _param_names_ifcb_dict[ var_name ], int ) :
+                self.data[ var_name ].append( int(str_value) )
 
-            elif isinstance( _param_names_ifcb_dict[ varName ], float ) :
-                self.data[ varName ].append( float(strValue) )
+            elif isinstance( _param_names_ifcb_dict[ var_name ], float ) :
+                self.data[ var_name ].append( float(str_value) )
 
             else :
-                self.data[ varName ].append( strValue )
+                self.data[ var_name ].append( str_value )
         
 
 def main(argv=None):
