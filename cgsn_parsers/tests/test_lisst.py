@@ -36,7 +36,7 @@ class TestParsingUnit(unittest.TestCase):
         # set the expected output array.
         self.expected = np.genfromtxt(EXPECTED, delimiter=",")
 
-    def test_parse_optaa(self):
+    def test_parse_lisst(self):
         """
         Test parsing of the LISST data file. Choosing random data columns to verify.
         """

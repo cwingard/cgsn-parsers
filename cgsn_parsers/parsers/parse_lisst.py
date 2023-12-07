@@ -128,7 +128,7 @@ class Parser(ParserCommon):
         self.data.second.append(int(match.group(17)))
         # self.data.analog_input_2.append(float(match.group(18)))
         self.data.mean_diameter.append(float(match.group(19)))
-        self.data.total_volume_concentation.append(float(match.group(20)))
+        self.data.total_volume_concentration.append(float(match.group(20)))
         self.data.relative_humidity.append(int(match.group(21)))
         # self.data.x_accel_counts.append(int(match.group(22)))
         # self.data.y_accel_counts.append(int(match.group(23)))
