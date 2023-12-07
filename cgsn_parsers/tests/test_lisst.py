@@ -23,7 +23,6 @@ class TestParsingUnit(unittest.TestCase):
     This unit test will parse sample log code derived from the LISST Logger, and check key
     data outputs as well as select engineer data to validate the output variables.
     """
-
     def setUp(self):
         """
         Using the sample data, initialize the Parser object with parsed LISST
@@ -41,7 +40,6 @@ class TestParsingUnit(unittest.TestCase):
         """
         Test parsing of the LISST data file. Choosing random data columns to verify.
         """
-
         lisst_concentration = np.array(self.lisst.data.lisst_volume_concentration)
         mean_diameter = np.array(self.lisst.data.mean_diameter)
         year = np.array(self.lisst.data.second)

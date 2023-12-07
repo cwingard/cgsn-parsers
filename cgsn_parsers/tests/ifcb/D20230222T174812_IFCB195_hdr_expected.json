@@ -24,4 +24,5 @@
     "focusMotorSmallStep_ms": [50],
     "focusMotorLargeStep_ms": [500],
     "laserMotorSmallStep_ms": [500],
-    "laserMotorLargeStep_ms": [5000]    }
+    "laserMotorLargeStep_ms": [5000]
+}
