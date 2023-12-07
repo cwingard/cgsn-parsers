@@ -20,7 +20,7 @@ leak detect currents) and current environmental conditions (e.g. surface meteoro
 subsurface currents) for deployment planning and troubleshooting (e.g. low salinity surface water from the Columbia 
 River Plume may impact the ability of gliders to surface).
 
-Several tools in multiple languages (a browser, Matlab, Python, R, Java, etc) exist that will enable a user to load a 
+Several tools in multiple languages (a browser, Matlab, Python, R, Java, etc.) exist that will enable a user to load a 
 parsed JSON formatted data file for further processing and review.
 
 This code is provided "as-is" for other users who may wish to interact directly with the
@@ -55,7 +55,7 @@ The following python packages are used by this code:
 # Contributing
 Users are encouraged to contribute to this code. The hope is this repository can provide the science community with a 
 means of accessing and working with the raw OOI mooring data. This project uses a [Forking Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow).
-To contribute , please fork the main [repo](https://bitbucket.org/ooicgsn/cgsn-parsers) to your own BitBucket account, create a branch, do your work, and 
+To contribute, please fork the main [repo](https://bitbucket.org/ooicgsn/cgsn-parsers) to your own BitBucket account, create a branch, do your work, and 
 then (when satisfied) submit a pull request to have your work integrated back into the main project repo (see a command
 line example of the workflow below).
 
