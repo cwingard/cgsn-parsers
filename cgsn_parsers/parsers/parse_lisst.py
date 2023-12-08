@@ -9,7 +9,7 @@ import re
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, NEWLINE, INTEGER
+from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, INTEGER
 
 # Regex for the 31 columns of data representing the different volume concentration size classes
 size_classes = r'(([+-]?\d+.\d+[Ee]?[+-]?\d*)(,([+-]?\d+.\d+[Ee]?[+-]?\d*)){35})'
@@ -22,7 +22,7 @@ PATTERN = (
     FLOAT + r',' +                              # Supply voltage in [V]
     FLOAT + r',' +                              # External analog input 1 [V]
     FLOAT + r',' +                              # Laser Reference sensor [mW]
-    FLOAT + r',' +                              # Depth in [m of sea water]
+    FLOAT + r',' +                              # Depth in [m of seawater]
     FLOAT + r',' +                              # Temperature [C]
     INTEGER + r',' +                            # Year
     INTEGER + r',' +                            # Month
@@ -52,7 +52,7 @@ _parameter_names_lisst = [
         'lisst_volume_concentration',
         'laser_transmission_sensor',
         'supply_voltage',
-#       'analog_input_1',              # Removed from list, will never have a fluorometer input used
+        # 'analog_input_1',              # Removed from list, will never have a fluorometer input used
         'laser_reference_sensor',
         'depth',
         'temperature',
@@ -62,16 +62,16 @@ _parameter_names_lisst = [
         'hour',
         'minute',
         'second',
-#       'analog_input_2',              # Removed from list, will never have a fluorometer input used
+        # 'analog_input_2',              # Removed from list, will never have a fluorometer input used
         'mean_diameter',
-        'total_volume_concentation',
+        'total_volume_concentration',
         'relative_humidity',
-#       'x_accel_counts',              # Removed from list, they are not calibrated or used
-#       'y_accel_counts',              # Removed from list, they are not calibrated or used
-#       'z_accel_counts',              # Removed from list, they are not calibrated or used
+        # 'x_accel_counts',              # Removed from list, they are not calibrated or used
+        # 'y_accel_counts',              # Removed from list, they are not calibrated or used
+        # 'z_accel_counts',              # Removed from list, they are not calibrated or used
         'pressure',
         'ambient_light',
-#       'analog_input_3',              # Removed from list, will never have a fluorometer input used
+        # 'analog_input_3',              # Removed from list, will never have a fluorometer input used
         'computed_optical_transmission',
         'beam_attenuation'                  
 ]
@@ -116,7 +116,7 @@ class Parser(ParserCommon):
         # Assign the remaining lisst data to the named parameters
         self.data.laser_transmission_sensor.append(float(match.group(6)))
         self.data.supply_voltage.append(float(match.group(7)))
-        #self.data.analog_input_1.append(float(match.group(8)))
+        # self.data.analog_input_1.append(float(match.group(8)))
         self.data.laser_reference_sensor.append(float(match.group(9)))
         self.data.depth.append(float(match.group(10)))
         self.data.temperature.append(float(match.group(11)))
@@ -128,7 +128,7 @@ class Parser(ParserCommon):
         self.data.second.append(int(match.group(17)))
         # self.data.analog_input_2.append(float(match.group(18)))
         self.data.mean_diameter.append(float(match.group(19)))
-        self.data.total_volume_concentation.append(float(match.group(20)))
+        self.data.total_volume_concentration.append(float(match.group(20)))
         self.data.relative_humidity.append(int(match.group(21)))
         # self.data.x_accel_counts.append(int(match.group(22)))
         # self.data.y_accel_counts.append(int(match.group(23)))
@@ -165,6 +165,7 @@ def main(argv=None):
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
         f.write(lisst.data.toJSON())
+
 
 if __name__ == '__main__':
     main()

@@ -46,7 +46,7 @@ class TestParsingUnit(unittest.TestCase):
         # the OPTAA on a uCSPP (source doesn't really matter as we are working
         # with binary data files). The uCSPP software extracts the binary data
         # into a tab-delimited ASCII file.
-        self.expected = np.genfromtxt(UCSPPDATA, skip_header=6, dtype=np.int)       
+        self.expected = np.genfromtxt(UCSPPDATA, skip_header=6, dtype=int)
 
     def test_parse_optaa(self):
         """
