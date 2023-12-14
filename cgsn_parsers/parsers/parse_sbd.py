@@ -77,7 +77,6 @@ def _parameter_names_pwrsys(superv_type):
         'cep_radius',
         'main_voltage',
         'main_current',
-        'error_flags',
         'temperature1',
         'temperature2',
         'humidity',
@@ -86,6 +85,7 @@ def _parameter_names_pwrsys(superv_type):
 
     if superv_type == 'cpm':
         parameter_names.extend([
+            'error_flags',
             'sbd_signal_strength',
             'sbd_message_pending',
             'ground_fault_enable',
@@ -107,6 +107,7 @@ def _parameter_names_pwrsys(superv_type):
 
     if superv_type == 'stc':
         parameter_names.extend([
+            'error_flags1',
             'ground_fault_enable',
             'leak_detect_enable',
             'leak_detect_voltage1',
@@ -224,7 +225,6 @@ class Parser(ParserCommon):
         # assign superv data shared by both the CPM and STC to the named parameters
         self.data.main_voltage.append(float(match.group(9)))
         self.data.main_current.append(float(match.group(10)))
-        self.data.error_flags.append(int(match.group(11), 16))
         self.data.temperature1.append(float(match.group(12)))
         self.data.temperature2.append(float(match.group(13)))
         self.data.humidity.append(float(match.group(14)))
@@ -232,6 +232,7 @@ class Parser(ParserCommon):
 
         # assign CPM specific superv data to the named parameters
         if self.superv_type == 'cpm':
+            self.data.error_flags.append(int(match.group(11), 16))
             self.data.sbd_signal_strength.append(int(match.group(16)))
             self.data.sbd_message_pending.append(int(match.group(17)))
             self.data.ground_fault_enable.append(int(match.group(18), 16))
@@ -252,6 +253,7 @@ class Parser(ParserCommon):
 
         # assign the STC specific superv data to the named parameters
         if self.superv_type == 'stc':
+            self.data.error_flags1.append(int(match.group(11), 16))
             self.data.ground_fault_enable.append(int(match.group(16), 16))
             self.data.leak_detect_enable.append(int(match.group(17), 16))
             self.data.leak_detect_voltage1.append(int(match.group(18)))

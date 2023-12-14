@@ -10,7 +10,6 @@ import numpy as np
 import json
 import unittest
 
-from munch import Munch
 from nose.plugins.attrib import attr
 from os import path
 
@@ -18,10 +17,11 @@ from cgsn_parsers.parsers.parse_ifcb_hdr import Parser
 
 # data sources for testing the parser
 RAWDATA = path.join(path.dirname(__file__), 'ifcb/D20230222T174812_IFCB195.hdr')
-EXPECTED = path.join(path.dirname(__file__), 'ifcb/D20230222T174812_IFCB195_hdr_expected.txt')
+EXPECTED = path.join(path.dirname(__file__), 'ifcb/D20230222T174812_IFCB195_hdr_expected.json')
 
 # data sources for testing the processing
-#PARSED = path.join(path.dirname(__file__), 'optaa/20150809_075841.optaa_cspp.json')
+# PARSED = path.join(path.dirname(__file__), 'optaa/20150809_075841.optaa_cspp.json')
+
 
 @attr('parse')
 class TestParsingUnit(unittest.TestCase):
@@ -39,18 +39,17 @@ class TestParsingUnit(unittest.TestCase):
         self.ifcb.load_ascii()
         self.ifcb.parse_data()
         
-        # set the expected output dicionary
-        with open( EXPECTED ) as f:
+        # set the expected output dictionary
+        with open(EXPECTED) as f:
             expData = f.read()
-        self.expected = json.loads( expData )
-            
+        self.expected = json.loads(expData)
+
     def test_parse_ifcb_hdr(self):
         """
         Test parsing of the IFCB header data file
         """
-
         for key in self.expected:
-            np.testing.assert_equal( self.expected[ key ], self.ifcb.data[ key ] )
+            np.testing.assert_equal(self.expected[key], self.ifcb.data[key])
        
 
 if __name__ == '__main__':       

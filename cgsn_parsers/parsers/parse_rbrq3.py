@@ -64,8 +64,8 @@ class Parser(ParserCommon):
     def __init__(self, infile):
         self.initialize(infile, _parameter_names_presf)
 
-        self.numChannels = 7   #default: all channels active
-        self.activeChannels = _parameter_names_presf[ 2: ]
+        self.num_channels = 7   #default: all channels active
+        self.active_channels = _parameter_names_presf[ 2: ]
 
     def parse_data(self):
         """
@@ -77,8 +77,8 @@ class Parser(ParserCommon):
 
             match = COLS_REGEX.match( line )
             if match:
-                self.activeChannels = match.group(2).strip('\n').split('|')
-                self.numChannels = len( self.activeChannels )
+                self.active_channels = match.group(2).strip('\n').split('|')
+                self.num_channels = len( self.active_channels )
 
             else :
                 match = DATA_REGEX.match(line)
@@ -100,9 +100,9 @@ class Parser(ParserCommon):
         self.data.unix_date_time_ms.append(float(match.group(3)))
 
         # Remaining data correspond to active channels (default or previously read from log)
-        channelDataList = match.group(4).strip('\n').split(',')
-        for i in range(0, len(channelDataList)):
-            self.data[ self.activeChannels[i] ].append( float( channelDataList[i] ))
+        channel_data_list = match.group(4).strip('\n').split(',')
+        for i in range(0, len(channel_data_list)):
+            self.data[ self.active_channels[i] ].append( float( channel_data_list[i] ))
         
 def main(argv=None):
     # load the input arguments
@@ -116,6 +116,11 @@ def main(argv=None):
     # load the data into a buffered object and parse the data into a dictionary
     presf.load_ascii()
     presf.parse_data()
+
+    # purge any channels for which no data was provided
+    for ch in _parameter_names_presf :
+        if len( presf.data[ ch ] ) == 0 :
+            del presf.data[ ch ]
 
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
