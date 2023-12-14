@@ -6,6 +6,7 @@
 """
 import os
 import re
+from datetime import datetime
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
@@ -56,12 +57,7 @@ _parameter_names_lisst = [
         'laser_reference_sensor',
         'depth',
         'temperature',
-        'year',
-        'month',
-        'day',
-        'hour',
-        'minute',
-        'second',
+        'instrument_timestamp',         # Combined all instrument date parameters into single timestamp
         # 'analog_input_2',              # Removed from list, will never have a fluorometer input used
         'mean_diameter',
         'total_volume_concentration',
@@ -120,12 +116,17 @@ class Parser(ParserCommon):
         self.data.laser_reference_sensor.append(float(match.group(9)))
         self.data.depth.append(float(match.group(10)))
         self.data.temperature.append(float(match.group(11)))
-        self.data.year.append(int(match.group(12)))
-        self.data.month.append(int(match.group(13)))
-        self.data.day.append(int(match.group(14)))
-        self.data.hour.append(int(match.group(15)))
-        self.data.minute.append(int(match.group(16)))
-        self.data.second.append(int(match.group(17)))
+
+        # Combine all dates into iso-8601 format
+        year = int(match.group(12))
+        month = int(match.group(13))
+        day = int(match.group(14))
+        hour = int(match.group(15))
+        minute = int(match.group(16))
+        second = int(match.group(17))
+        date = datetime(year, month, day, hour, minute, second)
+
+        self.data.instrument_timestamp.append(str(date.isoformat()))
         # self.data.analog_input_2.append(float(match.group(18)))
         self.data.mean_diameter.append(float(match.group(19)))
         self.data.total_volume_concentration.append(float(match.group(20)))
