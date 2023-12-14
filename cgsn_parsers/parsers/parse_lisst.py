@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 @package cgsn_parsers.parsers.parse_lisst
 @file cgsn_parsers/parsers/parse_lisst.py
@@ -6,6 +8,7 @@
 """
 import os
 import re
+from datetime import datetime
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
@@ -52,26 +55,21 @@ _parameter_names_lisst = [
         'lisst_volume_concentration',
         'laser_transmission_sensor',
         'supply_voltage',
-#       'analog_input_1',              # Removed from list, will never have a fluorometer input used
+#       'analog_input_1',               Removed from list, will never have a fluorometer input used
         'laser_reference_sensor',
         'depth',
         'temperature',
-        'year',
-        'month',
-        'day',
-        'hour',
-        'minute',
-        'second',
-#       'analog_input_2',              # Removed from list, will never have a fluorometer input used
+        'instrument_timestamp',         # Combined all instrument date parameters into single timestamp
+#       'analog_input_2',               Removed from list, will never have a fluorometer input used
         'mean_diameter',
-        'total_volume_concentation',
+        'total_volume_concentration',
         'relative_humidity',
-#       'x_accel_counts',              # Removed from list, they are not calibrated or used
-#       'y_accel_counts',              # Removed from list, they are not calibrated or used
-#       'z_accel_counts',              # Removed from list, they are not calibrated or used
+#       'x_accel_counts',               Removed from list, they are not calibrated or used
+#       'y_accel_counts',               Removed from list, they are not calibrated or used
+#       'z_accel_counts',               Removed from list, they are not calibrated or used
         'pressure',
         'ambient_light',
-#       'analog_input_3',              # Removed from list, will never have a fluorometer input used
+#       'analog_input_3',               Removed from list, will never have a fluorometer input used
         'computed_optical_transmission',
         'beam_attenuation'                  
 ]
@@ -120,15 +118,20 @@ class Parser(ParserCommon):
         self.data.laser_reference_sensor.append(float(match.group(9)))
         self.data.depth.append(float(match.group(10)))
         self.data.temperature.append(float(match.group(11)))
-        self.data.year.append(int(match.group(12)))
-        self.data.month.append(int(match.group(13)))
-        self.data.day.append(int(match.group(14)))
-        self.data.hour.append(int(match.group(15)))
-        self.data.minute.append(int(match.group(16)))
-        self.data.second.append(int(match.group(17)))
+
+        # Combine all dates into iso-8601 format
+        year = int(match.group(12))
+        month = int(match.group(13))
+        day = int(match.group(14))
+        hour = int(match.group(15))
+        minute = int(match.group(16))
+        second = int(match.group(17))
+        date = datetime(year, month, day, hour, minute, second)
+        self.data.instrument_timestamp.append(str(date.isoformat()))
+
         # self.data.analog_input_2.append(float(match.group(18)))
         self.data.mean_diameter.append(float(match.group(19)))
-        self.data.total_volume_concentation.append(float(match.group(20)))
+        self.data.total_volume_concentration.append(float(match.group(20)))
         self.data.relative_humidity.append(int(match.group(21)))
         # self.data.x_accel_counts.append(int(match.group(22)))
         # self.data.y_accel_counts.append(int(match.group(23)))
