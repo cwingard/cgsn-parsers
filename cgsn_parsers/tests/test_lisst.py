@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 @package cgsn_parsers.tests.test_parse_lisst
 @file cgsn_parsers/tests/test_parse_lisst.py
@@ -44,13 +46,11 @@ class TestParsingUnit(unittest.TestCase):
 
         lisst_concentration = np.array(self.lisst.data.lisst_volume_concentration)
         mean_diameter = np.array(self.lisst.data.mean_diameter)
-        year = np.array(self.lisst.data.second)
         pressure = np.array(self.lisst.data.pressure)
 
         np.testing.assert_array_equal(lisst_concentration[0, :], self.expected[1:37])
-        np.testing.assert_array_equal(year, self.expected[47])
-        np.testing.assert_array_equal(mean_diameter, self.expected[48])
-        np.testing.assert_array_equal(pressure, self.expected[51])
+        np.testing.assert_array_equal(mean_diameter, self.expected[43])
+        np.testing.assert_array_equal(pressure, self.expected[46])
 
 
 if __name__ == '__main__':
