@@ -1,8 +1,8 @@
 """
-@package cgsn_parsers.parsers.parse_lisst
-@file cgsn_parsers/parsers/parse_lisst.py
+@package cgsn_parsers.parsers.parse_prtsz
+@file cgsn_parsers/parsers/parse_prtsz.py
 @author Samuel Dahlberg
-@brief Parses LISST data logged by the WHOI LISST data logger.
+@brief Parses PRTSZ data logged by the WHOI PRTSZ data logger.
 """
 import os
 import re
@@ -48,9 +48,9 @@ PATTERN = (
 
 REGEX = re.compile(PATTERN, re.DOTALL)
 
-_parameter_names_lisst = [
+_parameter_names_prtsz = [
         'date_time_string',
-        'lisst_volume_concentration',
+        'prtsz_volume_concentration',
         'laser_transmission_sensor',
         'supply_voltage',
         # 'analog_input_1',              # Removed from list, will never have a fluorometer input used
@@ -75,12 +75,12 @@ _parameter_names_lisst = [
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the Parser base class, adds the LISST specific
-    methods to parse the data, and extracts the LISST data records from the DCL
+    A Parser subclass that calls the Parser base class, adds the PRTSZ specific
+    methods to parse the data, and extracts the PRTSZ data records from the DCL
     daily log files.
     """
     def __init__(self, infile):
-        self.initialize(infile, _parameter_names_lisst)
+        self.initialize(infile, _parameter_names_prtsz)
 
     def parse_data(self):
         """
@@ -107,9 +107,9 @@ class Parser(ParserCommon):
         # Create a list of the 36 columns of volume concentration data and assign to parameter
         data = (match.group(2)).split(',')
         data = list(map(float, data))
-        self.data.lisst_volume_concentration.append(data)
+        self.data.prtsz_volume_concentration.append(data)
 
-        # Assign the remaining lisst data to the named parameters
+        # Assign the remaining prtsz data to the named parameters
         self.data.laser_transmission_sensor.append(float(match.group(6)))
         self.data.supply_voltage.append(float(match.group(7)))
         # self.data.analog_input_1.append(float(match.group(8)))
@@ -155,17 +155,17 @@ def main(argv=None):
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for LISST
-    lisst = Parser(infile)
+    # initialize the Parser object for PRTSZ
+    prtsz = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    lisst.load_ascii()
-    lisst.parse_data()
+    prtsz.load_ascii()
+    prtsz.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
-        f.write(lisst.data.toJSON())
+        f.write(prtsz.data.toJSON())
 
 
 if __name__ == '__main__':
