@@ -42,7 +42,7 @@ class TestParsingUnit(unittest.TestCase):
         """
         Test parsing of the PRTSZ data file. Choosing random data columns to verify.
         """
-        prtsz_concentration = np.array(self.prtsz.data.prtsz_volume_concentration)
+        prtsz_concentration = np.array(self.prtsz.data.volume_concentration)
         mean_diameter = np.array(self.prtsz.data.mean_diameter)
         pressure = np.array(self.prtsz.data.pressure)
 

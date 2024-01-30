@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 @package cgsn_parsers.parsers.parse_prtsz
 @file cgsn_parsers/parsers/parse_prtsz.py
@@ -32,7 +34,7 @@ PATTERN = (
     INTEGER + r',' +                            # Minute
     INTEGER + r',' +                            # Second
     FLOAT + r',' +                              # External analog input 2 [V]
-    FLOAT + r',' +                              # Mean Diameter [μm]
+    FLOAT + r',' +                              # Mean Diameter [um]
     FLOAT + r',' +                              # Total Volume Concentration [PPM]
     INTEGER + r',' +                            # Relative Humidity [%]
     INTEGER + r',' +                            # Accelerometer X
@@ -50,7 +52,7 @@ REGEX = re.compile(PATTERN, re.DOTALL)
 
 _parameter_names_prtsz = [
         'date_time_string',
-        'prtsz_volume_concentration',
+        'volume_concentration',
         'laser_transmission_sensor',
         'supply_voltage',
         # 'analog_input_1',              # Removed from list, will never have a fluorometer input used
@@ -69,7 +71,7 @@ _parameter_names_prtsz = [
         'ambient_light',
         # 'analog_input_3',              # Removed from list, will never have a fluorometer input used
         'computed_optical_transmission',
-        'beam_attenuation'                  
+        'volume_beam_attenuation_coefficient_of_radiative_flux_in_sea_water'
 ]
 
 
@@ -107,7 +109,7 @@ class Parser(ParserCommon):
         # Create a list of the 36 columns of volume concentration data and assign to parameter
         data = (match.group(2)).split(',')
         data = list(map(float, data))
-        self.data.prtsz_volume_concentration.append(data)
+        self.data.volume_concentration.append(data)
 
         # Assign the remaining prtsz data to the named parameters
         self.data.laser_transmission_sensor.append(float(match.group(6)))
@@ -146,7 +148,7 @@ class Parser(ParserCommon):
         self.data.ambient_light.append(int(match.group(27)))
         # self.data.analog_input_3.append(float(match.group(28)))
         self.data.computed_optical_transmission.append(float(match.group(29)))
-        self.data.beam_attenuation.append(float(match.group(30)))
+        self.data.volume_beam_attenuation_coefficient_of_radiative_flux_in_sea_water.append(float(match.group(30)))
 
 
 def main(argv=None):
