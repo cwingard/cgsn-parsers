@@ -71,7 +71,7 @@ _parameter_names_prtsz = [
         'ambient_light',
         # 'analog_input_3',              # Removed from list, will never have a fluorometer input used
         'computed_optical_transmission',
-        'volume_beam_attenuation_coefficient_of_radiative_flux_in_sea_water'
+        'beam_attenuation'
 ]
 
 
@@ -148,7 +148,7 @@ class Parser(ParserCommon):
         self.data.ambient_light.append(int(match.group(27)))
         # self.data.analog_input_3.append(float(match.group(28)))
         self.data.computed_optical_transmission.append(float(match.group(29)))
-        self.data.volume_beam_attenuation_coefficient_of_radiative_flux_in_sea_water.append(float(match.group(30)))
+        self.data.beam_attenuation.append(float(match.group(30)))
 
 
 def main(argv=None):
