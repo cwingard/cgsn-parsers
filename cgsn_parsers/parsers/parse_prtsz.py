@@ -1,11 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
-@package cgsn_parsers.parsers.parse_lisst
-@file cgsn_parsers/parsers/parse_lisst.py
+@package cgsn_parsers.parsers.parse_prtsz
+@file cgsn_parsers/parsers/parse_prtsz.py
 @author Samuel Dahlberg
-@brief Parses LISST data logged by the WHOI LISST data logger.
+@brief Parses PRTSZ data logged by the WHOI PRTSZ data logger.
 """
 import os
 import re
+from datetime import datetime
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
@@ -31,7 +34,7 @@ PATTERN = (
     INTEGER + r',' +                            # Minute
     INTEGER + r',' +                            # Second
     FLOAT + r',' +                              # External analog input 2 [V]
-    FLOAT + r',' +                              # Mean Diameter [μm]
+    FLOAT + r',' +                              # Mean Diameter [um]
     FLOAT + r',' +                              # Total Volume Concentration [PPM]
     INTEGER + r',' +                            # Relative Humidity [%]
     INTEGER + r',' +                            # Accelerometer X
@@ -47,21 +50,16 @@ PATTERN = (
 
 REGEX = re.compile(PATTERN, re.DOTALL)
 
-_parameter_names_lisst = [
+_parameter_names_prtsz = [
         'date_time_string',
-        'lisst_volume_concentration',
+        'volume_concentration',
         'laser_transmission_sensor',
         'supply_voltage',
         # 'analog_input_1',              # Removed from list, will never have a fluorometer input used
         'laser_reference_sensor',
         'depth',
         'temperature',
-        'year',
-        'month',
-        'day',
-        'hour',
-        'minute',
-        'second',
+        'instrument_timestamp',         # Combined all instrument date parameters into single timestamp
         # 'analog_input_2',              # Removed from list, will never have a fluorometer input used
         'mean_diameter',
         'total_volume_concentration',
@@ -73,18 +71,18 @@ _parameter_names_lisst = [
         'ambient_light',
         # 'analog_input_3',              # Removed from list, will never have a fluorometer input used
         'computed_optical_transmission',
-        'beam_attenuation'                  
+        'beam_attenuation'
 ]
 
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the Parser base class, adds the LISST specific
-    methods to parse the data, and extracts the LISST data records from the DCL
+    A Parser subclass that calls the Parser base class, adds the PRTSZ specific
+    methods to parse the data, and extracts the PRTSZ data records from the DCL
     daily log files.
     """
     def __init__(self, infile):
-        self.initialize(infile, _parameter_names_lisst)
+        self.initialize(infile, _parameter_names_prtsz)
 
     def parse_data(self):
         """
@@ -111,21 +109,26 @@ class Parser(ParserCommon):
         # Create a list of the 36 columns of volume concentration data and assign to parameter
         data = (match.group(2)).split(',')
         data = list(map(float, data))
-        self.data.lisst_volume_concentration.append(data)
+        self.data.volume_concentration.append(data)
 
-        # Assign the remaining lisst data to the named parameters
+        # Assign the remaining prtsz data to the named parameters
         self.data.laser_transmission_sensor.append(float(match.group(6)))
         self.data.supply_voltage.append(float(match.group(7)))
         # self.data.analog_input_1.append(float(match.group(8)))
         self.data.laser_reference_sensor.append(float(match.group(9)))
         self.data.depth.append(float(match.group(10)))
         self.data.temperature.append(float(match.group(11)))
-        self.data.year.append(int(match.group(12)))
-        self.data.month.append(int(match.group(13)))
-        self.data.day.append(int(match.group(14)))
-        self.data.hour.append(int(match.group(15)))
-        self.data.minute.append(int(match.group(16)))
-        self.data.second.append(int(match.group(17)))
+
+        # Combine all dates into iso-8601 format
+        year = int(match.group(12))
+        month = int(match.group(13))
+        day = int(match.group(14))
+        hour = int(match.group(15))
+        minute = int(match.group(16))
+        second = int(match.group(17))
+        date = datetime(year, month, day, hour, minute, second)
+
+        self.data.instrument_timestamp.append(str(date.isoformat()))
         # self.data.analog_input_2.append(float(match.group(18)))
         self.data.mean_diameter.append(float(match.group(19)))
         self.data.total_volume_concentration.append(float(match.group(20)))
@@ -154,17 +157,17 @@ def main(argv=None):
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for LISST
-    lisst = Parser(infile)
+    # initialize the Parser object for PRTSZ
+    prtsz = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary
-    lisst.load_ascii()
-    lisst.parse_data()
+    prtsz.load_ascii()
+    prtsz.parse_data()
 
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
     with open(outfile, 'w') as f:
-        f.write(lisst.data.toJSON())
+        f.write(prtsz.data.toJSON())
 
 
 if __name__ == '__main__':
