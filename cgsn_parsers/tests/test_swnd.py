@@ -54,12 +54,12 @@ class TestParsingUnit(unittest.TestCase):
         parsed = self.swnd.data.toDict()
 
         np.testing.assert_array_equal(parsed['u_axis_wind_speed'], (self.expected[:, 0]).astype(float))
-        np.testing.assert_array_equal(parsed['v_axis_wind_speed'], (self.expected[:, 0]).astype(float))
-        np.testing.assert_array_equal(parsed['speed_of_sound'], (self.expected[:, 0]).astype(float))
-        np.testing.assert_array_equal(parsed['sonic_temperature'], (self.expected[:, 0]).astype(float))
-        np.testing.assert_array_equal(parsed['heading'], (self.expected[:, 0]).astype(float))
-        np.testing.assert_array_equal(parsed['pitch'], (self.expected[:, 0]).astype(float))
-        np.testing.assert_array_equal(parsed['roll'], (self.expected[:, 0]).astype(float))
+        np.testing.assert_array_equal(parsed['v_axis_wind_speed'], (self.expected[:, 1]).astype(float))
+        np.testing.assert_array_equal(parsed['speed_of_sound'], (self.expected[:, 2]).astype(float))
+        np.testing.assert_array_equal(parsed['sonic_temperature'], (self.expected[:, 3]).astype(float))
+        np.testing.assert_array_equal(parsed['heading'], (self.expected[:, 4]).astype(float))
+        np.testing.assert_array_equal(parsed['pitch'], (self.expected[:, 5]).astype(float))
+        np.testing.assert_array_equal(parsed['roll'], (self.expected[:, 6]).astype(float))
 
 
 if __name__ == '__main__':
