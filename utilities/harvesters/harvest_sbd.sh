@@ -46,5 +46,5 @@ fi
 # Parse the file
 if [ -e "$IN" ]; then
     cd /home/ooiuser/code/cgsn-parsers || exit
-    python -m cgsn_parsers.parsers.parse_sbd -i "$IN" -o "$OUT" -s "$SUPERV"
+    python -m cgsn_parsers.parsers.parse_sbd -i "$IN" -o "$OUT" -s "$SUPERV" || echo "ERROR: Failed to parse $IN"
 fi

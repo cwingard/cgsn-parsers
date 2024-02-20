@@ -47,5 +47,5 @@ fi
 # Parse the file
 if [ -e "$IN" ]; then
     cd /home/ooiuser/code/cgsn-parsers || exit
-    python -m cgsn_parsers.parsers.parse_xeos -i "$IN" -o "$OUT" -s "$SURFACE"
+    python -m cgsn_parsers.parsers.parse_xeos -i "$IN" -o "$OUT" -s "$SURFACE" || echo "ERROR: Failed to parse $IN"
 fi
