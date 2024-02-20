@@ -20,6 +20,7 @@ from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLO
 # Regex pattern for a line with the active column list
 
 COLS_PATTERN = (
+    DCL_TIMESTAMP + r' ' +             # DCL timestamp
     r'(\[\w*:\w*\]:)' +                # DCL logger ID
     r'# Active channels: ' +           # Line prefix
     r'(.+)' +
@@ -31,9 +32,10 @@ COLS_REGEX = re.compile( COLS_PATTERN, re.DOTALL )
 # up to 7 channel data values. 
 
 DATA_PATTERN = (
+    DCL_TIMESTAMP + r' ' +             # DCL timestamp
     r'(\[\w*:\w*\]:)' +                # DCL logger ID
-    DCL_TIMESTAMP + r',\s*' +              # PRESF Date and Time
-    FLOAT + r',' +                         # PRESF Unix time (milliseconds since 1/1/1970)
+    DCL_TIMESTAMP + r',\s*' +          # PRESF Date and Time
+    FLOAT + r',' +                     # PRESF Unix time (milliseconds since 1/1/1970)
     r'(.+)' +
     NEWLINE
 )
@@ -43,6 +45,7 @@ DATA_REGEX = re.compile( DATA_PATTERN, re.DOTALL )
 # Can be overridden with log entry containing active columns
 
 _parameter_names_presf = [
+        'dcl_date_time_string',
         'date_time_string',
         'unix_date_time_ms',
         'temperature_00',
@@ -65,7 +68,7 @@ class Parser(ParserCommon):
         self.initialize(infile, _parameter_names_presf)
 
         self.num_channels = 7   #default: all channels active
-        self.active_channels = _parameter_names_presf[ 2: ]
+        self.active_channels = _parameter_names_presf[ 3: ]
 
     def parse_data(self):
         """
@@ -77,7 +80,7 @@ class Parser(ParserCommon):
 
             match = COLS_REGEX.match( line )
             if match:
-                self.active_channels = match.group(2).strip('\n').split('|')
+                self.active_channels = match.group(3).strip('\n').split('|')
                 self.num_channels = len( self.active_channels )
 
             else :
@@ -90,17 +93,21 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        # Use the date_time_string to calculate an epoch timestamp (seconds since
-        # 1970-01-01)
-        epts = dcl_to_epoch(match.group(2))
-        self.data.time.append(epts)
-        self.data.date_time_string.append(str(match.group(2)))
 
-        # Assign the unix date time in milliseconds next
-        self.data.unix_date_time_ms.append(float(match.group(3)))
+        # Assign the DCL date_time_string
+        self.data.dcl_date_time_string.append(str(match.group(1)))
+        
+        # Use the instrument date_time_string to calculate an epoch timestamp
+        # (seconds since 1970-01-01)
+        epts = dcl_to_epoch(match.group(3))
+        self.data.time.append(epts)
+        self.data.date_time_string.append(str(match.group(3)))
+
+        # Assign the instrument unix date time in milliseconds next
+        self.data.unix_date_time_ms.append(float(match.group(4)))
 
         # Remaining data correspond to active channels (default or previously read from log)
-        channel_data_list = match.group(4).strip('\n').split(',')
+        channel_data_list = match.group(5).strip('\n').split(',')
         for i in range(0, len(channel_data_list)):
             self.data[ self.active_channels[i] ].append( float( channel_data_list[i] ))
         
