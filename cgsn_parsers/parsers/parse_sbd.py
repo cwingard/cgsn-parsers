@@ -343,27 +343,38 @@ def main(argv=None):
             # load the existing data
             with open(outfile, 'r') as f:
                 try:
+                    # load the existing data
                     data = json.load(f)
+
+                    # append the new data to the existing data
+                    for k, v in superv.data.items():
+                        data[k].extend(v)
+
+                    # write the updated data back to the file
+                    with open(outfile, 'w') as updated:
+                        json.dump(data, updated)
+
+                    # update the last read position in the file
+                    position.last_read = superv.last_read
+
                 except JSONDecodeError:
-                    data = {}
-                    print('The file is empty or otherwise corrupted, creating a new one.')
-
-            # append the new data to the existing data
-            for k, v in superv.data.items():
-                data[k].extend(v)
-
-            # write the updated data back to the file
-            with open(outfile, 'w') as f:
-                json.dump(data, f)
+                    # if the file is empty or otherwise corrupted, reset the file processing
+                    print('The file is empty or otherwise corrupted, resetting file processing.')
+                    position.last_read = 0
+                    os.remove(outfile)
+                    return None
         else:
+            # writing the new data to a new file
             with open(outfile, 'w') as f:
                 f.write(superv.data.toJSON())
 
+            # update the last read position in the file
+            position.last_read = superv.last_read
+
         # save the stream position to a text file
-        position.last_read = superv.last_read
         position.save_position()
     else:
-        print('No new data to parse.')
+        print('No new SBD modem data to parse.')
 
 
 if __name__ == '__main__':
