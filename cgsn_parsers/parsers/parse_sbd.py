@@ -12,6 +12,7 @@ import pandas as pd
 import re
 
 from calendar import timegm
+from json.decoder import JSONDecodeError
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon, FilePointer
@@ -341,24 +342,38 @@ def main(argv=None):
         if os.path.isfile(outfile):
             # load the existing data
             with open(outfile, 'r') as f:
-                data = json.load(f)
+                try:
+                    # load the existing data
+                    data = json.load(f)
 
-            # append the new data to the existing data
-            for k, v in superv.data.items():
-                data[k].extend(v)
+                    # append the new data to the existing data
+                    for k, v in superv.data.items():
+                        data[k].extend(v)
 
-            # write the updated data back to the file
-            with open(outfile, 'w') as f:
-                json.dump(data, f)
+                    # write the updated data back to the file
+                    with open(outfile, 'w') as updated:
+                        json.dump(data, updated)
+
+                    # update the last read position in the file
+                    position.last_read = superv.last_read
+
+                except JSONDecodeError:
+                    # if the file is empty or otherwise corrupted, reset the file processing
+                    print('The file is empty or otherwise corrupted, resetting file processing.')
+                    position.last_read = 0
+                    os.remove(outfile)
         else:
+            # writing the new data to a new file
             with open(outfile, 'w') as f:
                 f.write(superv.data.toJSON())
 
+            # update the last read position in the file
+            position.last_read = superv.last_read
+
         # save the stream position to a text file
-        position.last_read = superv.last_read
         position.save_position()
     else:
-        print('No new data to parse.')
+        print('No new SBD modem data to parse.')
 
 
 if __name__ == '__main__':
