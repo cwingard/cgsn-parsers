@@ -12,6 +12,7 @@ import pandas as pd
 import re
 
 from calendar import timegm
+from json.decoder import JSONDecodeError
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon, FilePointer
@@ -341,7 +342,11 @@ def main(argv=None):
         if os.path.isfile(outfile):
             # load the existing data
             with open(outfile, 'r') as f:
-                data = json.load(f)
+                try:
+                    data = json.load(f)
+                except JSONDecodeError:
+                    data = {}
+                    print('The file is empty or otherwise corrupted, creating a new one.')
 
             # append the new data to the existing data
             for k, v in superv.data.items():
