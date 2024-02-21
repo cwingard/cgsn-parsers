@@ -362,7 +362,6 @@ def main(argv=None):
                     print('The file is empty or otherwise corrupted, resetting file processing.')
                     position.last_read = 0
                     os.remove(outfile)
-                    return None
         else:
             # writing the new data to a new file
             with open(outfile, 'w') as f:
