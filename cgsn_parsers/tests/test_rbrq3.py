@@ -46,13 +46,13 @@ class TestParsingUnit(unittest.TestCase):
         """
         Test parsing of the RBR Quartz3 data file
         """
-        pass
+        #pass
         #serial_num = np.array(self.rbrq3.data.serial_number)
-        #rbrtemp = np.array(self.rbrq3.data.temperature_00)
-        #rbrpressure = np.array(self.rbrq3.data.pressure_00)
+        rbrtemp = np.array(self.rbrq3.data.temperature_00)
+        rbrpressure = np.array(self.rbrq3.data.pressure_00)
 
-        #np.testing.assert_array_equal(rbrtemp, self.expected[:, 1])
-        #np.testing.assert_array_equal(rbrpressure, self.expected[:, 2])
+        np.testing.assert_array_equal(rbrtemp, self.expected[:, 1])
+        np.testing.assert_array_equal(rbrpressure, self.expected[:, 2])
 
 
 if __name__ == '__main__':       
