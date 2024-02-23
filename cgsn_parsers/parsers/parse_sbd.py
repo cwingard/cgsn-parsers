@@ -12,6 +12,7 @@ import pandas as pd
 import re
 
 from calendar import timegm
+from json.decoder import JSONDecodeError
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon, FilePointer
@@ -20,16 +21,16 @@ from cgsn_parsers.parsers.common import inputs, FLOAT, INTEGER, NEWLINE
 # Regex pattern for the SBD beacon data (either from a CPM or STC)
 CPM_PATTERN = (
     r'MOMSN=' + INTEGER + r',\s(.+),\s' + INTEGER + r'\s-\sTransfer\s(.*),\s' +
-    r'bytes=' + INTEGER + r',\sLat:\s' + FLOAT + r'\sLon:\s' + FLOAT + r'\sCEPradius:\s' + INTEGER + r'\s' +
+    r'bytes=' + INTEGER + r',\sLat:\s' + FLOAT + r'\sLon:\s' + FLOAT + r'\sCEPradius:\s' + INTEGER + r',\s' +
     r'mpic_cpm:\s+' + FLOAT + r'\s' + FLOAT + r'\s0.0\s0.0\s' + r'([0-9a-f]{8})\s' +
     r't\s' + FLOAT + r'\s' + FLOAT + r'\s' + r'h\s' + FLOAT + r'\s' + r'p\s' + FLOAT + r'\s' +
-    r'0.0\s0.0\s0.0\ndata\sndata\sndata\spv\s0\swt\s0\sfc\s0\s' +  # suspect this was meant to be PSC data, just filler
+    r'0.0\s0.0\s0.0\sndata\sndata\sndata\spv\s0\swt\s0\sfc\s0\s' +  # suspect this was meant to be PSC data, just filler
     r'sbd\s' + INTEGER + r'\s' + INTEGER + r'\s' +
     r'gf\s([0-9a-f]{1})\s'
     r'ld\s([0-9a-f]{1})\s'
     r'hb\s([0-1]+)\s' + INTEGER + r'\s' + INTEGER + r'\s' +
     r'wake\s([0-9]{2})\s' +
-    r'ir\s([+-]?[0-1]+)\s' +
+    r'ir\s([0-1]+)\s' +
     r'fwwf\s([0-3]+)\s' +
     r'gps\s([0-1]+)\s' +
     r'pps\s([0-1]+)\s' +
@@ -43,21 +44,21 @@ CPM_PATTERN = (
 
 STC_PATTERN = (
     r'MOMSN=' + INTEGER + r',\s(.+),\s' + INTEGER + r'\s-\sTransfer\s(.*),\s' +
-    r'bytes=' + INTEGER + r',\sLat:\s' + FLOAT + r'\sLon:\s' + FLOAT + r'\sCEPradius:\s' + INTEGER + r'\s' +
-    r'mpic_stc:\s+' + FLOAT + r'\s' + FLOAT + r'([0-9a-f]{8})\s' +
+    r'bytes=' + INTEGER + r',\sLat:\s' + FLOAT + r'\sLon:\s' + FLOAT + r'\sCEPradius:\s' + INTEGER + r',\s' +
+    r'mpic_stc:\s' + FLOAT + r'\s' + FLOAT + r'\s' + r'([0-9a-f]{8})\s' +
     r't\s' + FLOAT + r'\s' + FLOAT + r'\s' + r'h\s' + FLOAT + r'\s' + r'p\s' + FLOAT + r'\s' +
-    r'gf\s([0-9a-f]{1})\s' + r'ld\s+([0-9a-f]{1})\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
-    r'hb\s+([0-1]+)\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' + r'wake\s+([0-9]+)\s+' +
+    r'gf\s([0-9a-f]{1})\s' + r'ld\s([0-9a-f]{1})\s' + INTEGER + r'\s' + INTEGER + r'\s' +
+    r'hb\s([0-1]+)\s' + INTEGER + r'\s' + INTEGER + r'\s' + r'wake\s([0-9]+)\s' +
     r'ir\s([+-]?[0-1]+)\s' + FLOAT + r'\s' + FLOAT + r'\s' + r'([0-2])\s' +
     r'fwwf\s([0-3]+)\s' + FLOAT + r'\s' + FLOAT + r'\s' + r'([0-3]+)\s' +
-    r'gps\s([0-1]+)\s' + r'sbd\s([0-1]+)\s' + r'pps\s([0-1]+)\s' + r'imm\s([0-1]+)\s' +
-    r'wtc\s+' + FLOAT + r'\s+' + r'wpc\s+' + INTEGER + r'\s+' +
-    r'esw\s([0-3]+)\s' + r'dsl\s([0-1]+)\s' + r'([0-9a-f]{8})\s+' +
-    r'p1\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
-    r'p2\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
-    r'p3\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
-    r'p5\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
-    r'p7\s+([0-1]+)\s+' + FLOAT + r'\s+' + FLOAT + r'\s+([0-4]+)\s+' +
+    r'gps\s([0-1]+)\s' + r'sbd\s([0-9]+)\s' + r'pps\s([0-1]+)\s' + r'imm\s([0-1]+)\s' +
+    r'wtc\s' + FLOAT + r'\s' + r'wpc\s' + INTEGER + r'\s' +
+    r'esw\s([0-3]+)\s' + r'dsl\s([0-1]+)\s' + r'([0-9a-f]{8})\s' +
+    r'p1\s([0-1]+)\s' + FLOAT + r'\s' + FLOAT + r'\s([0-4]+)\s' +
+    r'p2\s([0-1]+)\s' + FLOAT + r'\s' + FLOAT + r'\s([0-4]+)\s' +
+    r'p3\s([0-1]+)\s' + FLOAT + r'\s' + FLOAT + r'\s([0-4]+)\s' +
+    r'p5\s([0-1]+)\s' + FLOAT + r'\s' + FLOAT + r'\s([0-4]+)\s' +
+    r'p7\s([0-1]+)\s' + FLOAT + r'\s' + FLOAT + r'\s([0-4]+)\s' +
     r'[0-9a-f]{4}' + NEWLINE
 )
 
@@ -77,7 +78,6 @@ def _parameter_names_pwrsys(superv_type):
         'cep_radius',
         'main_voltage',
         'main_current',
-        'error_flags',
         'temperature1',
         'temperature2',
         'humidity',
@@ -86,7 +86,8 @@ def _parameter_names_pwrsys(superv_type):
 
     if superv_type == 'cpm':
         parameter_names.extend([
-            'sbd_quality',
+            'error_flags',
+            'sbd_signal_strength',
             'sbd_message_pending',
             'ground_fault_enable',
             'leak_detect_enable',
@@ -107,6 +108,7 @@ def _parameter_names_pwrsys(superv_type):
 
     if superv_type == 'stc':
         parameter_names.extend([
+            'error_flags1',
             'ground_fault_enable',
             'leak_detect_enable',
             'leak_detect_voltage1',
@@ -124,7 +126,7 @@ def _parameter_names_pwrsys(superv_type):
             'fwwf_current',
             'fwwf_power_flag',
             'gps_power_state',
-            'sbd_quality',
+            'sbd_signal_strength',
             'pps_source',
             'imm_power_state',
             'wake_time_count',
@@ -224,84 +226,85 @@ class Parser(ParserCommon):
         # assign superv data shared by both the CPM and STC to the named parameters
         self.data.main_voltage.append(float(match.group(9)))
         self.data.main_current.append(float(match.group(10)))
-        self.data.error_flags.append(int(match.group(13), 16))
-        self.data.temperature1.append(float(match.group(14)))
-        self.data.temperature2.append(float(match.group(15)))
-        self.data.humidity.append(float(match.group(16)))
-        self.data.pressure.append(float(match.group(17)))
+        self.data.temperature1.append(float(match.group(12)))
+        self.data.temperature2.append(float(match.group(13)))
+        self.data.humidity.append(float(match.group(14)))
+        self.data.pressure.append(float(match.group(15)))
 
         # assign CPM specific superv data to the named parameters
         if self.superv_type == 'cpm':
-            self.data.ground_fault_enable.append(int(match.group(11), 16))
-            self.data.leak_detect_enable.append(int(match.group(16)))
-            self.data.heartbeat_enable.append(int(match.group(19)))
-            self.data.heartbeat_delta.append(int(match.group(20)))
-            self.data.heartbeat_threshold.append(int(match.group(21)))
-            self.data.wake_code.append(int(match.group(22), 16))
-            self.data.iridium_power_state.append(int(match.group(23)))
-            self.data.fwwf_power_state.append(int(match.group(27)))
-            self.data.gps_power_state.append(float(match.group(31)))
-            self.data.sbd_power_state.append(float(match.group(32)))
-            self.data.sbd_message_pending.append(float(match.group(33)))
-            self.data.pps_source.append(float(match.group(34)))
-            self.data.dcl_power_state.append(int(match.group(35), 16))
+            self.data.error_flags.append(int(match.group(11), 16))
+            self.data.sbd_signal_strength.append(int(match.group(16)))
+            self.data.sbd_message_pending.append(int(match.group(17)))
+            self.data.ground_fault_enable.append(int(match.group(18), 16))
+            self.data.leak_detect_enable.append(int(match.group(19)))
+            self.data.heartbeat_enable.append(int(match.group(20)))
+            self.data.heartbeat_delta.append(int(match.group(21)))
+            self.data.heartbeat_threshold.append(int(match.group(22)))
+            self.data.wake_code.append(int(match.group(23), 16))
+            self.data.iridium_power_state.append(int(match.group(24)))
+            self.data.fwwf_power_state.append(int(match.group(25)))
+            self.data.gps_power_state.append(int(match.group(26)))
+            self.data.pps_source.append(int(match.group(27)))
+            self.data.dcl_power_state.append(int(match.group(28), 16))
+            self.data.wake_time_count.append(float(match.group(29)))
+            self.data.wake_power_count.append(int(match.group(30)))
+            self.data.esw_power_state.append(int(match.group(31)))
+            self.data.dsl_power_state.append(int(match.group(32)))
+
+        # assign the STC specific superv data to the named parameters
+        if self.superv_type == 'stc':
+            self.data.error_flags1.append(int(match.group(11), 16))
+            self.data.ground_fault_enable.append(int(match.group(16), 16))
+            self.data.leak_detect_enable.append(int(match.group(17), 16))
+            self.data.leak_detect_voltage1.append(int(match.group(18)))
+            self.data.leak_detect_voltage2.append(int(match.group(19)))
+            self.data.heartbeat_enable.append(int(match.group(20)))
+            self.data.heartbeat_delta.append(int(match.group(21)))
+            self.data.heartbeat_threshold.append(int(match.group(22)))
+            self.data.wake_code.append(int(match.group(23), 16))
+            self.data.iridium_power_state.append(int(match.group(24)))
+            self.data.iridium_voltage.append(float(match.group(25)))
+            self.data.iridium_current.append(float(match.group(26)))
+            self.data.iridium_error_flag.append(int(match.group(27)))
+            self.data.fwwf_power_state.append(int(match.group(28)))
+            self.data.fwwf_voltage.append(float(match.group(29)))
+            self.data.fwwf_current.append(float(match.group(30)))
+            self.data.fwwf_power_flag.append(int(match.group(31)))
+            self.data.gps_power_state.append(int(match.group(32)))
+            self.data.sbd_signal_strength.append(int(match.group(33)))
+            self.data.pps_source.append(int(match.group(34)))
+            self.data.imm_power_state.append(int(match.group(35)))
             self.data.wake_time_count.append(float(match.group(36)))
             self.data.wake_power_count.append(int(match.group(37)))
             self.data.esw_power_state.append(int(match.group(38)))
             self.data.dsl_power_state.append(int(match.group(39)))
+            self.data.error_flags2.append(int(match.group(40), 16))
 
-        # assign the STC specific superv data to the named parameters
-        if self.superv_type == 'stc':
-            self.data.ground_fault_enable.append(int(match.group(17), 16))
-            self.data.leak_detect_enable.append(int(match.group(18), 16))
-            self.data.leak_detect_voltage1.append(int(match.group(19)))
-            self.data.leak_detect_voltage2.append(int(match.group(20)))
-            self.data.heartbeat_enable.append(int(match.group(21)))
-            self.data.heartbeat_delta.append(int(match.group(22)))
-            self.data.heartbeat_threshold.append(int(match.group(23)))
-            self.data.wake_code.append(int(match.group(24), 16))
-            self.data.iridium_power_state.append(int(match.group(25)))
-            self.data.iridium_voltage.append(float(match.group(26)))
-            self.data.iridium_current.append(float(match.group(27)))
-            self.data.iridium_error_flag.append(int(match.group(28)))
-            self.data.fwwf_power_state.append(int(match.group(29)))
-            self.data.fwwf_voltage.append(float(match.group(30)))
-            self.data.fwwf_current.append(float(match.group(31)))
-            self.data.fwwf_power_flag.append(int(match.group(32)))
-            self.data.gps_power_state.append(float(match.group(33)))
-            self.data.sbd_quality.append(float(match.group(34)))
-            self.data.pps_source.append(float(match.group(35)))
-            self.data.imm_power_state.append(float(match.group(36)))
-            self.data.wake_time_count.append(float(match.group(37)))
-            self.data.wake_power_count.append(int(match.group(38)))
-            self.data.esw_power_state.append(int(match.group(39)))
-            self.data.dsl_power_state.append(int(match.group(40)))
-            self.data.error_flags2.append(int(match.group(41), 16))
+            self.data.port1_power_state.append(int(match.group(41)))
+            self.data.port1_voltage.append(float(match.group(42)))
+            self.data.port1_current.append(float(match.group(43)))
+            self.data.port1_error_flag.append(int(match.group(44)))
 
-            self.data.port1_power_state.append(int(match.group(42)))
-            self.data.port1_voltage.append(float(match.group(43)))
-            self.data.port1_current.append(float(match.group(44)))
-            self.data.port1_error_flag.append(int(match.group(45)))
+            self.data.port2_power_state.append(int(match.group(45)))
+            self.data.port2_voltage.append(float(match.group(46)))
+            self.data.port2_current.append(float(match.group(47)))
+            self.data.port2_error_flag.append(int(match.group(48)))
 
-            self.data.port2_power_state.append(int(match.group(46)))
-            self.data.port2_voltage.append(float(match.group(47)))
-            self.data.port2_current.append(float(match.group(48)))
-            self.data.port2_error_flag.append(int(match.group(49)))
+            self.data.port3_power_state.append(int(match.group(49)))
+            self.data.port3_voltage.append(float(match.group(50)))
+            self.data.port3_current.append(float(match.group(51)))
+            self.data.port3_error_flag.append(int(match.group(52)))
 
-            self.data.port3_power_state.append(int(match.group(50)))
-            self.data.port3_voltage.append(float(match.group(51)))
-            self.data.port3_current.append(float(match.group(52)))
-            self.data.port3_error_flag.append(int(match.group(53)))
+            self.data.port5_power_state.append(int(match.group(53)))
+            self.data.port5_voltage.append(float(match.group(54)))
+            self.data.port5_current.append(float(match.group(55)))
+            self.data.port5_error_flag.append(int(match.group(56)))
 
-            self.data.port5_power_state.append(int(match.group(54)))
-            self.data.port5_voltage.append(float(match.group(55)))
-            self.data.port5_current.append(float(match.group(56)))
-            self.data.port5_error_flag.append(int(match.group(57)))
-
-            self.data.port7_power_state.append(int(match.group(58)))
-            self.data.port7_voltage.append(float(match.group(59)))
-            self.data.port7_current.append(float(match.group(60)))
-            self.data.port7_error_flag.append(int(match.group(61)))
+            self.data.port7_power_state.append(int(match.group(57)))
+            self.data.port7_voltage.append(float(match.group(58)))
+            self.data.port7_current.append(float(match.group(59)))
+            self.data.port7_error_flag.append(int(match.group(60)))
 
 
 def main(argv=None):
@@ -339,24 +342,38 @@ def main(argv=None):
         if os.path.isfile(outfile):
             # load the existing data
             with open(outfile, 'r') as f:
-                data = json.load(f)
+                try:
+                    # load the existing data
+                    data = json.load(f)
 
-            # append the new data to the existing data
-            for k, v in superv.data.items():
-                data[k].extend(v)
+                    # append the new data to the existing data
+                    for k, v in superv.data.items():
+                        data[k].extend(v)
 
-            # write the updated data back to the file
-            with open(outfile, 'w') as f:
-                json.dump(data, f)
+                    # write the updated data back to the file
+                    with open(outfile, 'w') as updated:
+                        json.dump(data, updated)
+
+                    # update the last read position in the file
+                    position.last_read = superv.last_read
+
+                except JSONDecodeError:
+                    # if the file is empty or otherwise corrupted, reset the file processing
+                    print('The file is empty or otherwise corrupted, resetting file processing.')
+                    position.last_read = 0
+                    os.remove(outfile)
         else:
+            # writing the new data to a new file
             with open(outfile, 'w') as f:
                 f.write(superv.data.toJSON())
 
+            # update the last read position in the file
+            position.last_read = superv.last_read
+
         # save the stream position to a text file
-        position.last_read = superv.last_read
         position.save_position()
     else:
-        print('No new data to parse.')
+        print('No new SBD modem data to parse.')
 
 
 if __name__ == '__main__':

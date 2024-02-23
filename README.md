@@ -1,6 +1,8 @@
 # CGSN Parsers
 
-Python modules and shell script utilities used to parse the raw data files logged by the custom built CGSN data logger
+[![version](https://anaconda.org/conda-forge/cgsn_parsers/badges/version.svg)](https://anaconda.org/conda-forge/cgsn_parsers) [![release](https://anaconda.org/conda-forge/cgsn_parsers/badges/latest_release_date.svg)](https://anaconda.org/conda-forge/cgsn_parsers/files) [![ooicgsn](https://circleci.com/bb/ooicgsn/cgsn-parsers.svg?style=shield)](https://app.circleci.com/pipelines/bitbucket/ooicgsn/cgsn-parsers?branch=master) [![license](https://anaconda.org/conda-forge/cgsn_parsers/badges/license.svg)](https://opensource.org/license/mit/) [![downloads](https://anaconda.org/conda-forge/cgsn_parsers/badges/downloads.svg)](https://bitbucket.org/ooicgsn/cgsn-parsers/downloads/?tab=tags)
+
+Python modules and shell script utilities used to parse the raw data files logged by the custom-built CGSN data logger
 systems. Resulting parsed data is saved in JSON files for further processing, analysis and plotting.
 
 The parsers convert the data from the different formats found in the raw log files (binary, ASCII, ASCIIHEX, mixed 
@@ -13,20 +15,18 @@ and time string information contained in the files. The preferred source of time
 are synced to GPS via a LAN NTP server and their clocks are accurate to within a few milliseconds.
 
 # Usage
-
 Current usage is for monitoring the system health of the moorings (e.g. hydrogen concentration levels, battery voltages,
 leak detect currents) and current environmental conditions (e.g. surface meteorological conditions, wave field and
 subsurface currents) for deployment planning and troubleshooting (e.g. low salinity surface water from the Columbia 
 River Plume may impact the ability of gliders to surface).
 
-Several tools in multiple languages (a browser, Matlab, Python, R, Java, etc) exist that will enable a user to load a 
+Several tools in multiple languages (a browser, Matlab, Python, R, Java, etc.) exist that will enable a user to load a 
 parsed JSON formatted data file for further processing and review.
 
 This code is provided "as-is" for other users who may wish to interact directly with the
 [raw data](https://rawdata.oceanobservatories.org/files/).
 
 # Directory Organization
-
 The python code for this project is available in the cgsn_parsers/parsers directory. A limited number of unit tests are 
 available in the cgsn_parsers/tests directory.
 
@@ -40,7 +40,6 @@ cgsn_parsers directory) to use with that instrument. It should be noted that the
 user and system in mind. Others will need to adapt these scripts to fit their own needs.
 
 # Requirements
-
 This code was written and tested against Python 3.5.2 using Anaconda from [Continuum Analytics](https://www.continuum.io/).
 The code has been used on Windows machines (7 and 10), as well as Linux servers running CentOS 6, 7 and 8, Ubuntu 20.
 04, and Debian 8.
@@ -54,21 +53,21 @@ The following python packages are used by this code:
    * pytz (provided in anaconda)
 
 # Contributing
-
 Users are encouraged to contribute to this code. The hope is this repository can provide the science community with a 
-means of accessing and working with the raw OOI mooring data. To contribute, please fork the main 
-[repo](https://bitbucket.org/ooicgsn/cgsn-parsers) to your own BitBucket account, create a branch, do your work, and 
-then (when satisfied) submit a pull request to have your work integrated back into the main project repo.
+means of accessing and working with the raw OOI mooring data. This project uses a [Forking Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow).
+To contribute, please fork the main [repo](https://bitbucket.org/ooicgsn/cgsn-parsers) to your own BitBucket account, create a branch, do your work, and 
+then (when satisfied) submit a pull request to have your work integrated back into the main project repo (see a command
+line example of the workflow below).
 
-This project uses [Semantic Versioning](https://semver.org/) with Major:Minor:Patch levels designtated in the VERSION
-file. Be sure to include/update the version level as appropriate based on the guidlines for Semantic Versioning and
+This project uses [Semantic Versioning](https://semver.org/) with Major:Minor:Patch levels designated in the VERSION
+file. Be sure to include/update the version level as appropriate based on the guidelines for Semantic Versioning and
 provide that information in the pull request so the project admin can appropriately tag the code for automated builds
-and testing.
+and testing. When new code is merged into the main branch via a pull request, the commit will be tagged with the
+appropriate version level and a new release will be generated and made available via the [Anaconda Cloud](https://anaconda.org/conda-forge/cgsn_parsers).
 
 An example work flow would be:
-
 ```bash
-# A git workflow template for working with the OOI CGSN Parsers repository.
+# A command workflow template for working with the OOI CGSN Parsers repository.
 
 # Create your development directories (just a guide, use your own directories)
 mkdir -p ~/dev/code
