@@ -8,6 +8,7 @@
 """
 import os
 import re
+import numpy as np
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
@@ -50,6 +51,24 @@ pattern = (
 )
 REGEX_NEW = re.compile(pattern, re.DOTALL)
 
+# Derived from REGEX_NEW, a 2024 PCO2A firmware update omits the irga_source/detector_temperature fields
+# Fill those fields with np.nan
+pattern = (
+    DCL_TIMESTAMP + r'\s+' +                   # DCL Time-Stamp
+    r'([AW]{1})\s+M,' +                        # co2_source and start of measurement string
+    r'(\d{4}),(\d{2}),(\d{2}),' +              # PCO2A comma-delimited year, month, day
+    r'(\d{2}),(\d{2}),(\d{2}),' +              # PCO2A comma-delimited hour, minute, second
+    INTEGER + r',' +                           # zero_a2d
+    INTEGER + r',' +                           # current_a2d
+    FLOAT + r',' +                             # measured_co2
+    FLOAT + r',' +                             # avg_irga_temperature
+    FLOAT + r',' +                             # humidity
+    FLOAT + r',' +                             # humidity_temperature
+    INTEGER + r',' +                           # gas_stream_pressure
+    FLOAT + NEWLINE                            # supply voltage
+)
+REGEX_NEW_2024 = re.compile(pattern, re.DOTALL)
+
 _parameter_names_pco2a = [
         'dcl_date_time_string',
         'co2_date_time_string',
@@ -82,12 +101,15 @@ class Parser(ParserCommon):
         for line in self.raw:
             match_orig = REGEX_ORIG.match(line)
             match_new = REGEX_NEW.match(line)
+            match_new_2024 = REGEX_NEW_2024.match(line)
             if match_orig:
-                self._build_parsed_values(match_orig, False)
+                self._build_parsed_values(match_orig, False, False)
             if match_new:
-                self._build_parsed_values(match_new, True)
+                self._build_parsed_values(match_new, True, False)
+            if match_new_2024:
+                self._build_parsed_values(match_new_2024, True, True)
 
-    def _build_parsed_values(self, match, new_flag):
+    def _build_parsed_values(self, match, new_flag, new_2024_flag):
         """
         Extract the data from the relevant regex groups and assign to elements of the data dictionary.
         """
@@ -115,8 +137,12 @@ class Parser(ParserCommon):
         self.data.humidity.append(float(match.group(n+5)))
         self.data.humidity_temperature.append(float(match.group(n+6)))
         self.data.gas_stream_pressure.append(int(match.group(n+7)))
-        self.data.irga_detector_temperature.append(float(match.group(n+8)))
-        self.data.irga_source_temperature.append(float(match.group(n+9)))
+        if not new_2024_flag:
+            self.data.irga_detector_temperature.append(float(match.group(n+8)))
+            self.data.irga_source_temperature.append(float(match.group(n+9)))
+        else:
+            self.data.irga_detector_temperature.append(float(np.nan))
+            self.data.irga_source_temperature.append(float(np.nan))
 
 
 def main(argv=None):
