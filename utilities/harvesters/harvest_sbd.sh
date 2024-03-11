@@ -1,9 +1,9 @@
 #!/bin/bash
 # harvest_sbd.sh
 #
-# Read the raw SBD data files from the Endurance Surface Moorings and create
-# parsed datasets available in JSON formatted files for further processing and
-# review.
+# Reads the raw SBD data files from the Endurance and Pioneer Surface Moorings
+# and create parsed datasets available in JSON formatted files for further
+# processing and review.
 #
 # C. Wingard 2024-02-02 -- Original code
 
@@ -23,15 +23,8 @@ case $FLAG in
         ;;
 esac
 
-# Set the output data directory
-PARSED="/home/ooiuser/data/parsed"
-OUT="$PARSED/$MOORING/$DEPLOY/$PLATFORM/$INSTRMT/${FNAME%.log}.json"
-if [ ! -d "$(dirname "$OUT")" ]; then
-    mkdir -p "$(dirname "$OUT")"
-fi
-
 # Parse the file
 if [ -e "$IN" ]; then
     cd /home/ooiuser/code/cgsn-parsers || exit
-    python -m cgsn_parsers.parsers.parse_sbd -i "$IN" -o "$OUT" -s "$SUPERV" || echo "ERROR: Failed to parse $IN"
+    python -m cgsn_parsers.parsers.parse_sbd -i "$IN" -o "$OUT" -s "$FLAG" || echo "ERROR: Failed to parse $IN"
 fi

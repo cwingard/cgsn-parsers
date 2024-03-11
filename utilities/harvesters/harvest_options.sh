@@ -5,28 +5,32 @@
 # provide a help function to display the required and optional inputs for the
 # harvester scripts.
 #
-# C. Wingard  2024-02-02 Original code
+# C. Wingard 2024-02-02 -- Original code
 
 # create a function to print the help documentation
 function help ()
 {
-  echo "$0: required inputs are the mooring, deployment, platform and instrument names, in"
-  echo "that order, followed by the name of the file to parse. An optional flag can be set"
-  echo "through the use of the -f option as defined below:"
+  echo "$0: required inputs are the mooring, deployment, subassembly and"
+  echo "instrument names, in that order, followed by the name of the file to"
+  echo "parse. An optional flag can be set through the use of the -f option"
+  echo "as defined below:"
   echo ""
-  echo "Syntax: $0 [-h|f] <mooring> <deployment> <platform> <instrument> <file>"
+  echo "Syntax: $0 [-h|f] mooring deployment subassembly instrument file"
   echo ""
   echo "Options:"
   echo "h    Print this help message and exit."
-  echo "f    Value of the processing flag, if used. Value parser specific (optional)."
+  echo "f    Value of the processing flag, if used. Value is parser specific,"
+  echo "     can be either a string, integer or float (optional)."
   echo ""
-  echo "The input names set the directory structure for where the parsed data files are"
-  echo "stored. The file name is the name of the file to parse (either relative or full"
-  echo "path information is required). Note, the instrument name can include relative path"
-  echo "information, if needed. For example, the instrument name could be specified as"
-  echo "'superv/dcl17' to indicate the parsed would be located in the 'superv/dcl17'"
+  echo "The inputs set the directory structure for where the parsed data"
+  echo "files are stored. The file name is the name of the file to parse"
+  echo "(either relative or full path information is required). Note, the"
+  echo "instrument name can include relative path information, if needed. For"
+  echo "example, the instrument name could be specified as 'superv/dcl17' to"
+  echo "indicate the parsed data would be located in the 'superv/dcl17'"
   echo "directory."
-  echo "Example: $0 ce02shsm D00001 cpm1 2018-01-01.cpm.log"
+  echo ""
+  echo "Example: $0 ce02shsm D00017 buoy superv/cpm1 20240202.superv.log"
 }
 
 # Parse the optional command line inputs
@@ -48,14 +52,21 @@ done
 # Parse the required command line inputs
 echo $#
 if [ $# -ne 5 ]; then
-  echo "Error: Incorrect number of inputs. Please specify the mooring, deployment, platform,"
+  echo "Error: Incorrect number of inputs. Please specify the mooring, deployment, subassembly,"
   echo "and instrument names and the file to parse, in that order."
   echo " "
   help
 fi
 MOORING=${1,,}
 DEPLOY=${2^^}
-PLATFORM=${3,,}
+ASSMBLY=${3,,}
 INSTRMT=${4,,}
 FILE=${5}
 FNAME=$(basename "$FILE")
+
+# Set the parsed output data directory
+PARSED="/home/ooiuser/data/parsed"
+OUT="$PARSED/$MOORING/$DEPLOY/$ASSMBLY/$INSTRMT/${FNAME%.log}.json"
+if [ ! -d "$(dirname "$OUT")" ]; then
+    mkdir -p "$(dirname "$OUT")"
+fi

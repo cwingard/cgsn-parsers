@@ -1,33 +1,21 @@
 #!/bin/bash
+# harvest_imm_phsen.sh
 #
-# Read the raw PHSEN data files (telemetered via the inductive modem) from the Global Surface Moorings and create
-# parsed datasets available in JSON formatted files for further processing and review.
+# Reads the raw PHSEN data files (telemetered via the inductive modem) from the
+# Global Surface Moorings and creates parsed datasets available in JSON
+# formatted files for further processing and review.
 #
-# C. Wingard  2017-07-19
+# C. Wingard 2017-07-19 -- Original code
+# C. Wingard 2024-03-08 -- Updated to use the harvest_options.sh script to
+#                          parse the command line inputs
 
-# Parse the command line inputs
-if [ $# -ne 3 ]; then
-    echo "$0: required inputs are the platform and deployment names, and the path and name of the file to process."
-    echo "     example: $0 gi01sumo D00003 phsen01_20160723_161810.DAT"
-    exit 1
-fi
-PLATFORM=${1,,}
-DEPLOY=${2^^}
-FILE=`basename $3`
-RAW=`dirname $3`
-PHSEN=`basename $RAW`
+# include the help function and parse the required and optional command line options
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+source "$DIR/harvest_options.sh"
 
-# Set the default directory paths
-PARSED="/home/ooiuser/data/parsed"
-
-# Setup the input and output filenames as well as the absolute paths
-OUT="$PARSED/$PLATFORM/$DEPLOY/imm/$PHSEN/${FILE%.DAT}.json"
-if [ ! -d `dirname $OUT` ]; then
-    mkdir -p `dirname $OUT`
-fi
-
-# Parse the file, if hasn't already been parsed
-if [ ! -e $OUT/ ]; then
-    cd /home/ooiuser/code/cgsn-parsers
-    python -m cgsn_parsers.parsers.parse_imm_phsen -i $RAW/$FILE -o $OUT
+# Parse the file
+if [ -e "$IN" ]; then
+    cd /home/ooiuser/code/cgsn-parsers || exit
+    python -m cgsn_parsers.parsers.parse_imm_phsen -i "$IN" -o "$OUT"  || echo "ERROR: Failed to parse $IN"
 fi

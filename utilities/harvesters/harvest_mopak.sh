@@ -1,36 +1,21 @@
 #!/bin/bash
+# harvest_mopak.sh
 #
-# Read the raw MOPAK data files from the Endurance Surface Moorings and create
-# parsed datasets available in JSON formatted files for further processing and
-# review.
+# Reads the raw MOPAK data files from the Endurance and Pioneer Surface Moorings
+# and create parsed datasets available in JSON formatted files for further
+# processing and review.
 #
-# C. Wingard  2016-02-27
+# C. Wingard 2016-02-27 -- Original code
+# C. Wingard 2024-03-08 -- Updated to use the harvest_options.sh script to
+#                          parse the command line inputs
 
-# Parse the command line inputs
-if [ $# -ne 4 ]; then
-    echo "$0: required inputs are the platform and deployment names, the dcl"
-    echo "name, and the name of the file to process."
-    echo "     example: $0 ce02shsm D00001 dcl12 20150505.mopak.log"
-    exit 1
-fi
-PLATFORM=${1,,}
-DEPLOY=${2^^}
-DCL=${3,,}
-FILE=`basename $4`
-
-# Set the default directory paths
-RAW="/home/ooiuser/data/raw"
-PARSED="/home/ooiuser/data/parsed"
-
-# Setup the input and output filenames as well as the absolute paths
-IN="$RAW/$PLATFORM/$DEPLOY/cg_data/$DCL/mopak/$FILE"
-OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/mopak/${FILE%.log}.json"
-if [ ! -d `dirname $OUT` ]; then
-    mkdir -p `dirname $OUT`
-fi
+# include the help function and parse the required and optional command line options
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+source "$DIR/harvest_options.sh"
 
 # Parse the file
-if [ -e $IN ]; then
-    cd /home/ooiuser/code/cgsn-parsers
-    python -m cgsn_parsers.parsers.parse_mopak -i $IN -o $OUT
+if [ -e "$IN" ]; then
+    cd /home/ooiuser/code/cgsn-parsers || exit
+    python -m cgsn_parsers.parsers.parse_mopak -i "$IN" -o "$OUT" || echo "ERROR: Failed to parse $IN"
 fi
