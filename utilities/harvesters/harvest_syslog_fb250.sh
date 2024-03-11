@@ -1,9 +1,9 @@
 #!/bin/bash
-# harvest_fb250.sh
+# harvest_syslog_fb250.sh
 #
-# Reads the raw FB250 data files from the Endurance and Pioneer Surface Moorings
-# and create parsed datasets available in JSON formatted files for further
-# processing and review.
+# Reads the raw FB250 data in the syslog files from the Endurance and Pioneer
+# Surface Moorings and create parsed datasets available in JSON formatted files
+# for further processing and review.
 #
 # C. Wingard 2017-04-05 -- Original code
 # C. Wingard 2024-03-08 -- Updated to use the harvest_options.sh script to

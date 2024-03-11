@@ -53,7 +53,7 @@ fi
 echo "Watching directory: $DIR_TO_WATCH"
 if [ -z "$(ls -A "$DIR_TO_WATCH")" ]; then
     echo "Directory $DIR_TO_WATCH is empty, no files to process at this time"
-    exit 0  # exit with no error, the directory exists but is empty (can happen if the directory is new)
+    exit 0  # exit with no error, the directory exists but is empty (can happen if data telemetry is just starting up)
 fi
 
 # next, check if the checksum file exists (used to monitor for changes in the directory),
@@ -68,13 +68,11 @@ if [ ! -e "$DIR_TO_WATCH/checksum.sha256" ]; then
     done
     # create the checksum file
     echo "Creating the checksum file for $DIR_TO_WATCH"
-    # shellcheck disable=SC2012
     ls -l --full-time $PATH_GLOB | sha256sum > "$DIR_TO_WATCH/checksum.sha256"
     exit 0  # exit with no error, the directory has been parsed for the first time
 fi
 
 # The directory exists, it is not empty and the checksum file exists, checking for new or updated files
-# shellcheck disable=SC2012
 ls -l --full-time $PATH_GLOB | sha256sum --check --status "$DIR_TO_WATCH/checksum.sha256"
 if [ $? -eq 1 ]; then
     echo "Updated files detected in $DIR_TO_WATCH, parsing the updated files..."
@@ -85,7 +83,6 @@ if [ $? -eq 1 ]; then
         $COMMAND "$file"
     done
     # update the checksum file
-    # shellcheck disable=SC2012
     ls -l --full-time $PATH_GLOB | sha256sum > "$DIR_TO_WATCH/checksum.sha256"
     exit 0  # exit with no error, updated files have been parsed
 fi

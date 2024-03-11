@@ -33,7 +33,7 @@ function help ()
   echo "Example: $0 ce02shsm D00017 buoy superv/cpm1 20240202.superv.log"
 }
 
-# Parse the optional command line inputs
+# First parse the optional command line inputs
 while getopts "hf:" option; do
   case $option in
     h ) # display Help
@@ -49,12 +49,12 @@ while getopts "hf:" option; do
   esac
 done
 
-# Parse the required command line inputs
+# Then parse the required command line inputs and check the number of inputs
 echo $#
 if [ $# -ne 5 ]; then
-  echo "Error: Incorrect number of inputs. Please specify the mooring, deployment, subassembly,"
-  echo "and instrument names and the file to parse, in that order."
-  echo " "
+  echo "Error: Incorrect number of inputs. Please specify the mooring, deployment,"
+  echo "subassembly, and instrument names and the file to parse, in that order."
+  echo ""
   help
 fi
 MOORING=${1,,}
@@ -63,6 +63,12 @@ ASSMBLY=${3,,}
 INSTRMT=${4,,}
 FILE=${5}
 FNAME=$(basename "$FILE")
+
+# test if the input file exists and is not empty
+if [ ! -s "$FILE" ]; then
+  echo "ERROR: The input file does not exist or is empty."
+  exit 1
+fi
 
 # Set the parsed output data directory
 PARSED="/home/ooiuser/data/parsed"
