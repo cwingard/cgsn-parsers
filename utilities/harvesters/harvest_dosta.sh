@@ -15,7 +15,7 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 source "$DIR/harvest_options.sh"
 
 # Parse the file
-if [ -e "$IN" ]; then
+if [ -e "$IN_FILE" ]; then
     cd /home/ooiuser/code/cgsn-parsers || exit
-    python -m cgsn_parsers.parsers.parse_dosta -i "$IN" -o "$OUT" || echo "ERROR: Failed to parse $IN"
+    python -m cgsn_parsers.parsers.parse_dosta -i "$IN_FILE" -o "$OUT_FILE" || echo "ERROR: Failed to parse $IN_FILE"
 fi

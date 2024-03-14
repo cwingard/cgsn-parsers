@@ -50,7 +50,6 @@ while getopts "hf:" option; do
 done
 
 # Then parse the required command line inputs and check the number of inputs
-echo $#
 if [ $# -ne 5 ]; then
   echo "Error: Incorrect number of inputs. Please specify the mooring, deployment,"
   echo "subassembly, and instrument names and the file to parse, in that order."
@@ -61,18 +60,19 @@ MOORING=${1,,}
 DEPLOY=${2^^}
 ASSMBLY=${3,,}
 INSTRMT=${4,,}
-FILE=${5}
-FNAME=$(basename "$FILE")
+IN_FILE=${5}
+FNAME=$(basename "$IN_FILE")
 
 # test if the input file exists and is not empty
-if [ ! -s "$FILE" ]; then
+if [ ! -s "$IN_FILE" ]; then
   echo "ERROR: The input file does not exist or is empty."
   exit 1
 fi
 
 # Set the parsed output data directory
 PARSED="/home/ooiuser/data/parsed"
-OUT="$PARSED/$MOORING/$DEPLOY/$ASSMBLY/$INSTRMT/${FNAME%.log}.json"
-if [ ! -d "$(dirname "$OUT")" ]; then
-    mkdir -p "$(dirname "$OUT")"
+OUT_DIR="$PARSED/$MOORING/$DEPLOY/$ASSMBLY/$INSTRMT"
+OUT_FILE="$OUT_DIR/${FNAME%.log}.json"
+if [ ! -d "$OUT_DIR" ]; then
+    mkdir -p "$OUT_DIR"
 fi

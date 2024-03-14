@@ -26,7 +26,7 @@
 #   RAW_DATA="/home/ooiuser/data/raw/ce02shsm/D00017/cg_data"
 #   HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
 #   INPUTS="ce02shsm D00017 buoy wavss"
-#   ./polling.sh 30 "$HARVEST/harvest_wavss.sh $INPUTS" "$RAW_DATA/dcl12/wavss/*.log"
+#   ./polling.sh 30 "$HARVEST/harvest_wavss.sh $IN_FILEPUTS" "$RAW_DATA/dcl12/wavss/*.log"
 #
 # The above example will monitor the wavss directory for new or updated files
 # created within the last 30 minutes and execute the harvest_wavss.sh script
@@ -69,7 +69,7 @@ if [ ! -e "$DIR_TO_WATCH/checksum.sha256" ]; then
     for file in $PATH_GLOB; do
         (
             echo "Parsing $file"
-            $COMMAND "$file"
+            eval '$COMMAND $file'
         ) &
         if (( $(jobs | wc -l) >= 5 )); then
             # wait until there is a free slot for a new job
@@ -92,7 +92,7 @@ if [ $? -eq 1 ]; then
     for file in $UPDATED_FILES; do
         (
             echo "Parsing $file"
-            $COMMAND "$file"
+            eval '$COMMAND $file'
         ) &
         if (( $(jobs | wc -l) >= 5 )); then
             # wait until there is a free slot for a new job

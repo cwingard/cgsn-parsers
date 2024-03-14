@@ -24,7 +24,7 @@ case $FLAG in
 esac
 
 # Parse the file
-if [ -e "$IN" ]; then
+if [ -e "$IN_FILE" ]; then
     cd /home/ooiuser/code/cgsn-parsers || exit
-    python -m cgsn_parsers.parsers.parse_sbd -i "$IN" -o "$OUT" -s "$FLAG" || echo "ERROR: Failed to parse $IN"
+    python -m cgsn_parsers.parsers.parse_sbd -i "$IN_FILE" -o "$OUT_FILE" -s "$FLAG" || echo "ERROR: Failed to parse $IN_FILE"
 fi
