@@ -11,35 +11,38 @@
 # that checks for new or updated files in the directory based on a schedule set
 # via the crontab (usually every 30 minutes).
 #
-# The script takes two arguments:
-#   1. The path to the directory to watch and the file pattern to monitor for
-#      changes. The file pattern should be in quotes and can include wildcards.
-#      For example, "/path/to/directory/*.txt" will monitor all files with a
-#      .txt extension in /path/to/directory.
+# The script takes three arguments:
+#   1. The polling interval in minutes. This is the time window The script will
+#      check for new or updated files.
 #   2. The command to execute when new or updated files are detected. The
 #      command should be in quotes and include the full path to the script or
 #      program to execute including all needed inputs.
+#   3. The path to the directory to watch and the file pattern to monitor for
+#      changes. The file pattern should be in quotes and can include wildcards.
+#      For example, "/path/to/directory/*.txt" will monitor all files with a
+#      .txt extension in /path/to/directory.
 #
 # Example usage:
 #   RAW_DATA="/home/ooiuser/data/raw/ce02shsm/D00017/cg_data"
 #   HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
 #   INPUTS="ce02shsm D00017 buoy wavss"
-#   ./polling.sh "$RAW_DATA/dcl12/wavss/*.log" "$HARVEST/harvest_wavss.sh $INPUTS"
+#   ./polling.sh 30 "$HARVEST/harvest_wavss.sh $INPUTS" "$RAW_DATA/dcl12/wavss/*.log"
 #
-# The above example will monitor the /home/ooiuser/data/raw/ce02shsm/D00017/cg_data/dcl12/wavss
-# directory for new or updated .log files and execute the harvest_wavss.sh script
+# The above example will monitor the wavss directory for new or updated files
+# created within the last 30 minutes and execute the harvest_wavss.sh script
 #
 # Code inspired by: https://www.baeldung.com/linux/command-execute-file-dir-change
 # C. Wingard 2024-03-08 -- Original code
 
 # Parse the command line inputs
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 3 ]; then
     echo "ERROR: Incorrect number of arguments"
-    echo "Usage: $0 <path to directory and file pattern> <command to execute>"
+    echo "Usage: $0 <time_window> <command to execute> <path to directory and file pattern>"
     exit 1
 fi
-PATH_GLOB=${1}
+TIME_WINDOW=${1}
 COMMAND=${2}
+PATH_GLOB=${3}
 
 # set up the directory to watch and the checksum file to monitor for changes
 DIR_TO_WATCH=$(dirname "$PATH_GLOB")
@@ -62,9 +65,16 @@ fi
 if [ ! -e "$DIR_TO_WATCH/checksum.sha256" ]; then
     # process all the files in the directory
     echo "First parsing run for $DIR_TO_WATCH, parsing all files..."
+    # Parse the files (using parallel processing to parse up to 5 files at a time)
     for file in $PATH_GLOB; do
-        echo "Parsing $file"
-        $COMMAND "$file"
+        (
+            echo "Parsing $file"
+            $COMMAND "$file"
+        ) &
+        if (( $(jobs | wc -l) >= 5 )); then
+            # wait until there is a free slot for a new job
+            wait -n
+        fi
     done
     # create the checksum file
     echo "Creating the checksum file for $DIR_TO_WATCH"
@@ -76,11 +86,18 @@ fi
 ls -l --full-time $PATH_GLOB | sha256sum --check --status "$DIR_TO_WATCH/checksum.sha256"
 if [ $? -eq 1 ]; then
     echo "Updated files detected in $DIR_TO_WATCH, parsing the updated files..."
-    # list files created or modified in the last 30 + 5 minutes (allowing for a 5 minute delay in the file system)
-    UPDATED_FILES=$(find $PATH_GLOB -type f -mmin -35)
+    # list files created or modified in the last N + 5 minutes (allowing for a 5 minute delay in the file system)
+    UPDATED_FILES=$(find $PATH_GLOB -type f -mmin -$((TIME_WINDOW + 5)))
+    # Parse the files (using parallel processing to parse up to 5 files at a time)
     for file in $UPDATED_FILES; do
-        echo "Parsing $file"
-        $COMMAND "$file"
+        (
+            echo "Parsing $file"
+            $COMMAND "$file"
+        ) &
+        if (( $(jobs | wc -l) >= 5 )); then
+            # wait until there is a free slot for a new job
+            wait -n
+        fi
     done
     # update the checksum file
     ls -l --full-time $PATH_GLOB | sha256sum > "$DIR_TO_WATCH/checksum.sha256"
