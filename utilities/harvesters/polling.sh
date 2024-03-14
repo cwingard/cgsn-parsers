@@ -49,7 +49,7 @@ DIR_TO_WATCH=$(dirname "$PATH_GLOB")
 if [ ! -d "$DIR_TO_WATCH" ]; then
     # first check if the directory exists
     echo "ERROR: Directory to watch does not exist: $DIR_TO_WATCH"
-    exit 1  # exit with an error, the directory does not exist
+    exit 0  # exit with no error so we don't stop the larger batch process
 fi
 
 # now check if there are any files in the directory
@@ -62,44 +62,63 @@ fi
 # next, check if the checksum file exists (used to monitor for changes in the directory),
 # if not, that means this is the first time we are parsing this directory. parse all
 # existing files, create the checksum file to monitor for future changes, and exit
-if [ ! -e "$DIR_TO_WATCH/checksum.sha256" ]; then
+if [ ! -e "$DIR_TO_WATCH/checksum_dir.sha" ]; then
     # process all the files in the directory
     echo "First parsing run for $DIR_TO_WATCH, parsing all files..."
-    # Parse the files (using parallel processing to parse up to 5 files at a time)
+    # Parse the files (using parallel processing to parse up to 7 files at a time)
     for file in $PATH_GLOB; do
         (
             echo "Parsing $file"
             eval '$COMMAND $file'
         ) &
-        if (( $(jobs | wc -l) >= 5 )); then
+        if (( $(jobs | wc -l) >= 7 )); then
             # wait until there is a free slot for a new job
             wait -n
         fi
     done
-    # create the checksum file
-    echo "Creating the checksum file for $DIR_TO_WATCH"
-    ls -l --full-time $PATH_GLOB | sha256sum > "$DIR_TO_WATCH/checksum.sha256"
+    # create the checksum files to monitor for changes (directory as a whole and individual files)
+    echo "Creating the checksum files for $DIR_TO_WATCH"
+    ls -l --full-time $PATH_GLOB | sha1sum > "$DIR_TO_WATCH/checksum_dir.sha"  # directory as a whole
+    sha1sum $PATH_GLOB > "$DIR_TO_WATCH/checksum_files.sha"  # individual files in the directory
     exit 0  # exit with no error, the directory has been parsed for the first time
 fi
 
 # The directory exists, it is not empty and the checksum file exists, checking for new or updated files
-ls -l --full-time $PATH_GLOB | sha256sum --check --status "$DIR_TO_WATCH/checksum.sha256"
+ls -l --full-time $PATH_GLOB | sha1sum --check --status "$DIR_TO_WATCH/checksum_dir.sha"
 if [ $? -eq 1 ]; then
-    echo "Updated files detected in $DIR_TO_WATCH, parsing the updated files..."
-    # list files created or modified in the last N + 5 minutes (allowing for a 5 minute delay in the file system)
-    UPDATED_FILES=$(find $PATH_GLOB -type f -mmin -$((TIME_WINDOW + 5)))
-    # Parse the files (using parallel processing to parse up to 5 files at a time)
-    for file in $UPDATED_FILES; do
-        (
-            echo "Parsing $file"
-            eval '$COMMAND $file'
-        ) &
-        if (( $(jobs | wc -l) >= 5 )); then
-            # wait until there is a free slot for a new job
-            wait -n
-        fi
-    done
+    echo "Contents of $DIR_TO_WATCH have changed, looking for modified files..."
+    sha1sum $PATH_GLOB > updated_files.sha
+    # list any modified files based on the checksums
+    UPDATED_FILES=$(sha1sum "$DIR_TO_WATCH/checksum_files.sha" --check --quiet updated_files.sha | awk -F: '{print $1}')
+    if [ -n "$UPDATED_FILES" ]; then
+        # Parse the files (using parallel processing to parse up to 7 files at a time)
+        for file in $UPDATED_FILES; do
+            (
+                echo "Parsing updated $file"
+                eval '$COMMAND $file'
+            ) &
+            if (( $(jobs | wc -l) >= 7 )); then
+                # wait until there is a free slot for a new job
+                wait -n
+            fi
+        done
+    fi
+    # determine if there are any new files to parse
+    NEW_FILES=$(ls -l --full-time $PATH_GLOB | sha1sum --check --quiet updated_files.sha | awk -F: '{print $1}')
+    if [ -n "$NEW_FILES" ]; then
+        # Parse the files (using parallel processing to parse up to 7 files at a time)
+        for file in $NEW_FILES; do
+            (
+                echo "Parsing new $file"
+                eval '$COMMAND $file'
+            ) &
+            if (( $(jobs | wc -l) >= 7 )); then
+                # wait until there is a free slot for a new job
+                wait -n
+            fi
+        done
+    fi
     # update the checksum file
-    ls -l --full-time $PATH_GLOB | sha256sum > "$DIR_TO_WATCH/checksum.sha256"
+    ls -l --full-time $PATH_GLOB | sha1sum > "$DIR_TO_WATCH/checksum_dir.sha"
     exit 0  # exit with no error, updated files have been parsed
 fi
