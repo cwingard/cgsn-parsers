@@ -58,7 +58,7 @@ dcl="dcl36"  # Data logger for a portion of the instruments on the MFN
 ./polling.sh 30 "$HARVEST/harvest_pco2w.sh $PLATFORM $DEPLOY $assembly pco2w" "$RAW/$dcl/pco2w*/*.pco2w*.log"
 ./polling.sh 30 "$HARVEST/harvest_phsen.sh $PLATFORM $DEPLOY $assembly phsen" "$RAW/$dcl/phsen*/*.phsen*.log"
 ./polling.sh 30 "$HARVEST/harvest_presf.sh $PLATFORM $DEPLOY $assembly presf" "$RAW/$dcl/presf/*.presf.log"
-./polling.sh 30 "$HARVEST/harvest_vel3d.sh $PLATFORM $DEPLOY $assembly vel3d" "$RAW/$dcl/vel3d/*.vel3d.log"
+./polling.sh 30 "$HARVEST/harvest_vel3d.sh -f 8 $PLATFORM $DEPLOY $assembly vel3d" "$RAW/$dcl/vel3d/*.vel3d.log"
 
 dcl="dcl37"  # Data logger for the remaining instruments on the MFN
 ./polling.sh 30 "$HARVEST/harvest_superv_dcl.sh $PLATFORM $DEPLOY $assembly superv/$dcl" "$RAW/$dcl/superv/*.superv.log"
