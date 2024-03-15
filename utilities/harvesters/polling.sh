@@ -82,34 +82,36 @@ fi
 COMMAND=${1}
 PATH_GLOB=${2}
 
-# set up the directory to watch and the checksum file to monitor for changes
-DIR_TO_WATCH=$(dirname "$PATH_GLOB")
-if [ ! -d "$DIR_TO_WATCH" ]; then
-    # first check if the directory exists
-    echo "ERROR: Directory to watch does not exist: $DIR_TO_WATCH"
-    exit  # exit with no error so we don't stop the larger batch process
+# check if the directory/file pattern matches any files (can happen if the directory is empty,
+# nonexistent or the pattern is in some way incorrect)
+if ! ls $PATH_GLOB 1> /dev/null 2>&1; then
+    echo "ERROR: No files found matching the pattern: $PATH_GLOB"
+    exit
 fi
 
-# now check if there are any files in the directory
-echo "Watching directory: $DIR_TO_WATCH"
-if [ -z "$(ls -A "$DIR_TO_WATCH")" ]; then
-    echo "Directory $DIR_TO_WATCH is empty, no files to process at this time"
-    exit  # exit with no error, the directory exists but is empty (can happen if data telemetry is just starting up)
-fi
+# set up the directory to watch and the checksum file to monitor for changes
+DIR_TO_WATCH=$(dirname "$PATH_GLOB")
+FILE_GLOB=$(basename "$PATH_GLOB")
 
 # next, check if the checksum files exists (used to monitor for changes in the directory),
 # if not, that means this is the first time we are parsing this directory. parse all
-# existing files, create the checksum files to monitor for future changes, and exit
+# existing files, create the directory checksum and the file status to monitor for future
+# changes, and exit
 if [ $RESET -eq 1 ]; then
     # reset the checksum files and force a re-parsing of the directory
-    if [ -e "$DIR_TO_WATCH/checksum_dir.sha" ]; then
-        echo "Resetting the checksum files for $DIR_TO_WATCH"
-        rm -f "$DIR_TO_WATCH/checksum_dir.sha" "$DIR_TO_WATCH/checksum_files.sha"
+    if [ -e "$DIR_TO_WATCH/.directory_sha" ]; then
+        echo "Resetting the checksum and file status records for $DIR_TO_WATCH"
+        rm -f "$DIR_TO_WATCH/.directory_sha" "$DIR_TO_WATCH/.file_stats"
     fi
 fi
-if [ ! -e "$DIR_TO_WATCH/checksum_dir.sha" ]; then
+if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
+    # create a checksum of the directory contents and a listing of file stats to monitor for changes
+    # (directory as a whole and individual files based on size, creation and modification time)
+    echo "Creating the checksum and file status records for $DIR_TO_WATCH ..."
+    find $DIR_TO_WATCH -name $FILE_GLOB -type f | sha1sum > "$DIR_TO_WATCH/.directory_sha"  # directory as a whole
+    find $DIR_TO_WATCH -name $FILE_GLOB -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/.file_stats"  # individual files in the directory
     # process all the files in the directory
-    echo "First parsing run for $DIR_TO_WATCH, parsing all files..."
+    echo "First parsing run for $DIR_TO_WATCH, parsing all files ..."
     # Parse the files (using parallel processing to parse up to 7 files at a time)
     for file in $PATH_GLOB; do
         (
@@ -121,23 +123,18 @@ if [ ! -e "$DIR_TO_WATCH/checksum_dir.sha" ]; then
             wait -n
         fi
     done
-    # create the checksum files to monitor for changes (directory as a whole and individual files)
-    echo "Creating the checksum files for $DIR_TO_WATCH"
-    # shellcheck disable=SC2012
-    ls -l --full-time $PATH_GLOB | sha1sum > "$DIR_TO_WATCH/checksum_dir.sha"  # directory as a whole
-    sha1sum $PATH_GLOB > "$DIR_TO_WATCH/checksum_files.sha"  # individual files in the directory
+    echo "First parsing run complete for $DIR_TO_WATCH"
     exit  # exit with no error, the directory has been parsed for the first time
 fi
 
 # The directory exists, it is not empty and the checksum file exists, checking for new or updated files
-# shellcheck disable=SC2012
-ls -l --full-time $PATH_GLOB | sha1sum --check --status "$DIR_TO_WATCH/checksum_dir.sha"
+find $DIR_TO_WATCH -name $FILE_GLOB -type f | sha1sum --check --status "$DIR_TO_WATCH/.directory_sha"
 if [ $? -eq 1 ]; then
-    echo "Contents of $DIR_TO_WATCH have changed, looking for modified files..."
-    TMPFILE=$(mktemp /tmp/parsing-XXXXX.sha)
-    sha1sum $PATH_GLOB > $TMPFILE
-    # list any new or modified files based on the checksums
-    UPDATED_FILES=$(sort $TMPFILE "$DIR_TO_WATCH/checksum_files.sha" | uniq -u | awk '{print $2}' | sort | uniq)
+    echo "Contents of $DIR_TO_WATCH have changed, looking for modified files ..."
+    TMPFILE=$(mktemp /tmp/parsing-XXXXXXX)
+    find $DIR_TO_WATCH -name $FILE_GLOB -exec stat -c "%s%W%Y%Z %n" {} + > $TMPFILE
+    # list any new or modified files based on the file stats
+    UPDATED_FILES=$(sort $TMPFILE "$DIR_TO_WATCH/.file_stats" | uniq -u | awk '{print $2}' | sort | uniq)
     if [ -n "$UPDATED_FILES" ]; then
         # Parse the files (using parallel processing to parse up to 7 files at a time)
         for file in $UPDATED_FILES; do
@@ -150,11 +147,11 @@ if [ $? -eq 1 ]; then
                 wait -n
             fi
         done
+        echo "Updated file parsing complete for $DIR_TO_WATCH"
     fi
     # update the directory and file list checksums and exit
-    # shellcheck disable=SC2012
-    ls -l --full-time $PATH_GLOB | sha1sum > "$DIR_TO_WATCH/checksum_dir.sha"  # directory as a whole
-    sha1sum $PATH_GLOB > "$DIR_TO_WATCH/checksum_files.sha"  # individual files in the directory
-    rm $TMPFILE  # clean up the temporary file
+    find $DIR_TO_WATCH -name $FILE_GLOB -type f | sha1sum > "$DIR_TO_WATCH/.directory_sha"  # directory as a whole
+    find $DIR_TO_WATCH -name $FILE_GLOB -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/.file_stats"  # individual files in the directory
+    rm $TMPFILE  # remove the temporary file
     exit  # exit with no error, updated files have been parsed
 fi
