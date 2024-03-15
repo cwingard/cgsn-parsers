@@ -86,6 +86,7 @@ PATH_GLOB=${2}
 # nonexistent or the pattern is in some way incorrect)
 if ! ls $PATH_GLOB 1> /dev/null 2>&1; then
     echo "ERROR: No files found matching the pattern: $PATH_GLOB"
+    echo ""
     exit
 fi
 
@@ -124,6 +125,7 @@ if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
         fi
     done
     echo "First parsing run complete for $DIR_TO_WATCH"
+    echo ""
     exit  # exit with no error, the directory has been parsed for the first time
 fi
 
@@ -148,6 +150,7 @@ if [ $? -eq 1 ]; then
             fi
         done
         echo "Updated file parsing complete for $DIR_TO_WATCH"
+        echo ""
     fi
     # update the directory and file list checksums and exit
     find $DIR_TO_WATCH -name $FILE_GLOB -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum > "$DIR_TO_WATCH/.directory_sha"  # directory as a whole
@@ -156,4 +159,5 @@ if [ $? -eq 1 ]; then
     exit  # exit with no error, updated files have been parsed
 else
     echo "No new or modified files found in $DIR_TO_WATCH"
+    echo ""
 fi
