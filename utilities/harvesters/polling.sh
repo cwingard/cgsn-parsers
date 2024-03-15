@@ -11,13 +11,11 @@
 # that checks for new or updated files in the directory based on a schedule set
 # via the crontab (usually every 30 minutes).
 #
-# The script takes three arguments:
-#   1. The polling interval in minutes. This is the time window The script will
-#      check for new or updated files.
-#   2. The command to execute when new or updated files are detected. The
+# The script takes two arguments:
+#   1. The command to execute when new or updated files are detected. The
 #      command should be in quotes and include the full path to the script or
 #      program to execute including all needed inputs.
-#   3. The path to the directory to watch and the file pattern to monitor for
+#   2. The path to the directory to watch and the file pattern to monitor for
 #      changes. The file pattern should be in quotes and can include wildcards.
 #      For example, "/path/to/directory/*.txt" will monitor all files with a
 #      .txt extension in /path/to/directory.
@@ -26,21 +24,22 @@
 #   RAW_DATA="/home/ooiuser/data/raw/ce02shsm/D00017/cg_data"
 #   HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
 #   INPUTS="ce02shsm D00017 buoy wavss"
-#   ./polling.sh 30 "$HARVEST/harvest_wavss.sh $IN_FILEPUTS" "$RAW_DATA/dcl12/wavss/*.log"
+#   ./polling.sh "$HARVEST/harvest_wavss.sh $IN_FILEPUTS" "$RAW_DATA/dcl12/wavss/*.log"
 #
-# The above example will monitor the wavss directory for new or updated files
-# created within the last 30 minutes and execute the harvest_wavss.sh script
+# The above example will monitor the wavss directory for new or updated files, running
+# them through the harvest_wavss.sh script
 #
 # Code inspired by: https://www.baeldung.com/linux/command-execute-file-dir-change
+# with hints and suggestions from the GitHub CoPilot.
+#
 # C. Wingard 2024-03-08 -- Original code
 
 # Parse the command line inputs
-if [ "$#" -ne 3 ]; then
+if [ "$#" -ne 2 ]; then
     echo "ERROR: Incorrect number of arguments"
-    echo "Usage: $0 <time_window> <command to execute> <path to directory and file pattern>"
+    echo "Usage: $0 <command to execute> <path to directory and file pattern>"
     exit 1
 fi
-TIME_WINDOW=${1}
 COMMAND=${2}
 PATH_GLOB=${3}
 
@@ -87,9 +86,10 @@ fi
 ls -l --full-time $PATH_GLOB | sha1sum --check --status "$DIR_TO_WATCH/checksum_dir.sha"
 if [ $? -eq 1 ]; then
     echo "Contents of $DIR_TO_WATCH have changed, looking for modified files..."
-    sha1sum $PATH_GLOB > updated_files.sha
-    # list any modified files based on the checksums
-    UPDATED_FILES=$(sha1sum "$DIR_TO_WATCH/checksum_files.sha" --check --quiet updated_files.sha | awk -F: '{print $1}')
+    TMPFILE=$(mktemp /tmp/parsing-XXXXX.sha)
+    sha1sum $PATH_GLOB > $TMPFILE
+    # list any new or modified files based on the checksums
+    UPDATED_FILES=$(sort $TMPFILE "$DIR_TO_WATCH/checksum_files.sha" | uniq -u | awk '{print $2}')
     if [ -n "$UPDATED_FILES" ]; then
         # Parse the files (using parallel processing to parse up to 7 files at a time)
         for file in $UPDATED_FILES; do
@@ -103,22 +103,9 @@ if [ $? -eq 1 ]; then
             fi
         done
     fi
-    # determine if there are any new files to parse
-    NEW_FILES=$(ls -l --full-time $PATH_GLOB | sha1sum --check --quiet updated_files.sha | awk -F: '{print $1}')
-    if [ -n "$NEW_FILES" ]; then
-        # Parse the files (using parallel processing to parse up to 7 files at a time)
-        for file in $NEW_FILES; do
-            (
-                echo "Parsing new $file"
-                eval '$COMMAND $file'
-            ) &
-            if (( $(jobs | wc -l) >= 7 )); then
-                # wait until there is a free slot for a new job
-                wait -n
-            fi
-        done
-    fi
-    # update the checksum file
-    ls -l --full-time $PATH_GLOB | sha1sum > "$DIR_TO_WATCH/checksum_dir.sha"
+    # update the directory and file list checksums and exit
+    ls -l --full-time $PATH_GLOB | sha1sum > "$DIR_TO_WATCH/checksum_dir.sha"  # directory as a whole
+    sha1sum $PATH_GLOB > "$DIR_TO_WATCH/checksum_files.sha"  # individual files in the directory
+    rm $TMPFILE  # clean up the temporary file
     exit 0  # exit with no error, updated files have been parsed
 fi
