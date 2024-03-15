@@ -102,8 +102,10 @@ fi
 # existing files, create the checksum files to monitor for future changes, and exit
 if [ $RESET -eq 1 ]; then
     # reset the checksum files and force a re-parsing of the directory
-    echo "Resetting the checksum files for $DIR_TO_WATCH"
-    rm -f "$DIR_TO_WATCH/checksum_dir.sha" "$DIR_TO_WATCH/checksum_files.sha"
+    if [ -e "$DIR_TO_WATCH/checksum_dir.sha" ]; then
+        echo "Resetting the checksum files for $DIR_TO_WATCH"
+        rm -f "$DIR_TO_WATCH/checksum_dir.sha" "$DIR_TO_WATCH/checksum_files.sha"
+    fi
 fi
 if [ ! -e "$DIR_TO_WATCH/checksum_dir.sha" ]; then
     # process all the files in the directory
