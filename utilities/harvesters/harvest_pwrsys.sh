@@ -15,7 +15,7 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 source "$DIR/harvest_options.sh"
 
 # check the processing flag for the correct power system type
-case $SWITCH in
+case $FLAG in
     "psc" | "mpea" | "syslog" )
         ;;
     * )
