@@ -79,8 +79,8 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 # shellcheck disable=SC2034
-COMMAND=${2}
-PATH_GLOB=${3}
+COMMAND=${1}
+PATH_GLOB=${2}
 
 # set up the directory to watch and the checksum file to monitor for changes
 DIR_TO_WATCH=$(dirname "$PATH_GLOB")
