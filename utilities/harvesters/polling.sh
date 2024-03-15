@@ -108,8 +108,8 @@ if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
     # create a checksum of the directory contents and a listing of file stats to monitor for changes
     # (directory as a whole and individual files based on size, creation and modification time)
     echo "Creating the checksum and file status records for $DIR_TO_WATCH ..."
-    find $DIR_TO_WATCH -name $FILE_GLOB -type f | sha1sum > "$DIR_TO_WATCH/.directory_sha"  # directory as a whole
-    find $DIR_TO_WATCH -name $FILE_GLOB -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/.file_stats"  # individual files in the directory
+    find $DIR_TO_WATCH -name $FILE_GLOB -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum > "$DIR_TO_WATCH/.directory_sha"  # directory as a whole
+    find $DIR_TO_WATCH -name $FILE_GLOB -type f -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/.file_stats"  # individual files in the directory
     # process all the files in the directory
     echo "First parsing run for $DIR_TO_WATCH, parsing all files ..."
     # Parse the files (using parallel processing to parse up to 7 files at a time)
@@ -128,11 +128,11 @@ if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
 fi
 
 # The directory exists, it is not empty and the checksum file exists, checking for new or updated files
-find $DIR_TO_WATCH -name $FILE_GLOB -type f | sha1sum --check --status "$DIR_TO_WATCH/.directory_sha"
+find $DIR_TO_WATCH -name $FILE_GLOB -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum --check --status "$DIR_TO_WATCH/.directory_sha"
 if [ $? -eq 1 ]; then
     echo "Contents of $DIR_TO_WATCH have changed, looking for modified files ..."
     TMPFILE=$(mktemp /tmp/parsing-XXXXXXX)
-    find $DIR_TO_WATCH -name $FILE_GLOB -exec stat -c "%s%W%Y%Z %n" {} + > $TMPFILE
+    find $DIR_TO_WATCH -name $FILE_GLOB -type f -exec stat -c "%s%W%Y%Z %n" {} + > $TMPFILE
     # list any new or modified files based on the file stats
     UPDATED_FILES=$(sort $TMPFILE "$DIR_TO_WATCH/.file_stats" | uniq -u | awk '{print $2}' | sort | uniq)
     if [ -n "$UPDATED_FILES" ]; then
@@ -150,8 +150,8 @@ if [ $? -eq 1 ]; then
         echo "Updated file parsing complete for $DIR_TO_WATCH"
     fi
     # update the directory and file list checksums and exit
-    find $DIR_TO_WATCH -name $FILE_GLOB -type f | sha1sum > "$DIR_TO_WATCH/.directory_sha"  # directory as a whole
-    find $DIR_TO_WATCH -name $FILE_GLOB -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/.file_stats"  # individual files in the directory
+    find $DIR_TO_WATCH -name $FILE_GLOB -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum > "$DIR_TO_WATCH/.directory_sha"  # directory as a whole
+    find $DIR_TO_WATCH -name $FILE_GLOB -type f -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/.file_stats"  # individual files in the directory
     rm $TMPFILE  # remove the temporary file
     exit  # exit with no error, updated files have been parsed
 fi
