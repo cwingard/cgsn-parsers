@@ -25,8 +25,7 @@ if [ ! -d $PARSED ]; then
 fi
 
 # load the ooi python environment
-. $(dirname $CONDA_EXE)/../etc/profile.d/conda.sh
-conda activate ooi
+source /home/ooiuser/miniconda/bin/activate ooi
 
 # switch to the parser directory
 cd /home/ooiuser/code/cgsn-parsers || exit

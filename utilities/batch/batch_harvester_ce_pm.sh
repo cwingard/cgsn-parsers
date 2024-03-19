@@ -21,18 +21,16 @@ DEPLOY=${2^^}
 # set the directory for the raw data and the harvesting scripts
 RAW="/home/ooiuser/data/raw/$PLATFORM/$DEPLOY/cg_data"
 HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
-cd "$HARVEST" || exit
 
 # load the ooi python environment
-. $(dirname $CONDA_EXE)/../etc/profile.d/conda.sh
-conda activate ooi
+source /home/ooiuser/miniconda/bin/activate ooi
 
 #### Buoy Instruments ####
 assembly="buoy"  # surface buoy with CPM1 (and auxiliary instruments)
-./polling.sh "$HARVEST/harvest_superv_stc.sh $PLATFORM $DEPLOY $assembly superv" "$RAW/syslog/*.syslog.log"
-./polling.sh "$HARVEST/harvest_syslog_gps.sh $PLATFORM $DEPLOY $assembly gps" "$RAW/syslog/*.syslog.log"
-./polling.sh "$HARVEST/harvest_syslog_irid.sh $PLATFORM $DEPLOY $assembly irid" "$RAW/syslog/*.syslog.log"
-./polling.sh "$HARVEST/harvest_mopak.sh $PLATFORM $DEPLOY $assembly mopak" "$RAW/3dmgx3/*.3dmgx3.log"
+$HARVEST/polling.sh "$HARVEST/harvest_superv_stc.sh $PLATFORM $DEPLOY $assembly superv" "$RAW/syslog/*.syslog.log"
+$HARVEST/polling.sh "$HARVEST/harvest_syslog_gps.sh $PLATFORM $DEPLOY $assembly gps" "$RAW/syslog/*.syslog.log"
+$HARVEST/polling.sh "$HARVEST/harvest_syslog_irid.sh $PLATFORM $DEPLOY $assembly irid" "$RAW/syslog/*.syslog.log"
+$HARVEST/polling.sh "$HARVEST/harvest_mopak.sh $PLATFORM $DEPLOY $assembly mopak" "$RAW/3dmgx3/*.3dmgx3.log"
 
 # And now process the MMP data, first setting the MMP input and output directories
 RAW="$RAW/imm/mmp"
