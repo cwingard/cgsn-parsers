@@ -4,7 +4,9 @@
 # Poll a directory for new or updated files and process them using the
 # specified command. This script is designed to be used with the harvesters to
 # monitor a directory for new or updated files and parse them as they are added
-# to the directory.
+# to the directory. Note, this script can also be used with the processing
+# scripts available in cgsn_processing to monitor a directory for new or
+# updated files and process them as they are added to the directory.
 #
 # Note, the use of inotify is not possible in the OOI environment, as our data
 # is stored on a network file system. This script is a simple polling script
@@ -96,18 +98,18 @@ FILE_GLOB=$(basename "$PATH_GLOB")
 echo "Monitoring $DIR_TO_WATCH for new or updated files matching $FILE_GLOB"
 
 # next, check if the checksum files exists (used to monitor for changes in the directory),
-# if not, that means this is the first time we are parsing this directory. parse all
+# if not, that means this is the first time we are processing this directory. parse all
 # existing files, create the directory checksum and the file status to monitor for future
 # changes, and exit
 if [ $RESET -eq 1 ]; then
-    # reset the checksum files and force a re-parsing of the directory
+    # reset the checksum files and force a re-processing of the directory
     if [ -e "$DIR_TO_WATCH/.directory_sha" ]; then
-        echo "Resetting the checksum and file status records for $DIR_TO_WATCH prior to re-parsing"
+        echo "Resetting the checksum and file status records for $DIR_TO_WATCH prior to re-processing"
         rm -f "$DIR_TO_WATCH/.directory_sha" "$DIR_TO_WATCH/.file_stats"
     fi
 fi
 if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
-    echo "First parsing run for $DIR_TO_WATCH, parsing all files"
+    echo "First processing run for $DIR_TO_WATCH, processing all files"
     # create a checksum of the directory contents and a listing of file stats to monitor for
     # future changes (directory as a whole and individual files based on size, creation and
     # modification times)
@@ -116,7 +118,7 @@ if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
     # process all the files in the directory (using parallel processing to parse up to 7 files at a time)
     for file in $PATH_GLOB; do
         (
-            echo "Parsing $file"
+            echo "Processing $file"
             eval '$COMMAND $file'
         ) &
         if (( $(jobs | wc -l) >= 7 )); then
@@ -124,7 +126,7 @@ if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
             wait -n
         fi
     done
-    echo "First parsing run complete for $DIR_TO_WATCH"
+    echo "First processing run complete for $DIR_TO_WATCH"
     echo ""
     exit  # exit with no error, the directory has been parsed for the first time
 fi
@@ -133,7 +135,7 @@ fi
 find $DIR_TO_WATCH -name $FILE_GLOB -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum --check --status "$DIR_TO_WATCH/.directory_sha"
 if [ $? -eq 1 ]; then
     echo "Contents of $DIR_TO_WATCH have changed, looking for new or modified files"
-    TMPFILE=$(mktemp /tmp/parsing-XXXXXXX)
+    TMPFILE=$(mktemp /tmp/processing-XXXXXXX)
     find $DIR_TO_WATCH -name $FILE_GLOB -type f -exec stat -c "%s%W%Y%Z %n" {} + > $TMPFILE
     # list any new or modified files based on the file stats
     UPDATED_FILES=$(sort $TMPFILE "$DIR_TO_WATCH/.file_stats" | uniq -u | awk '{print $2}' | sort | uniq)
@@ -141,7 +143,7 @@ if [ $? -eq 1 ]; then
         # Parse the files (using parallel processing to parse up to 7 files at a time)
         for file in $UPDATED_FILES; do
             (
-                echo "Parsing $file"
+                echo "Processing $file"
                 eval '$COMMAND $file'
             ) &
             if (( $(jobs | wc -l) >= 7 )); then
@@ -149,7 +151,7 @@ if [ $? -eq 1 ]; then
                 wait -n
             fi
         done
-        echo "Updated file parsing complete for $DIR_TO_WATCH"
+        echo "Updated file processing complete for $DIR_TO_WATCH"
         echo ""
     fi
     # update the directory and file list checksums and exit
