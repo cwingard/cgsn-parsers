@@ -14,40 +14,43 @@ from datetime import datetime
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, INTEGER
 
-# Regex for the 31 columns of data representing the different volume concentration size classes
-size_classes = r'(([+-]?\d+.\d+[Ee]?[+-]?\d*)(,([+-]?\d+.\d+[Ee]?[+-]?\d*)){35})'
+# Defining patterns for parts of the data
+timestamp_pattern = r'\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\.\d{3}'
+float_pattern = r'[+-]?\d+(\.\d+)?([Ee][+-]?\d+)?'
+integer_pattern = r'\d+'
 
-# Full Regex pattern
-PATTERN = (
-    DCL_TIMESTAMP + r'\s' +                     # Time-Stamp
-    size_classes + r',' +                       # 36 Column data for particle concentration
-    FLOAT + r',' +                              # Laser transmission Sensor [mW]
-    FLOAT + r',' +                              # Supply voltage in [V]
-    FLOAT + r',' +                              # External analog input 1 [V]
-    FLOAT + r',' +                              # Laser Reference sensor [mW]
-    FLOAT + r',' +                              # Depth in [m of seawater]
-    FLOAT + r',' +                              # Temperature [C]
-    INTEGER + r',' +                            # Year
-    INTEGER + r',' +                            # Month
-    INTEGER + r',' +                            # Day
-    INTEGER + r',' +                            # Hour
-    INTEGER + r',' +                            # Minute
-    INTEGER + r',' +                            # Second
-    FLOAT + r',' +                              # External analog input 2 [V]
-    FLOAT + r',' +                              # Mean Diameter [um]
-    FLOAT + r',' +                              # Total Volume Concentration [PPM]
-    INTEGER + r',' +                            # Relative Humidity [%]
-    INTEGER + r',' +                            # Accelerometer X
-    INTEGER + r',' +                            # Accelerometer Y
-    INTEGER + r',' +                            # Accelerometer Z
-    INTEGER + r',' +                            # Raw pressure [overflow single bit]
-    INTEGER + r',' +                            # Raw pressure [least significant 16 bits]
-    INTEGER + r',' +                            # Ambient Light [counts]
-    FLOAT + r',' +                              # External analog input 3 [V]
-    FLOAT + r',' +                              # Computed optical transmission over path [dimensionless]
-    FLOAT                                       # Beam-attenuation (c) [m-1]
-)
+# Defining the full pattern using raw strings to avoid double escaping
+PATTERN = ( 
+    rf'({timestamp_pattern})\s'                    
+    rf'(({"|".join([float_pattern]*36)})),'        
+    rf'{float_pattern},'                           
+    rf'{float_pattern},'                           
+    rf'{float_pattern},'                           
+    rf'{float_pattern},'                           
+    rf'{float_pattern},'                           
+    rf'{float_pattern},'                           
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{float_pattern},'                           
+    rf'{float_pattern},'                           
+    rf'{float_pattern},'                           
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{integer_pattern},'                         
+    rf'{float_pattern},'                           
+    rf'{float_pattern},'                           
+    rf'{float_pattern}' 
+)                            
 
+# Compiling the regex for use
 REGEX = re.compile(PATTERN, re.DOTALL)
 
 _parameter_names_prtsz = [
