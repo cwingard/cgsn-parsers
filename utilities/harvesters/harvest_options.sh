@@ -65,8 +65,8 @@ FNAME=$(basename "$IN_FILE")
 
 # test if the input file exists and is not empty
 if [ ! -s "$IN_FILE" ]; then
-  echo "ERROR: The input file does not exist or is empty."
-  exit 1
+  echo "ERROR: The input file $IN_FILE does not exist or is empty."
+  exit 0
 fi
 
 # Set the parsed output data directory

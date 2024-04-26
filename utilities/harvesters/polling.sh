@@ -1,26 +1,29 @@
 #!/bin/bash
 # polling.sh
 #
-# Poll a directory for new or updated files and process them using the
+# Poll a directory for new or updated files and parse them using the
 # specified command. This script is designed to be used with the harvesters to
 # monitor a directory for new or updated files and parse them as they are added
 # to the directory. Note, this script can also be used with the processing
 # scripts available in cgsn_processing to monitor a directory for new or
 # updated files and process them as they are added to the directory.
 #
-# Note, the use of inotify is not possible in the OOI environment, as our data
-# is stored on a network file system. This script is a simple polling script
+# The use of inotify is not possible in the OOI environment, as our data
+# is stored on network file systems. This script is a simple polling script
 # that checks for new or updated files in the directory based on a schedule set
-# via the crontab (usually every 30 minutes).
+# via the crontab.
 #
 # The script takes two arguments:
 #   1. The command to execute when new or updated files are detected. The
-#      command should be in quotes and include all other required inputs.
+#      command should be enclosed in double quotes and include all other
+#      required inputs.
 #   2. The path to the directory to watch and the file pattern to monitor for
-#      changes. The file pattern should be in quotes and can include wildcards.
+#      changes. The path and file pattern should be enclosed in double quotes
+#      and the file pattern can include wildcards, although that is not true
+#      for the path.
 #      For example, "/path/to/directory/*.txt" will monitor all files with a
-#      .txt extension in /path/to/directory. Note, the path to the directory
-#      CANNOT include wildcards, only the file name itself.
+#      .txt extension in /path/to/directory. Again, the path to the directory
+#      CANNOT include wildcards, only the file name pattern.
 #
 # Example usage:
 #   RAW_DATA="/home/ooiuser/data/raw/ce02shsm/D00017/cg_data"
@@ -37,7 +40,7 @@
 # updated and the directory needs to be re-parsed. To use this option, add
 # a reset flag (-r) as the first argument. For example:
 #
-#   ./polling.sh -r ./harvest_wavss.sh $INPUTS" "$RAW_DATA/dcl12/wavss/*.log"
+#   ./polling.sh -r "./harvest_wavss.sh $INPUTS" "$RAW_DATA/dcl12/wavss/*.log"
 #
 # Code inspired by: https://www.baeldung.com/linux/command-execute-file-dir-change
 # with hints and suggestions from the GitHub CoPilot.
