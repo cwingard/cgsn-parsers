@@ -1,39 +1,21 @@
 #!/bin/bash
+# harvest_syslog_irid.sh
 #
-# Read the Iridium data from the syslog files for the Profiler Moorings and create
-# parsed datasets available in JSON formatted files for further processing and review.
+# Reads the raw Iridium modem logs in the syslog files from the Endurance and
+# Pioneer Surface Moorings and create parsed datasets available in JSON
+# formatted files for further processing and review.
 #
-# Wingard, C. 2017-04-05
+# C. Wingard 2017-04-05 -- Original code
+# C. Wingard 2024-03-08 -- Updated to use the harvest_options.sh script to
+#                          parse the command line inputs
 
-# Parse the command line inputs
-if [ $# -ne 3 ]; then
-    echo "$0: required inputs are the platform and deployment names,"
-    echo "the name of the DCL, and the name of the file to process."
-    echo "     example: $0 ce09ospm D00006 20161003.syslog.log"
-    exit 1
-fi
-PLATFORM=${1,,}
-DEPLOY=${2^^}
-FILE=`basename $3`
-
-# Set the default directory paths
-RAW="/home/ooiuser/data/raw"
-PARSED="/home/ooiuser/data/parsed"
-
-if [ -z "${PLATFORM/*pm*}" ]; then
-    # path is different for profiler moorings
-    IN="$RAW/$PLATFORM/$DEPLOY/syslog/$FILE"
-else
-    IN="$RAW/$PLATFORM/$DEPLOY/cg_data/syslog/$FILE"
-fi
-
-OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/irid/${FILE%.log}.json"
-if [ ! -d `dirname $OUT` ]; then
-    mkdir -p `dirname $OUT`
-fi
+# include the help function and parse the required and optional command line options
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+source "$DIR/harvest_options.sh"
 
 # Parse the file
-if [ -e $IN ]; then
-    cd /home/ooiuser/code/cgsn-parsers
-    python -m cgsn_parsers.parsers.parse_syslog_irid -i $IN -o $OUT
+if [ -e "$IN_FILE" ]; then
+    cd /home/ooiuser/code/cgsn-parsers || exit
+    python -m cgsn_parsers.parsers.parse_syslog_irid -i "$IN_FILE" -o "$OUT_FILE" || echo "ERROR: Failed to parse $IN_FILE"
 fi

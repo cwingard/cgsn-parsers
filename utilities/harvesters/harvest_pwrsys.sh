@@ -1,49 +1,33 @@
 #!/bin/bash
+# harvest_pwrsys.sh
 #
-# Read the raw Power System log files for the Endurance Coastal Surface
-# Moorings and create parsed datasets available in JSON formatted files
-# for further processing and review.
+# Read the power system (PSC or MPEA) log files for the Endurance and Pioneer
+# Coastal Surface Moorings and create parsed datasets available in JSON
+# formatted files for further processing and review.
 #
-# Wingard, C. 2015-04-17
+# C. Wingard 2015-04-17 -- Original code
+# C. Wingard 2024-03-08 -- Updated to use the harvest_options.sh script to
+#                          parse the command line inputs
 
-# Parse the command line inputs
-if [ $# -ne 4 ]; then
-    echo "$0: required inputs are the platform and deployment names, a string"
-    echo " indicating which type of power system [psc/syslog/mpea] is being"
-    echo " parsed, and the name of the file to process."
-    echo "     example: $0 ce07shsm D00005 psc 20150505.pwrsys.log"
-    exit 1
-fi
-PLATFORM=${1,,}
-DEPLOY=${2^^}
-SWITCH=${3,,}
-FILE=`basename $4`
+# include the help function and parse the required and optional command line options
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+source "$DIR/harvest_options.sh"
 
-# Set the default directory paths
-RAW="/home/ooiuser/data/raw"
-PARSED="/home/ooiuser/data/parsed"
-
-# Setup the input and output filenames as well as the absolute paths
-case $SWITCH in
-    "psc" )
-        IN="$RAW/$PLATFORM/$DEPLOY/cg_data/pwrsys/$FILE"
-        OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/pwrsys/${FILE%.log}.json" ;;
-    "syslog" )
-        IN="$RAW/$PLATFORM/$DEPLOY/cg_data/syslog/$FILE"
-        OUT="$PARSED/$PLATFORM/$DEPLOY/buoy/pwrsys/${FILE%.log}.json" ;;
-    "mpea" )
-        IN="$RAW/$PLATFORM/$DEPLOY/cg_data/cpm3/pwrsys/$FILE"
-        OUT="$PARSED/$PLATFORM/$DEPLOY/mfn/pwrsys/${FILE%.log}.json" ;;
+# check the processing flag for the correct power system type
+case $FLAG in
+    "psc" | "mpea" | "syslog" )
+        ;;
     * )
-        echo "Unknown platform, please check the name again"
-        exit 0 ;;
+        echo "ERROR: Incorrect power system type, $FLAG, in the processing flag."
+        echo "Please specify either psc, mpea or syslog (variant of the PSC) with"
+        echo "the -f option."
+        exit 1 # exit and indicate error
+        ;;
 esac
-if [ ! -d "$(dirname $OUT)" ]; then
-    mkdir -p "$(dirname $OUT)"
-fi
 
 # Parse the file
-if [ -e $IN ]; then
+if [ -e "$IN_FILE" ]; then
     cd /home/ooiuser/code/cgsn-parsers || exit
-    python -m cgsn_parsers.parsers.parse_pwrsys -i $IN -o $OUT -s $SWITCH
+    python -m cgsn_parsers.parsers.parse_pwrsys -i "$IN_FILE" -o "$OUT_FILE" -s "$FLAG" || echo "ERROR: Failed to parse $IN_FILE"
 fi
