@@ -54,10 +54,8 @@ esac
 RAW="/home/ooiuser/data/raw/$PLATFORM/$DEPLOY/cg_data"
 HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
 
-
 # load the ooi python environment
-. $(dirname $CONDA_EXE)/../etc/profile.d/conda.sh
-conda activate ooi
+source /home/ooiuser/miniconda/bin/activate ooi
 
 #### Buoy Instruments ####
 assembly="buoy"  # surface buoy with CPM1 (and auxiliary instruments)

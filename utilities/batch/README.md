@@ -3,7 +3,7 @@
 These scripts provide examples of how to collect the [OOI parsers](../harvesters/README.md) together into a single 
 batch process to parse all the available data from an uncabled surface or profiler mooring on a per mooring/deployment 
 basis. Within the Endurance and CGSN data teams, these example scripts are customized on a per-deployment basis in 
-order capture the variability of instrument availability and assignments that can occur between deployments. Those 
+order to capture the variability of instrument availability and assignments that can occur between deployments. Those 
 customizations are not included here, but the general structure of the batch process is.
 
 The batch process is scheduled to run on a regular basis, typically every 30 minutes. The batch process is designed to 
