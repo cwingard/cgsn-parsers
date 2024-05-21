@@ -394,8 +394,13 @@ def main(argv=None):
 
     finally:
         # write the resulting Bunch object via the toJSON method to a JSON formatted data file
-        with open(outfile, 'w') as f:
-            f.write(prawler.data.toJSON())
+
+        # Do not create prawler file if no sci_data profile found
+        # ERDDAP deletes the dataset if no metadata when updating
+
+        if len(prawler.data.scidata.epoch_time) > 0:
+            with open(outfile, 'w') as f:
+                f.write(prawler.data.toJSON())
 
 
 if __name__ == '__main__':
