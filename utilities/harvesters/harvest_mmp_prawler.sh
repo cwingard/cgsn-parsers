@@ -16,5 +16,5 @@ source "$DIR/harvest_options.sh"
 # Parse the file
 if [ -e "$IN_FILE" ]; then
     cd /home/ooiuser/code/cgsn-parsers || exit
-    python -m cgsn_parsers.parsers.parse_mmp_prawler -i $IN -o $OUT || echo "ERROR: Failed to parse $IN_FILE"
+    python -m cgsn_parsers.parsers.parse_mmp_prawler -i $IN_FILE -o $OUT_FILE || echo "ERROR: Failed to parse $IN_FILE"
 fi
