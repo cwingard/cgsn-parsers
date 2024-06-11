@@ -21,8 +21,12 @@ from cgsn_parsers.parsers.common import inputs, NEWLINE
 # byte hash of the unit serial number and calibration, and 2 for the length byte), and a '04' or '05' (indicating a
 # Type 4 (measurement) or 5 (blank) data record), with the follow on characters for the remaining bytes through the
 # checksum and carriage return.
+
+# replaced following regex line to support sami rev k ( :# instead of * )
+#     r'Record\[(\d+)\]:\*([0-9A-F]{2})([0-9A-F]{2})(04|05)'      # Unique ID, record length and record type
+
 sample = (
-    r'Record\[(\d+)\]:\*([0-9A-F]{2})([0-9A-F]{2})(04|05)'      # Unique ID, record length and record type
+    r'Record\[(\d+)\]:(?:\*|:\d)([0-9A-F]{2})([0-9A-F]{2})(04|05)'      # Unique ID, record length and record type
     r'([0-9A-F]{8})([0-9A-F]{56})' +                            # Time and 14 sets of light measurements
     r'([0-9A-F]{4})([0-9A-F]{4})([0-9A-F]{2})' + NEWLINE        # Battery voltage, temperature and checksum
 )
