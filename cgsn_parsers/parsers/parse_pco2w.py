@@ -27,11 +27,13 @@ POLLED_PATTERN = (
 )
 POLLED_REGEX = re.compile(POLLED_PATTERN, re.DOTALL)
 
+
+# ...or if the unit is configured to run autonomously.
+
 # replaced the following lines in regex to support sami rev k ( :# instead of * )
 #    r'(\*[A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
 #    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
 
-# ...or if the unit is configured to run autonomously.
 AUTO_PATTERN = (
     DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
     r'(?:\*|:\d)([A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
@@ -114,10 +116,12 @@ class Parser(ParserCommon):
                 # pull out of the initial sample string the DCL timestamps and a cleaned sample string
                 collect_time = match.group(1)
                 process_time = match.group(3)
-
+ 
                 # required for sami rev k (stuff '*' ahead of group 4
+                #cleaned = match.group(4) + match.group(5) + match.group(6)
                 cleaned = '*' + match.group(4) + match.group(5) + match.group(6)
 
+ 
                 # if we have a complete sample, process it.
                 if len(cleaned) == 81:
                     # print '%s --- %s\n' % (timestamp, sample)

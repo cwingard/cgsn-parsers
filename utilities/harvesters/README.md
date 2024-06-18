@@ -18,8 +18,8 @@ For outside users looking to use these scripts and modules, the raw data needs t
 to working with these parsers. We've included an example below of the crontab OOI Endurance has used to access the 
 raw data from the OOI Raw Data server for mooring monitoring and management purposes. Note, you'll find it much easier 
 to limit the wget calls to a specific mooring and deployment. Otherwise, it may take a long time to download the data
-you are after. Optionally, you could use the [OOI JupyterHub](https://jupyter.oceanobservatories.org/hub/login) to access the raw
-data files and run the parsers from there. 
+you are after. Optionally, you could use the [OOI JupyterHub](https://jupyter.oceanobservatories.org/hub/login) to 
+access the raw data files and run the parsers from there. 
 
 ```bash
 # OOI Endurance crontab

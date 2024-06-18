@@ -48,7 +48,11 @@ for file in "$RAW"/E*.DAT; do
     # unpack the file, if it hasn't already been processed
     out=$(basename $file)
     eng="$PARSED/${out%.DAT}.TXT"
-    if [ ! -e $eng ] || [ ! -e $eng.failed ]; then
+    if [ ! -f $eng ]; then
+        if [ -f $eng.failed ]; then
+            /bin/echo -e "\tSkipping $file, marked as corrupted in a previous run..."
+            continue
+        fi
         echo "Processing $file..."
         # check to see if we already have created TIMETAGS2.TXT, don't want to overwrite
         if [ -f $PARSED/TIMETAGS2.TXT ]; then
@@ -69,7 +73,7 @@ for file in "$RAW"/E*.DAT; do
             # Extract failed, create empty file indicating failure and skip to next file
             /bin/echo -e "\tCorrupted file, skipping file"
             /bin/touch $PARSED/${out%.DAT}.TXT.failed
-            if [ -e timetags ]; then
+            if [ -f timetags ]; then
                 # replace TIMETAGS2
                 /bin/mv timetags $PARSED/TIMETAGS2.TXT
             fi

@@ -10,12 +10,12 @@
 # create a function to print the help documentation
 function help ()
 {
-  echo "$0: required inputs are the mooring, deployment, subassembly and"
+  echo "$0: required inputs are the platform, deployment, subassembly and"
   echo "instrument names, in that order, followed by the name of the file to"
   echo "parse. An optional flag can be set through the use of the -f option"
   echo "as defined below:"
   echo ""
-  echo "Syntax: $0 [-h|f] mooring deployment subassembly instrument file"
+  echo "Syntax: $0 [-h|f] platform deployment subassembly instrument file"
   echo ""
   echo "Options:"
   echo "h    Print this help message and exit."
@@ -38,25 +38,27 @@ while getopts "hf:" option; do
   case $option in
     h ) # display Help
       help
-      exit;;
+      exit ;;
     f ) # Processing flag
-      FLAG=${OPTARG,,}
-      shift $((OPTIND - 1))
-      ;;
+      FLAG=${OPTARG,,} ;;
+    : )
+      echo "Option -${OPTARG} requires an argument"
+      exit ;;
     * ) # Invalid option
-      echo "Error: Invalid option"
-      exit 1;;
+      echo "Error: Invalid option -${OPTARG}"
+      exit ;;
   esac
 done
+shift $((OPTIND - 1))
 
 # Then parse the required command line inputs and check the number of inputs
 if [ $# -ne 5 ]; then
-  echo "Error: Incorrect number of inputs. Please specify the mooring, deployment,"
+  echo "Error: Incorrect number of inputs. Please specify the platform, deployment,"
   echo "subassembly, and instrument names and the file to parse, in that order."
   echo ""
-  help
+  exit
 fi
-MOORING=${1,,}
+PLATFORM=${1,,}
 DEPLOY=${2^^}
 ASSMBLY=${3,,}
 INSTRMT=${4,,}
@@ -65,13 +67,13 @@ FNAME=$(basename "$IN_FILE")
 
 # test if the input file exists and is not empty
 if [ ! -s "$IN_FILE" ]; then
-  echo "ERROR: The input file does not exist or is empty."
-  exit 1
+  echo "ERROR: The input file $IN_FILE does not exist or is empty."
+  exit 0
 fi
 
 # Set the parsed output data directory
 PARSED="/home/ooiuser/data/parsed"
-OUT_DIR="$PARSED/$MOORING/$DEPLOY/$ASSMBLY/$INSTRMT"
+OUT_DIR="$PARSED/$PLATFORM/$DEPLOY/$ASSMBLY/$INSTRMT"
 OUT_FILE="$OUT_DIR/${FNAME%.log}.json"
 if [ ! -d "$OUT_DIR" ]; then
     mkdir -p "$OUT_DIR"
