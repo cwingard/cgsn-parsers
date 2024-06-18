@@ -13,22 +13,33 @@ import re
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP
 
+# replaced following lines in regex to support sami rev k ( :# insteadn of * )
+#    r'(\*[A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
+#    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
+
+
 # Regex patterns for PCO2W data logged either via direct polling...
 POLLED_PATTERN = (
     DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
-    r'(\*[A-F0-9]{4}11[A-F0-9]+)' + r'\s' +         # Device 1 (external pump) sample collection
+    r'(?:\*|:\d)([A-F0-9]{4}11[A-F0-9]+)' + r'\s' +         # Device 1 (external pump) sample collection
     DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
-    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
+    r'(?:\*|:\d)([A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
 )
 POLLED_REGEX = re.compile(POLLED_PATTERN, re.DOTALL)
 
+
 # ...or if the unit is configured to run autonomously.
+
+# replaced the following lines in regex to support sami rev k ( :# instead of * )
+#    r'(\*[A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
+#    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
+
 AUTO_PATTERN = (
     DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
-    r'(\*[A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
+    r'(?:\*|:\d)([A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
     r'[\s\S]*?' +                                    # Nonessential text and lines between samples
     DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
-    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
+    r'(?:\*|:\d)([A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
 )
 AUTO_REGEX = re.compile(AUTO_PATTERN, re.DOTALL)
 
@@ -105,8 +116,12 @@ class Parser(ParserCommon):
                 # pull out of the initial sample string the DCL timestamps and a cleaned sample string
                 collect_time = match.group(1)
                 process_time = match.group(3)
-                cleaned = match.group(4) + match.group(5) + match.group(6)
+ 
+                # required for sami rev k (stuff '*' ahead of group 4
+                #cleaned = match.group(4) + match.group(5) + match.group(6)
+                cleaned = '*' + match.group(4) + match.group(5) + match.group(6)
 
+ 
                 # if we have a complete sample, process it.
                 if len(cleaned) == 81:
                     # print '%s --- %s\n' % (timestamp, sample)
