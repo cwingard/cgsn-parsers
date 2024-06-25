@@ -20,8 +20,12 @@ from cgsn_parsers.parsers.common import inputs, NEWLINE
 # Regex pattern for a line with the IMM record number followed by the "*" character, 4 unknown characters (2 for a 1
 # byte hash of the unit serial number and calibration, and 2 for the length byte), and a '0A' (indicating a Type 10 data
 # record), with the follow on characters for the remaining bytes through the checksum and carriage return.
+
+# replaced following regex line to support new sami rev k format
+#     r'Record\[(\d+)\]:\*([0-9A-F]{2})([0-9A-F]{2})(0A)'         # Unique ID, record length and record type
+
 sample = (
-    r'Record\[(\d+)\]:\*([0-9A-F]{2})([0-9A-F]{2})(0A)'         # Unique ID, record length and record type
+    r'Record\[(\d+)\](?:\*|::\d)([0-9A-F]{2})([0-9A-F]{2})(0A)'         # Unique ID, record length and record type
     r'([0-9A-F]{8})([0-9A-F]{4})([0-9A-F]{64})' +               # Time, thermistor, and set of 16 reference measurements
     r'([0-9A-F]{368})[0-9A-F]{4}' +                             # 23 sets of 4 light measurements
     r'([0-9A-F]{4})([0-9A-F]{4})([0-9A-F]{2})' + NEWLINE        # Battery voltage, thermistor and checksum
