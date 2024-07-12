@@ -26,7 +26,7 @@ from cgsn_parsers.parsers.common import inputs, NEWLINE
 #     r'Record\[(\d+)\]:\*([0-9A-F]{2})([0-9A-F]{2})(04|05)'      # Unique ID, record length and record type
 
 sample = (
-    r'Record\[(\d+)\]:(?:\*|:\d)([0-9A-F]{2})([0-9A-F]{2})(04|05)'      # Unique ID, record length and record type
+    r'Record\[(\d+)\](?:\*|::\d)([0-9A-F]{2})([0-9A-F]{2})(04|05)'      # Unique ID, record length and record type
     r'([0-9A-F]{8})([0-9A-F]{56})' +                            # Time and 14 sets of light measurements
     r'([0-9A-F]{4})([0-9A-F]{4})([0-9A-F]{2})' + NEWLINE        # Battery voltage, temperature and checksum
 )
