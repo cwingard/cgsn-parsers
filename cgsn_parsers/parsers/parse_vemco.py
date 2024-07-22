@@ -73,6 +73,7 @@ class ParameterNames(object):
             'vr2c_date_time',
             'serial_number',
             'sequence',
+            'code_space',
             'tag_id',
             'sensor_data'
         ]
@@ -195,8 +196,9 @@ class Parser(object):
         # Assign the remaining status data to the named parameters
         self.data.tags.serial_number.append(int(match.group(2)))
         self.data.tags.sequence.append(int(match.group(3)))
-        tag_id = str(match.group(6)).split(',')
-        self.data.tags.tag_id.append(str(match.group(5)) + '-' + tag_id[0])
+        self.data.tags.code_space.append(str(match.group(5)))
+        tag_id = str(match.group(6)).split(',')  # tag_id[0] is the tag_id, tag_id[1] is the sensor data (if present)
+        self.data.tags.tag_id.append(tag_id[0])
         if len(tag_id) > 1:
             self.data.tags.sensor_data.append(int(tag_id[1]))
         else:
