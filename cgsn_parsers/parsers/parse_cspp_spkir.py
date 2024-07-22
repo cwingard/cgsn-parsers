@@ -15,7 +15,7 @@ from cgsn_parsers.parsers.common import FLOAT, INTEGER, NEWLINE, STRING, inputs
 
 # Regex pattern for the CTD data from the uCSPP CTD data files
 PATTERN = (
-    FLOAT + r'\s+' +FLOAT + r'\s+' + STRING + r'\s+' +
+    FLOAT + r'\s+' + FLOAT + r'\s+' + STRING + r'\s+' +
     STRING + r'\s+' + INTEGER + r'\s+' + FLOAT + r'\s+' + INTEGER + r'\s+' +
     INTEGER + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
     INTEGER + r'\s+' + INTEGER + r'\s+' + INTEGER + r'\s+' +
