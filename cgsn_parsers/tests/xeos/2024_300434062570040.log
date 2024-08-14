@@ -1,0 +1,232 @@
+MOMSN=1704, Tue Mar 26 18:53:00 2024, 00 - Transfer OK, bytes=176, Lat: 41.51084 Lon: -70.65567 CEPradius: 9, 03261852,V,Rover v1.28-7323. dev:4 Hw:3.2-0 SN=235094188 GPS:GSD4e_4.1.2-P1 R+ 11/15/2011 319-Nov 15 2011-23:04:55 IRD:TA16005
+ Reset: Count=27, Current=(S), Prev=(cleared)
+ 
+
+MOMSN=1705, Tue Mar 26 18:53:12 2024, 00 - Transfer OK, bytes=18, Lat: 41.53338 Lon: -70.63978 CEPradius: 10, UnlockCode=98280
+
+MOMSN=1706, Tue Mar 26 18:59:43 2024, 02 - Transfer OK Bad Location, bytes=30, Lat: 41.52249 Lon: -70.29135 CEPradius: 64, b i n a r y
+MOMSN=1707, Tue Mar 26 19:00:44 2024, 02 - Transfer OK Bad Location, bytes=30, Lat: 41.52249 Lon: -70.29135 CEPradius: 344, b i n a r y
+MOMSN=1708, Tue Mar 26 19:15:46 2024, 00 - Transfer OK, bytes=30, Lat: 41.53338 Lon: -70.63978 CEPradius: 6, b i n a r y
+MOMSN=1709, Tue Mar 26 19:37:11 2024, 00 - Transfer OK, bytes=30, Lat: 41.53338 Lon: -70.63978 CEPradius: 2, b i n a r y
+MOMSN=1711, Tue Mar 26 20:00:53 2024, 00 - Transfer OK, bytes=118, Lat: 41.51084 Lon: -70.65567 CEPradius: 3, 03261948,S,Status / Value Change: Mode = OK gps =  3Hrs ird =  24Hrs ctr=41.53346/-70.64609 rad = 150m, Sched hr = 0
+
+MOMSN=1712, Tue Mar 26 20:01:05 2024, 00 - Transfer OK, bytes=41, Lat: 41.51875 Lon: -70.70090 CEPradius: 3, b i n a r y
+MOMSN=1713, Tue Mar 26 20:08:18 2024, 00 - Transfer OK, bytes=26, Lat: 41.51084 Lon: -70.65567 CEPradius: 3, Switch: Y = G, N = MOC
+ 
+
+MOMSN=1714, Wed Mar 27 00:02:27 2024, 00 - Transfer OK, bytes=37, Lat: 41.53338 Lon: -70.63978 CEPradius: 6, b i n a r y
+MOMSN=1715, Wed Apr  3 11:39:30 2024, 00 - Transfer OK, bytes=176, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, 04031132,V,Rover v1.28-7323. dev:4 Hw:3.2-0 SN=235094188 GPS:GSD4e_4.1.2-P1 R+ 11/15/2011 319-Nov 15 2011-23:04:55 IRD:TA16005
+ Reset: Count=31, Current=(S), Prev=(cleared)
+ 
+
+MOMSN=1716, Wed Apr  3 11:45:49 2024, 00 - Transfer OK, bytes=18, Lat: 35.93131 Lon: -75.01716 CEPradius: 12, UnlockCode=98280
+
+MOMSN=1717, Wed Apr  3 11:46:03 2024, 00 - Transfer OK, bytes=37, Lat: 35.92583 Lon: -74.97433 CEPradius: 13, b i n a r y
+MOMSN=1718, Wed Apr  3 12:00:45 2024, 00 - Transfer OK, bytes=26, Lat: 35.94222 Lon: -75.10288 CEPradius: 5, b i n a r y
+MOMSN=1719, Wed Apr  3 12:22:05 2024, 02 - Transfer OK Bad Location, bytes=26, Lat: 35.97450 Lon: -76.01757 CEPradius: 681, b i n a r y
+MOMSN=1720, Wed Apr  3 12:31:06 2024, 00 - Transfer OK, bytes=79, Lat: 35.98229 Lon: -75.18866 CEPradius: 12, 04031227,S, gps =  3Hrs ird =  24Hrs lat=35.96950 lon=-75.11046, Sched hr = 0
+
+MOMSN=1721, Wed Apr  3 12:32:03 2024, 00 - Transfer OK, bytes=26, Lat: 35.97686 Lon: -75.14576 CEPradius: 8, b i n a r y
+MOMSN=1722, Thu Apr  4 00:03:10 2024, 00 - Transfer OK, bytes=59, Lat: 35.96597 Lon: -75.06001 CEPradius: 3, b i n a r y
+MOMSN=1723, Thu Apr  4 00:03:17 2024, 00 - Transfer OK, bytes=79, Lat: 35.97142 Lon: -75.10288 CEPradius: 4, 04040003,S, gps =  3Hrs ird =  24Hrs lat=35.95000 lon=-75.11918, Sched hr = 0
+
+MOMSN=1724, Fri Apr  5 00:03:16 2024, 00 - Transfer OK, bytes=103, Lat: 35.94766 Lon: -75.14576 CEPradius: 7, b i n a r y
+MOMSN=1725, Fri Apr  5 00:03:50 2024, 00 - Transfer OK, bytes=79, Lat: 35.92720 Lon: -75.15713 CEPradius: 5, 04050003,S, gps =  3Hrs ird =  24Hrs lat=35.94972 lon=-75.11931, Sched hr = 0
+
+MOMSN=1726, Sat Apr  6 00:02:35 2024, 00 - Transfer OK, bytes=103, Lat: 35.97686 Lon: -75.14576 CEPradius: 6, b i n a r y
+MOMSN=1728, Sun Apr  7 00:03:28 2024, 00 - Transfer OK, bytes=103, Lat: 35.97142 Lon: -75.10288 CEPradius: 2, b i n a r y
+MOMSN=1729, Mon Apr  8 00:02:31 2024, 00 - Transfer OK, bytes=103, Lat: 35.92177 Lon: -75.11428 CEPradius: 6, b i n a r y
+MOMSN=1730, Tue Apr  9 00:03:33 2024, 00 - Transfer OK, bytes=92, Lat: 35.92720 Lon: -75.15713 CEPradius: 4, b i n a r y
+MOMSN=1731, Wed Apr 10 00:08:52 2024, 00 - Transfer OK, bytes=114, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1732, Wed Apr 10 00:09:00 2024, 00 - Transfer OK, bytes=26, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, Switch: Y = GC, N = MO
+ 
+
+MOMSN=1733, Wed Apr 10 03:02:26 2024, 00 - Transfer OK, bytes=95, Lat: 35.94222 Lon: -75.10288 CEPradius: 10, 04100301,P,ALARM 35.94994 -75.11924 2320 0m 43 1557
+ (time,P,mode lat lon dist drtn snrMx BV)
+
+MOMSN=1734, Wed Apr 10 03:02:39 2024, 00 - Transfer OK, bytes=32, Lat: 35.97142 Lon: -75.10288 CEPradius: 9, b i n a r y
+MOMSN=1735, Wed Apr 10 03:02:49 2024, 00 - Transfer OK, bytes=30, Lat: 35.94222 Lon: -75.10288 CEPradius: 8, b i n a r y
+MOMSN=1736, Wed Apr 10 03:18:34 2024, 00 - Transfer OK, bytes=88, Lat: 35.93261 Lon: -75.20000 CEPradius: 8, 04100318,I,V=15.36/14.28/13.89 T=0.0 SNR=39 nSats=6 GPS:58/9/8227 Ird:21/16/925 RSSI=5
+
+MOMSN=1737, Wed Apr 10 03:36:34 2024, 02 - Transfer OK Bad Location, bytes=89, Lat: 35.97428 Lon: -76.20051 CEPradius: 108, 04100336,I,V=15.15/14.13/13.89 T=0.0 SNR=38 nSats=9 GPS:58/11/8776 Ird:22/17/949 RSSI=5
+
+MOMSN=1738, Wed Apr 10 03:45:36 2024, 00 - Transfer OK, bytes=41, Lat: 35.97142 Lon: -75.10288 CEPradius: 7, b i n a r y
+MOMSN=1739, Wed Apr 10 04:00:45 2024, 00 - Transfer OK, bytes=30, Lat: 35.94222 Lon: -75.10288 CEPradius: 2, b i n a r y
+MOMSN=1740, Wed Apr 10 04:15:51 2024, 00 - Transfer OK, bytes=30, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1741, Wed Apr 10 04:30:40 2024, 00 - Transfer OK, bytes=30, Lat: 35.97686 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1742, Wed Apr 10 04:45:44 2024, 00 - Transfer OK, bytes=30, Lat: 35.97686 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1743, Wed Apr 10 05:00:38 2024, 00 - Transfer OK, bytes=30, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1745, Wed Apr 10 05:37:04 2024, 00 - Transfer OK, bytes=90, Lat: 35.97142 Lon: -75.10288 CEPradius: 16, 04100536,I,V=15.27/14.97/13.89 T=0.0 SNR=41 nSats=5 GPS:65/13/9246 Ird:30/26/1238 RSSI=5
+
+MOMSN=1746, Wed Apr 10 05:45:43 2024, 00 - Transfer OK, bytes=41, Lat: 35.94222 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1747, Wed Apr 10 06:14:01 2024, 00 - Transfer OK, bytes=30, Lat: 35.97142 Lon: -75.10288 CEPradius: 2, b i n a r y
+MOMSN=1748, Wed Apr 10 06:15:57 2024, 00 - Transfer OK, bytes=30, Lat: 35.97142 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1749, Wed Apr 10 06:30:40 2024, 00 - Transfer OK, bytes=30, Lat: 35.94222 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1750, Wed Apr 10 06:45:36 2024, 00 - Transfer OK, bytes=30, Lat: 35.92720 Lon: -75.15713 CEPradius: 3, b i n a r y
+MOMSN=1751, Wed Apr 10 07:01:56 2024, 00 - Transfer OK, bytes=30, Lat: 35.94766 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1752, Wed Apr 10 07:19:30 2024, 00 - Transfer OK, bytes=90, Lat: 35.92720 Lon: -75.15713 CEPradius: 9, 04100718,I,V=15.30/13.95/13.89 T=0.0 SNR=44 nSats=8 GPS:72/14/9733 Ird:37/35/1692 RSSI=3
+
+MOMSN=1753, Wed Apr 10 07:33:36 2024, 00 - Transfer OK, bytes=30, Lat: 35.97686 Lon: -75.14576 CEPradius: 6, b i n a r y
+MOMSN=1754, Wed Apr 10 07:51:59 2024, 00 - Transfer OK, bytes=30, Lat: 35.92720 Lon: -75.15713 CEPradius: 6, b i n a r y
+MOMSN=1755, Wed Apr 10 08:00:40 2024, 00 - Transfer OK, bytes=30, Lat: 35.97142 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1756, Wed Apr 10 08:15:55 2024, 00 - Transfer OK, bytes=30, Lat: 35.92177 Lon: -75.11428 CEPradius: 3, b i n a r y
+MOMSN=1757, Wed Apr 10 08:31:23 2024, 00 - Transfer OK, bytes=30, Lat: 35.92720 Lon: -75.15713 CEPradius: 7, b i n a r y
+MOMSN=1758, Wed Apr 10 08:45:49 2024, 00 - Transfer OK, bytes=30, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1759, Wed Apr 10 09:01:20 2024, 00 - Transfer OK, bytes=30, Lat: 35.92720 Lon: -75.15713 CEPradius: 4, b i n a r y
+MOMSN=1760, Wed Apr 10 09:15:53 2024, 00 - Transfer OK, bytes=30, Lat: 35.92177 Lon: -75.11428 CEPradius: 9, b i n a r y
+MOMSN=1761, Wed Apr 10 09:30:53 2024, 02 - Transfer OK Bad Location, bytes=30, Lat: 35.94429 Lon: -75.46873 CEPradius: 65, b i n a r y
+MOMSN=1762, Wed Apr 10 09:45:52 2024, 00 - Transfer OK, bytes=30, Lat: 35.92720 Lon: -75.15713 CEPradius: 9, b i n a r y
+MOMSN=1763, Wed Apr 10 10:02:46 2024, 00 - Transfer OK, bytes=30, Lat: 35.92720 Lon: -75.15713 CEPradius: 9, b i n a r y
+MOMSN=1764, Wed Apr 10 10:23:36 2024, 00 - Transfer OK, bytes=30, Lat: 35.91755 Lon: -75.25418 CEPradius: 13, b i n a r y
+MOMSN=1765, Wed Apr 10 10:30:45 2024, 00 - Transfer OK, bytes=30, Lat: 35.92720 Lon: -75.15713 CEPradius: 3, b i n a r y
+MOMSN=1766, Wed Apr 10 10:45:39 2024, 00 - Transfer OK, bytes=30, Lat: 35.97686 Lon: -75.14576 CEPradius: 5, b i n a r y
+MOMSN=1767, Wed Apr 10 11:00:39 2024, 00 - Transfer OK, bytes=30, Lat: 35.94222 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1768, Wed Apr 10 11:24:53 2024, 00 - Transfer OK, bytes=91, Lat: 35.92177 Lon: -75.11428 CEPradius: 4, 04101124,I,V=15.30/15.03/13.83 T=0.0 SNR=41 nSats=5 GPS:87/16/10579 Ird:53/54/2566 RSSI=5
+
+MOMSN=1769, Wed Apr 10 11:39:52 2024, 02 - Transfer OK Bad Location, bytes=30, Lat: 35.92720 Lon: -75.15713 CEPradius: 681, b i n a r y
+MOMSN=1770, Wed Apr 10 11:45:47 2024, 02 - Transfer OK Bad Location, bytes=30, Lat: 36.02827 Lon: -77.19180 CEPradius: 191, b i n a r y
+MOMSN=1771, Wed Apr 10 11:46:00 2024, 00 - Transfer OK, bytes=122, Lat: 35.92720 Lon: -75.15713 CEPradius: 10, 04101145,S,Status / Value Change: Mode = ALARM gps =  15Mns ird =  15Mns ctr=35.95011/-75.11984 rad = 500m, Sched hr = 0
+
+MOMSN=1772, Wed Apr 10 12:00:41 2024, 00 - Transfer OK, bytes=118, Lat: 35.94222 Lon: -75.10288 CEPradius: 3, 04101200,S,Status / Value Change: Mode = OK gps =  3Hrs ird =  24Hrs ctr=35.95011/-75.11984 rad = 500m, Sched hr = 0
+
+MOMSN=1773, Wed Apr 10 12:01:00 2024, 00 - Transfer OK, bytes=30, Lat: 35.94222 Lon: -75.10288 CEPradius: 2, b i n a r y
+MOMSN=1774, Thu Apr 11 00:02:32 2024, 00 - Transfer OK, bytes=63, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1775, Fri Apr 12 00:03:06 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1776, Sat Apr 13 00:09:13 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1777, Sun Apr 14 00:02:20 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1778, Mon Apr 15 00:09:21 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 7, b i n a r y
+MOMSN=1779, Tue Apr 16 00:03:16 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 7, b i n a r y
+MOMSN=1780, Wed Apr 17 00:02:46 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1781, Thu Apr 18 00:02:23 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 4, b i n a r y
+MOMSN=1782, Fri Apr 19 00:02:37 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 6, b i n a r y
+MOMSN=1783, Sat Apr 20 00:02:09 2024, 00 - Transfer OK, bytes=107, Lat: 35.95639 Lon: -75.15713 CEPradius: 2, b i n a r y
+MOMSN=1784, Sun Apr 21 00:02:15 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 8, b i n a r y
+MOMSN=1785, Mon Apr 22 00:04:47 2024, 00 - Transfer OK, bytes=96, Lat: 35.92177 Lon: -75.11428 CEPradius: 20, b i n a r y
+MOMSN=1786, Tue Apr 23 00:02:34 2024, 00 - Transfer OK, bytes=118, Lat: 35.97686 Lon: -75.14576 CEPradius: 5, b i n a r y
+MOMSN=1787, Wed Apr 24 00:02:33 2024, 02 - Transfer OK Bad Location, bytes=107, Lat: 35.92583 Lon: -74.97433 CEPradius: 680, b i n a r y
+MOMSN=1788, Thu Apr 25 00:02:32 2024, 02 - Transfer OK Bad Location, bytes=107, Lat: 35.96997 Lon: -74.91998 CEPradius: 684, b i n a r y
+MOMSN=1789, Fri Apr 26 00:02:27 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 5, b i n a r y
+MOMSN=1790, Sat Apr 27 00:03:42 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1791, Sun Apr 28 00:09:21 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1792, Mon Apr 29 00:08:39 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 5, b i n a r y
+MOMSN=1793, Tue Apr 30 00:02:40 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 5, b i n a r y
+MOMSN=1794, Wed May  1 00:03:31 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1795, Thu May  2 00:08:57 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1796, Fri May  3 00:03:01 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1797, Sat May  4 00:03:57 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1798, Sun May  5 00:09:43 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1799, Mon May  6 00:02:32 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1800, Tue May  7 00:03:53 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 2, b i n a r y
+MOMSN=1801, Wed May  8 00:03:32 2024, 00 - Transfer OK, bytes=107, Lat: 35.92177 Lon: -75.11428 CEPradius: 6, b i n a r y
+MOMSN=1802, Thu May  9 00:02:18 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1803, Fri May 10 00:02:31 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 3, b i n a r y
+MOMSN=1804, Sat May 11 00:04:00 2024, 00 - Transfer OK, bytes=107, Lat: 35.93677 Lon: -75.06001 CEPradius: 7, b i n a r y
+MOMSN=1805, Sun May 12 00:03:52 2024, 00 - Transfer OK, bytes=96, Lat: 35.97686 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1806, Mon May 13 00:03:46 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1807, Tue May 14 00:03:56 2024, 00 - Transfer OK, bytes=118, Lat: 35.97142 Lon: -75.10288 CEPradius: 15, b i n a r y
+MOMSN=1808, Wed May 15 00:02:20 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1809, Thu May 16 00:02:11 2024, 00 - Transfer OK, bytes=107, Lat: 35.93677 Lon: -75.06001 CEPradius: 26, b i n a r y
+MOMSN=1810, Fri May 17 00:02:12 2024, 00 - Transfer OK, bytes=107, Lat: 35.96997 Lon: -74.91998 CEPradius: 45, b i n a r y
+MOMSN=1811, Sat May 18 00:02:24 2024, 00 - Transfer OK, bytes=107, Lat: 35.96597 Lon: -75.06001 CEPradius: 8, b i n a r y
+MOMSN=1812, Sun May 19 00:02:33 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 7, b i n a r y
+MOMSN=1813, Mon May 20 00:16:06 2024, 00 - Transfer OK, bytes=96, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1814, Mon May 20 00:27:46 2024, 00 - Transfer OK, bytes=93, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, 05200027,I,V=15.27/15.03/13.83 T=0.0 SNR=40 nSats=5 GPS:405/58/53623 Ird:99/108/5019 RSSI=5
+
+MOMSN=1815, Mon May 20 00:33:41 2024, 00 - Transfer OK, bytes=30, Lat: 35.94222 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1816, Tue May 21 00:02:34 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 2, b i n a r y
+MOMSN=1817, Wed May 22 00:02:35 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1818, Thu May 23 00:02:17 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 7, b i n a r y
+MOMSN=1819, Fri May 24 00:03:10 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1820, Sat May 25 00:02:38 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1821, Sun May 26 00:03:18 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1822, Mon May 27 00:03:16 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1823, Tue May 28 00:04:51 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1824, Wed May 29 00:02:44 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 3, b i n a r y
+MOMSN=1825, Thu May 30 00:02:15 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1826, Fri May 31 00:03:37 2024, 00 - Transfer OK, bytes=96, Lat: 35.97686 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1827, Sat Jun  1 00:02:35 2024, 00 - Transfer OK, bytes=118, Lat: 35.92720 Lon: -75.15713 CEPradius: 2, b i n a r y
+MOMSN=1828, Sun Jun  2 00:03:24 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 6, b i n a r y
+MOMSN=1829, Mon Jun  3 00:08:40 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1830, Tue Jun  4 00:03:34 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1831, Wed Jun  5 00:08:38 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1832, Thu Jun  6 00:02:36 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1833, Fri Jun  7 00:03:10 2024, 00 - Transfer OK, bytes=107, Lat: 35.96181 Lon: -75.20000 CEPradius: 6, b i n a r y
+MOMSN=1834, Sat Jun  8 00:04:11 2024, 02 - Transfer OK Bad Location, bytes=107, Lat: 35.97349 Lon: -75.46873 CEPradius: 108, b i n a r y
+MOMSN=1835, Sun Jun  9 00:03:38 2024, 02 - Transfer OK Bad Location, bytes=107, Lat: 35.96817 Lon: -75.42578 CEPradius: 684, b i n a r y
+MOMSN=1836, Mon Jun 10 00:02:35 2024, 02 - Transfer OK Bad Location, bytes=107, Lat: 35.92020 Lon: -77.61079 CEPradius: 229, b i n a r y
+MOMSN=1837, Tue Jun 11 00:03:39 2024, 00 - Transfer OK, bytes=96, Lat: 35.96597 Lon: -75.06001 CEPradius: 10, b i n a r y
+MOMSN=1838, Wed Jun 12 00:03:03 2024, 00 - Transfer OK, bytes=118, Lat: 35.97686 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1839, Thu Jun 13 00:03:34 2024, 00 - Transfer OK, bytes=96, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1840, Fri Jun 14 00:03:55 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 6, b i n a r y
+MOMSN=1841, Sat Jun 15 00:04:45 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 6, b i n a r y
+MOMSN=1842, Sun Jun 16 00:03:39 2024, 00 - Transfer OK, bytes=107, Lat: 35.94766 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1843, Mon Jun 17 00:02:41 2024, 00 - Transfer OK, bytes=118, Lat: 35.97686 Lon: -75.14576 CEPradius: 3, b i n a r y
+MOMSN=1844, Tue Jun 18 00:03:19 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1845, Wed Jun 19 00:03:38 2024, 00 - Transfer OK, bytes=96, Lat: 35.97142 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1846, Thu Jun 20 00:02:45 2024, 00 - Transfer OK, bytes=118, Lat: 35.92720 Lon: -75.15713 CEPradius: 3, b i n a r y
+MOMSN=1847, Fri Jun 21 00:03:38 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1848, Sat Jun 22 00:10:04 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1849, Sun Jun 23 00:09:22 2024, 00 - Transfer OK, bytes=107, Lat: 35.92177 Lon: -75.11428 CEPradius: 5, b i n a r y
+MOMSN=1850, Mon Jun 24 00:03:36 2024, 00 - Transfer OK, bytes=96, Lat: 35.94222 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1851, Tue Jun 25 00:03:09 2024, 00 - Transfer OK, bytes=118, Lat: 35.97142 Lon: -75.10288 CEPradius: 5, b i n a r y
+MOMSN=1852, Wed Jun 26 00:02:34 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1853, Thu Jun 27 00:03:32 2024, 00 - Transfer OK, bytes=96, Lat: 35.94222 Lon: -75.10288 CEPradius: 7, b i n a r y
+MOMSN=1854, Fri Jun 28 00:02:07 2024, 00 - Transfer OK, bytes=118, Lat: 35.92720 Lon: -75.15713 CEPradius: 4, b i n a r y
+MOMSN=1855, Sat Jun 29 00:02:33 2024, 00 - Transfer OK, bytes=107, Lat: 35.93261 Lon: -75.20000 CEPradius: 4, b i n a r y
+MOMSN=1856, Sun Jun 30 00:02:38 2024, 02 - Transfer OK Bad Location, bytes=107, Lat: 35.97533 Lon: -74.45689 CEPradius: 132, b i n a r y
+MOMSN=1857, Mon Jul  1 00:02:34 2024, 02 - Transfer OK Bad Location, bytes=107, Lat: 35.98100 Lon: -74.49965 CEPradius: 86, b i n a r y
+MOMSN=1858, Tue Jul  2 00:03:02 2024, 00 - Transfer OK, bytes=107, Lat: 35.96597 Lon: -75.06001 CEPradius: 6, b i n a r y
+MOMSN=1859, Wed Jul  3 00:03:39 2024, 00 - Transfer OK, bytes=96, Lat: 35.92720 Lon: -75.15713 CEPradius: 9, b i n a r y
+MOMSN=1860, Thu Jul  4 00:10:11 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 2, b i n a r y
+MOMSN=1861, Fri Jul  5 00:02:34 2024, 00 - Transfer OK, bytes=118, Lat: 35.97142 Lon: -75.10288 CEPradius: 2, b i n a r y
+MOMSN=1862, Sat Jul  6 00:09:41 2024, 00 - Transfer OK, bytes=107, Lat: 35.92177 Lon: -75.11428 CEPradius: 4, b i n a r y
+MOMSN=1863, Sun Jul  7 00:03:49 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 6, b i n a r y
+MOMSN=1864, Mon Jul  8 00:09:46 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 5, b i n a r y
+MOMSN=1865, Tue Jul  9 00:09:27 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 4, b i n a r y
+MOMSN=1866, Wed Jul 10 00:08:47 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1867, Thu Jul 11 00:02:28 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1868, Fri Jul 12 00:09:26 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 9, b i n a r y
+MOMSN=1869, Sat Jul 13 00:03:36 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 4, b i n a r y
+MOMSN=1870, Sun Jul 14 00:03:28 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1871, Mon Jul 15 00:02:29 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 10, b i n a r y
+MOMSN=1872, Tue Jul 16 00:02:42 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 4, b i n a r y
+MOMSN=1873, Wed Jul 17 00:02:52 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 3, b i n a r y
+MOMSN=1874, Thu Jul 18 00:03:45 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 15, b i n a r y
+MOMSN=1875, Fri Jul 19 00:02:30 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 7, b i n a r y
+MOMSN=1876, Sat Jul 20 00:02:10 2024, 02 - Transfer OK Bad Location, bytes=107, Lat: 35.94077 Lon: -74.91998 CEPradius: 73, b i n a r y
+MOMSN=1877, Sun Jul 21 00:03:15 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 23, b i n a r y
+MOMSN=1878, Mon Jul 22 00:02:55 2024, 02 - Transfer OK Bad Location, bytes=107, Lat: 35.98015 Lon: -77.01869 CEPradius: 176, b i n a r y
+MOMSN=1879, Tue Jul 23 00:02:36 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 3, b i n a r y
+MOMSN=1880, Wed Jul 24 00:02:27 2024, 00 - Transfer OK, bytes=107, Lat: 35.91755 Lon: -75.25418 CEPradius: 17, b i n a r y
+MOMSN=1881, Thu Jul 25 00:02:26 2024, 00 - Transfer OK, bytes=107, Lat: 35.92177 Lon: -75.11428 CEPradius: 3, b i n a r y
+MOMSN=1882, Fri Jul 26 00:09:53 2024, 00 - Transfer OK, bytes=107, Lat: 35.97142 Lon: -75.10288 CEPradius: 5, b i n a r y
+MOMSN=1883, Sat Jul 27 00:03:36 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 6, b i n a r y
+MOMSN=1884, Sun Jul 28 00:03:39 2024, 00 - Transfer OK, bytes=96, Lat: 35.92177 Lon: -75.11428 CEPradius: 4, b i n a r y
+MOMSN=1885, Mon Jul 29 00:03:34 2024, 00 - Transfer OK, bytes=107, Lat: 35.94222 Lon: -75.10288 CEPradius: 2, b i n a r y
+MOMSN=1886, Tue Jul 30 00:03:55 2024, 00 - Transfer OK, bytes=107, Lat: 35.88833 Lon: -75.25418 CEPradius: 9, b i n a r y
+MOMSN=1887, Wed Jul 31 00:04:02 2024, 00 - Transfer OK, bytes=107, Lat: 35.94766 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1888, Thu Aug  1 00:02:42 2024, 00 - Transfer OK, bytes=118, Lat: 35.92720 Lon: -75.15713 CEPradius: 4, b i n a r y
+MOMSN=1889, Fri Aug  2 00:03:51 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 3, b i n a r y
+MOMSN=1890, Sat Aug  3 00:03:43 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 4, b i n a r y
+MOMSN=1891, Sun Aug  4 00:03:36 2024, 00 - Transfer OK, bytes=96, Lat: 35.92177 Lon: -75.11428 CEPradius: 5, b i n a r y
+MOMSN=1892, Mon Aug  5 00:03:43 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 2, b i n a r y
+MOMSN=1893, Tue Aug  6 00:03:28 2024, 00 - Transfer OK, bytes=107, Lat: 35.97686 Lon: -75.14576 CEPradius: 5, b i n a r y
+MOMSN=1894, Wed Aug  7 00:02:44 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 5, b i n a r y
+MOMSN=1895, Thu Aug  8 00:03:00 2024, 00 - Transfer OK, bytes=107, Lat: 35.92720 Lon: -75.15713 CEPradius: 2, b i n a r y
+MOMSN=1896, Thu Aug  8 00:03:10 2024, 00 - Transfer OK, bytes=51, Lat: 35.92720 Lon: -75.15713 CEPradius: 2, Msgs0:0
+ Msgs1:10
+ Msgs2:10
+ Msgs3:10
+ Msgs4:10
+ 
+
+MOMSN=1897, Fri Aug  9 00:09:26 2024, 00 - Transfer OK, bytes=49, Lat: 35.92177 Lon: -75.11428 CEPradius: 12, 08090002,P,OK 35.95014 -75.11986 4 121d 42 1569
+
+MOMSN=1898, Sat Aug 10 00:03:03 2024, 00 - Transfer OK, bytes=50, Lat: 35.91633 Lon: -75.07144 CEPradius: 10, 08100002,P,OK 35.95021 -75.11977 13 122d 43 1584
+
+MOMSN=1899, Sun Aug 11 00:02:29 2024, 00 - Transfer OK, bytes=50, Lat: 35.93261 Lon: -75.20000 CEPradius: 9, 08110001,P,OK 35.95020 -75.11957 26 123d 42 1587
+
+MOMSN=1900, Mon Aug 12 00:03:34 2024, 00 - Transfer OK, bytes=50, Lat: 35.92720 Lon: -75.15713 CEPradius: 5, 08112101,P,OK 35.95012 -75.11943 37 124d 43 1584
+
+MOMSN=1901, Tue Aug 13 00:03:09 2024, 02 - Transfer OK Bad Location, bytes=50, Lat: 35.97961 Lon: -76.06063 CEPradius: 112, 08130002,P,OK 35.94967 -75.11963 52 125d 40 1581
+

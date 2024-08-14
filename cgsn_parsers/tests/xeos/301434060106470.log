@@ -1,0 +1,174 @@
+MOMSN=26, Mon Mar 25 12:46:37 2024, 00 - Transfer OK, bytes=106,  CEPradius: , b i n a r y
+MOMSN=27, Mon Mar 25 12:46:45 2024, 00 - Transfer OK, bytes=18,  CEPradius: , UnlockCode=15453
+
+MOMSN=28, Mon Mar 25 12:46:55 2024, 00 - Transfer OK, bytes=23,  CEPradius: , WatchCircle: DISABLED
+
+MOMSN=29, Mon Mar 25 12:47:07 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=30, Mon Mar 25 12:50:55 2024, 02 - Transfer OK Bad Location, bytes=24,  CEPradius: , b i n a r y
+MOMSN=31, Mon Mar 25 13:00:13 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=32, Mon Mar 25 13:10:20 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=33, Mon Mar 25 13:20:26 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=34, Mon Mar 25 13:30:14 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=35, Mon Mar 25 13:40:12 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=36, Mon Mar 25 13:46:13 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=37, Mon Mar 25 14:25:10 2024, 00 - Transfer OK, bytes=106,  CEPradius: , b i n a r y
+MOMSN=38, Tue Apr 16 11:44:05 2024, 00 - Transfer OK, bytes=106,  CEPradius: , b i n a r y
+MOMSN=39, Tue Apr 16 11:44:49 2024, 00 - Transfer OK, bytes=18,  CEPradius: , UnlockCode=15453
+
+MOMSN=40, Tue Apr 16 11:44:56 2024, 00 - Transfer OK, bytes=23,  CEPradius: , WatchCircle: DISABLED
+
+MOMSN=41, Tue Apr 16 11:47:28 2024, 00 - Transfer OK, bytes=17,  CEPradius: , b i n a r y
+MOMSN=42, Tue Apr 16 11:56:14 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=43, Tue Apr 16 12:00:16 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=44, Tue Apr 16 12:10:14 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=45, Tue Apr 16 12:20:15 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=46, Tue Apr 16 12:30:38 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=47, Tue Apr 16 12:36:15 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=48, Wed Apr 17 00:01:38 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=49, Wed Apr 17 00:01:49 2024, 00 - Transfer OK, bytes=88,  CEPradius: , WatchCircle: ENABLED, Latitude: 35.950085999, Longitude: -74.833544000, Radius(m): 500
+
+MOMSN=50, Thu Apr 18 00:01:37 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=51, Thu Apr 18 00:01:50 2024, 00 - Transfer OK, bytes=17,  CEPradius: , b i n a r y
+MOMSN=52, Thu Apr 18 00:10:39 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=53, Thu Apr 18 00:20:12 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=54, Thu Apr 18 00:30:13 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=55, Thu Apr 18 00:40:08 2024, 02 - Transfer OK Bad Location, bytes=35,  CEPradius: , b i n a r y
+MOMSN=56, Thu Apr 18 00:50:16 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=57, Thu Apr 18 01:00:28 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=58, Thu Apr 18 01:00:44 2024, 00 - Transfer OK, bytes=88,  CEPradius: , WatchCircle: ENABLED, Latitude: 35.954642999, Longitude: -74.845888000, Radius(m): 500
+
+MOMSN=59, Thu Apr 18 01:10:23 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=60, Thu Apr 18 01:20:08 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=61, Thu Apr 18 01:30:08 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=62, Thu Apr 18 01:40:10 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=63, Thu Apr 18 01:50:10 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=64, Thu Apr 18 02:00:11 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=65, Thu Apr 18 02:05:17 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=66, Fri Apr 19 00:02:01 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=67, Sat Apr 20 00:01:07 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=68, Sun Apr 21 00:01:06 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=69, Mon Apr 22 00:01:29 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=70, Tue Apr 23 00:01:32 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=71, Wed Apr 24 00:00:46 2024, 02 - Transfer OK Bad Location, bytes=24,  CEPradius: , b i n a r y
+MOMSN=72, Thu Apr 25 00:01:06 2024, 02 - Transfer OK Bad Location, bytes=24,  CEPradius: , b i n a r y
+MOMSN=73, Fri Apr 26 00:01:08 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=74, Sat Apr 27 00:01:03 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=75, Sun Apr 28 00:00:39 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=76, Mon Apr 29 00:01:28 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=77, Tue Apr 30 00:01:35 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=78, Wed May  1 00:01:20 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=79, Thu May  2 00:00:42 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=80, Fri May  3 00:00:39 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=81, Sat May  4 00:00:58 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=82, Sun May  5 00:01:02 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=83, Mon May  6 00:01:18 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=84, Tue May  7 00:01:18 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=85, Wed May  8 00:01:25 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=86, Thu May  9 00:01:43 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=87, Fri May 10 00:03:32 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=88, Fri May 10 00:03:43 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=89, Fri May 10 00:03:57 2024, 00 - Transfer OK, bytes=17,  CEPradius: , b i n a r y
+MOMSN=90, Fri May 10 00:11:09 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=91, Fri May 10 00:20:12 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=92, Fri May 10 00:30:13 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=93, Fri May 10 00:40:12 2024, 02 - Transfer OK Bad Location, bytes=35,  CEPradius: , b i n a r y
+MOMSN=94, Fri May 10 00:50:22 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=95, Fri May 10 01:00:13 2024, 00 - Transfer OK, bytes=35,  CEPradius: , b i n a r y
+MOMSN=96, Fri May 10 01:04:18 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=97, Sat May 11 00:00:56 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=98, Sun May 12 00:01:28 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=99, Mon May 13 00:01:09 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=100, Tue May 14 00:01:09 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=101, Wed May 15 00:01:25 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=102, Thu May 16 00:00:40 2024, 02 - Transfer OK Bad Location, bytes=24,  CEPradius: , b i n a r y
+MOMSN=103, Fri May 17 00:03:08 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=104, Sat May 18 00:03:06 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=105, Sun May 19 00:01:15 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=106, Mon May 20 00:02:28 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=107, Tue May 21 00:00:59 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=108, Wed May 22 00:00:43 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=109, Thu May 23 00:00:40 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=110, Fri May 24 00:00:41 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=111, Sat May 25 00:00:51 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=112, Sun May 26 00:00:57 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=113, Mon May 27 00:00:36 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=114, Tue May 28 00:02:24 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=115, Wed May 29 00:00:59 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=116, Thu May 30 00:00:55 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=117, Fri May 31 00:01:10 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=118, Sat Jun  1 00:01:04 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=119, Sun Jun  2 00:00:56 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=120, Mon Jun  3 00:01:16 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=121, Tue Jun  4 00:00:57 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=122, Wed Jun  5 00:00:40 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=123, Thu Jun  6 00:02:00 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=124, Fri Jun  7 00:01:40 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=125, Sat Jun  8 00:01:15 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=126, Sun Jun  9 00:00:57 2024, 02 - Transfer OK Bad Location, bytes=24,  CEPradius: , b i n a r y
+MOMSN=127, Mon Jun 10 00:01:34 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=128, Tue Jun 11 00:00:40 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=129, Wed Jun 12 00:01:01 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=130, Thu Jun 13 00:01:14 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=131, Fri Jun 14 00:00:39 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=132, Sat Jun 15 00:00:41 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=133, Sun Jun 16 00:01:27 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=134, Mon Jun 17 00:01:40 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=135, Tue Jun 18 00:01:25 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=136, Wed Jun 19 00:01:30 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=137, Thu Jun 20 00:01:07 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=138, Fri Jun 21 00:01:09 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=139, Sat Jun 22 00:00:39 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=140, Sun Jun 23 00:01:07 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=141, Mon Jun 24 00:02:27 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=142, Tue Jun 25 00:01:02 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=143, Wed Jun 26 00:01:28 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=144, Thu Jun 27 00:02:05 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=145, Fri Jun 28 00:01:01 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=146, Sat Jun 29 00:00:58 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=147, Sun Jun 30 00:01:29 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=148, Mon Jul  1 00:01:41 2024, 02 - Transfer OK Bad Location, bytes=24,  CEPradius: , b i n a r y
+MOMSN=149, Tue Jul  2 00:03:14 2024, 00 - Transfer OK, bytes=17,  CEPradius: , b i n a r y
+MOMSN=150, Wed Jul  3 00:01:30 2024, 02 - Transfer OK Bad Location, bytes=24,  CEPradius: , b i n a r y
+MOMSN=151, Thu Jul  4 00:00:50 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=152, Fri Jul  5 00:00:42 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=153, Sat Jul  6 00:01:06 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=154, Sun Jul  7 00:00:42 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=155, Mon Jul  8 00:02:04 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=156, Tue Jul  9 00:00:40 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=157, Wed Jul 10 00:01:04 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=158, Thu Jul 11 00:01:40 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=159, Fri Jul 12 00:02:27 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=160, Sat Jul 13 00:02:02 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=161, Sun Jul 14 00:01:09 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=162, Mon Jul 15 00:00:41 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=163, Tue Jul 16 00:01:52 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=164, Wed Jul 17 00:01:05 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=165, Thu Jul 18 00:01:14 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=166, Fri Jul 19 00:01:26 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=167, Sat Jul 20 00:00:41 2024, 02 - Transfer OK Bad Location, bytes=24,  CEPradius: , b i n a r y
+MOMSN=168, Sun Jul 21 00:01:04 2024, 02 - Transfer OK Bad Location, bytes=24,  CEPradius: , b i n a r y
+MOMSN=169, Mon Jul 22 00:00:39 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=170, Tue Jul 23 00:01:04 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=171, Wed Jul 24 00:01:06 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=172, Thu Jul 25 00:02:00 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=173, Fri Jul 26 00:00:58 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=174, Sat Jul 27 00:01:26 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=175, Sun Jul 28 00:01:49 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=176, Mon Jul 29 00:01:09 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=177, Tue Jul 30 00:00:45 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=178, Wed Jul 31 00:00:57 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=179, Thu Aug  1 00:00:52 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=180, Fri Aug  2 00:00:38 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=181, Sat Aug  3 00:01:52 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=182, Sun Aug  4 00:01:35 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=183, Mon Aug  5 00:03:07 2024, 00 - Transfer OK, bytes=17,  CEPradius: , b i n a r y
+MOMSN=184, Tue Aug  6 00:02:30 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=185, Wed Aug  7 00:01:52 2024, 00 - Transfer OK, bytes=24,  CEPradius: , b i n a r y
+MOMSN=186, Wed Aug  7 00:02:01 2024, 00 - Transfer OK, bytes=25,  CEPradius: , GPS Message Type: ASCII
+
+MOMSN=187, Thu Aug  8 00:01:07 2024, 00 - Transfer OK, bytes=92,  CEPradius: , AG, 16.38, 15.18, 0, 1723075261, 35.9546483, -74.8459966, 7.0, 44, 3, 312.1, 11.30, 61, 17.3
+MOMSN=188, Fri Aug  9 00:02:36 2024, 00 - Transfer OK, bytes=94,  CEPradius: , AG, 16.44, 15.24, 0, 1723161730, 35.9546216, -74.8459299, 44.0, 44, 5, 149.6, 14.40, 132, 92.7
+MOMSN=189, Sat Aug 10 00:03:10 2024, 00 - Transfer OK, bytes=17,  CEPradius: , b i n a r y
+MOMSN=190, Sun Aug 11 00:01:20 2024, 02 - Transfer OK Bad Location, bytes=91,  CEPradius: , AG, 16.44, 15.24, 0, 1723334462, 35.9547415, -74.8459249, 5.0, 45, 3, 149.6, 9.09, 64, 33.5
+MOMSN=191, Mon Aug 12 00:01:12 2024, 00 - Transfer OK, bytes=91,  CEPradius: , AG, 16.44, 15.24, 0, 1723420862, 35.9546683, -74.8460050, 5.0, 44, 5, 319.2, 9.40, 63, 50.1
+MOMSN=192, Tue Aug 13 00:01:06 2024, 02 - Transfer OK Bad Location, bytes=90,  CEPradius: , AG, 16.44, 15.27, 0, 1723507256, 35.9546933, -74.8458866, 8.0, 48, 3, 57.4, 8.50, 57, 74.2

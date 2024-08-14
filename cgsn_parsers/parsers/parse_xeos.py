@@ -5,6 +5,7 @@
 @file cgsn_parsers/parsers/parse_xeos.py
 @author Christopher Wingard
 @brief Parses the Xeos beacon data emailed to the shore server
+Note that the format has changed for Rover-X and Apollo-X beacons.
 """
 import json
 import os
@@ -17,14 +18,25 @@ from calendar import timegm
 from cgsn_parsers.parsers.common import ParserCommon, FilePointer
 from cgsn_parsers.parsers.common import inputs, FLOAT, INTEGER, NEWLINE
 
-# Regex pattern for the Xeos beacon data
-PATTERN = (
+# Regex pattern for legacy Xeos beacon data (kilo, melo)
+LEGACY_PATTERN = (
     r'MOMSN=' + INTEGER + r',\s(.+),\s' + INTEGER + r'\s-\sTransfer\s(.*),\s' +
     r'bytes=' + INTEGER + r',\sLat:\s' + FLOAT + r'\sLon:\s' + FLOAT + r'\sCEPradius:\s' + INTEGER +
     r',\s(\d{8}),P,(\s|\w+)\s*' + FLOAT + r'\s' + FLOAT + r'\s' + INTEGER + r'\s' +
     r'(?:(\d+[a-z]{1})\s([+-]?[0-9]+)\s([+-]?[0-9]+)|([+-]?[0-9]+))' + NEWLINE
 )
-REGEX = re.compile(PATTERN, re.DOTALL)
+LEGACY_REGEX = re.compile(LEGACY_PATTERN, re.DOTALL)
+
+# Regex pattern for the Rover-X and Apollo-X Xeos beacon data
+X_POS_PATTERN = (
+    r'MOMSN=' + INTEGER + r',\s(.+),\s' + INTEGER + r'\s-\sTransfer\s(.*),\s' +
+    r'bytes=' + INTEGER + r',\s+CEPradius:\s+,\s' + 
+    r'AG,\s' + FLOAT + r',\s' + FLOAT + r',\s' + INTEGER + r',\s' + INTEGER + r',\s' +
+    FLOAT + r',\s' + FLOAT + r',\s' + FLOAT + r',\s' + INTEGER + r',\s' +
+    INTEGER + r',\s' + FLOAT + r',\s' + FLOAT + r',\s' + INTEGER + r',\s' + 
+    FLOAT + r'\s*' + NEWLINE
+)
+X_POS_REGEX = re.compile(X_POS_PATTERN, re.DOTALL)
 
 # Set an error message string for use when testing the parser switch.
 SWITCH_ERROR = 'The subsurface beacon switch must be set to either 0 (surface) or 1 (subsurface).'
@@ -46,7 +58,16 @@ _parameter_names_xeos = [
         'distance_from_center',
         'time_in_circle',
         'signal_strength',
-        'battery_voltage'
+        'battery_voltage',
+        # X beacon specific fields
+        'loaded_voltage',
+        'sched_timer',
+        'altitude',
+        'num_satellites',
+        'bearing',
+        'measurement_speed',
+        'time_to_fix',
+        'highest_hdop'
     ]
 
 
@@ -78,11 +99,64 @@ class Parser(ParserCommon):
         dictionary object created using the Bunch class.
         """
         for line in self.raw:
-            match = REGEX.match(line)
+            match = LEGACY_REGEX.match(line)
             if match:
-                self._build_parsed_values(match)
+                self._build_legacy_parsed_values(match)
+                continue
 
-    def _build_parsed_values(self, match):
+            match = X_POS_REGEX.match(line)
+            if match:
+                self._build_xpos_parsed_values(match)
+                continue
+
+
+    def _build_xpos_parsed_values(self, match):
+        """
+        Extract the data from the relevant regex groups and assign to elements
+        of the data dictionary for the Rover-X and Apollo-X format lines.
+        """
+
+        # Unlike legacy, use xeos time for time field
+        self.data.time.append(int(match.group(9)))
+
+        # Assign the remaining Xeos beacon data to the named parameters
+        self.data.momsn.append(int(match.group(1)))
+        self.data.date_time_email.append(str(match.group(2)))
+        self.data.status_code.append(int(match.group(3)))
+        if match.group(4) == 'OK':
+            # if the transfer was OK, and the fix isn't marked as bad, then append a 1 to the list
+            self.data.transfer_status.append(1)
+        else:
+            # otherwise, append a 0 to the list
+            self.data.transfer_status.append(0)
+        self.data.transfer_bytes.append(int(match.group(5)))
+
+        # X beacon message assignments
+        self.data.battery_voltage.append(float(match.group(6)))
+        self.data.loaded_voltage.append(float(match.group(7)))
+        self.data.sched_timer.append(int(match.group(8)))
+        self.data.date_time_xeos.append(int(match.group(9)))
+        self.data.latitude.append(float(match.group(10)))
+        self.data.longitude.append(float(match.group(11)))
+        self.data.altitude.append(float(match.group(12)))
+        self.data.signal_strength.append(int(match.group(13)))
+        self.data.num_satellites.append( int(match.group(14)))
+        self.data.bearing.append(float(match.group(15)))
+        self.data.measurement_speed.append(float(match.group(16)))
+        self.data.time_to_fix.append(int(match.group(17)))
+        self.data.highest_hdop.append(float(match.group(18)))
+
+        # Legacy fields unused in x format messages
+        self.data.estimated_latitude.append(0.0)
+        self.data.estimated_longitude.append(0.0)
+        self.data.cep_radius.append(0)
+        self.data.subsurface_beacon.append(self.surface)
+        self.data.watch_circle_status.append(0)
+        self.data.distance_from_center.append(0)
+        self.data.time_in_circle.append(0)
+ 
+
+    def _build_legacy_parsed_values(self, match):
         """
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
@@ -136,6 +210,16 @@ class Parser(ParserCommon):
             self.data.time_in_circle.append(0)
             self.data.signal_strength.append(int(match.group(13)))
             self.data.battery_voltage.append(float(match.group(17)) / 100.0)
+
+        # x beacon data, unused on legacy beacons
+        self.data.loaded_voltage.append(0.0)
+        self.data.sched_timer.append(0)
+        self.data.altitude.append(0.0)
+        self.data.num_satellites.append(0)
+        self.data.bearing.append(0.0)
+        self.data.measurement_speed.append(0.0)
+        self.data.time_to_fix.append(0)
+        self.data.highest_hdop.append(0.0)
 
 
 def main(argv=None):
