@@ -28,15 +28,17 @@ LEGACY_PATTERN = (
 LEGACY_REGEX = re.compile(LEGACY_PATTERN, re.DOTALL)
 
 # Regex pattern for the Rover-X and Apollo-X Xeos beacon data
+# Note: Lat, Lon and CEPRadius values optional (depending on Iridium setup)
 X_POS_PATTERN = (
-    r'MOMSN=' + INTEGER + r',\s(.+),\s' + INTEGER + r'\s-\sTransfer\s(.*),\s' +
-    r'bytes=' + INTEGER + r',\s+CEPradius:\s+,\s' + 
+    r'MOMSN=' + INTEGER + r',\s(.+?),\s' + INTEGER + r'\s-\sTransfer\s(.*?),\s' +
+    r'bytes=' + INTEGER + r',\s(Lat:\s' + FLOAT + r'\sLon:\s' + FLOAT + r')?\sCEPradius:\s' + INTEGER + '?,\s' +
     r'AG,\s' + FLOAT + r',\s' + FLOAT + r',\s' + INTEGER + r',\s' + INTEGER + r',\s' +
     FLOAT + r',\s' + FLOAT + r',\s' + FLOAT + r',\s' + INTEGER + r',\s' +
     INTEGER + r',\s' + FLOAT + r',\s' + FLOAT + r',\s' + INTEGER + r',\s' + 
     FLOAT + r'\s*' + NEWLINE
 )
-X_POS_REGEX = re.compile(X_POS_PATTERN, re.DOTALL)
+#X_POS_REGEX = re.compile(X_POS_PATTERN, re.DOTALL)
+X_POS_REGEX = re.compile(X_POS_PATTERN) # Note: re.DOTALL breaks match with optional groups   Why?
 
 # Set an error message string for use when testing the parser switch.
 SWITCH_ERROR = 'The subsurface beacon switch must be set to either 0 (surface) or 1 (subsurface).'
@@ -117,7 +119,7 @@ class Parser(ParserCommon):
         """
 
         # Unlike legacy, use xeos time for time field
-        self.data.time.append(int(match.group(9)))
+        self.data.time.append(int(match.group(13)))
 
         # Assign the remaining Xeos beacon data to the named parameters
         self.data.momsn.append(int(match.group(1)))
@@ -131,27 +133,45 @@ class Parser(ParserCommon):
             self.data.transfer_status.append(0)
         self.data.transfer_bytes.append(int(match.group(5)))
 
+        # Presence of estimated Lat/Lon is optional
+        if match.group(6) is not None:
+            self.data.estimated_latitude.append(float(match.group(7)))
+            self.data.estimated_longitude.append(float(match.group(8)))
+        else:
+            self.data.estimated_latitude.append(0.0)
+            self.data.estimated_longitude.append(0.0)
+
+        # Presence of CEPradius value is optional
+        if match.group(9) is not None:
+            self.data.cep_radius.append(int(match.group(9)))
+        else:
+            self.data.cep_radius.append(0)
+
         # X beacon message assignments
-        self.data.battery_voltage.append(float(match.group(6)))
-        self.data.loaded_voltage.append(float(match.group(7)))
-        self.data.sched_timer.append(int(match.group(8)))
-        self.data.date_time_xeos.append(int(match.group(9)))
-        self.data.latitude.append(float(match.group(10)))
-        self.data.longitude.append(float(match.group(11)))
-        self.data.altitude.append(float(match.group(12)))
-        self.data.signal_strength.append(int(match.group(13)))
-        self.data.num_satellites.append( int(match.group(14)))
-        self.data.bearing.append(float(match.group(15)))
-        self.data.measurement_speed.append(float(match.group(16)))
-        self.data.time_to_fix.append(int(match.group(17)))
-        self.data.highest_hdop.append(float(match.group(18)))
+        self.data.battery_voltage.append(float(match.group(10)))
+        self.data.loaded_voltage.append(float(match.group(11)))
+        self.data.sched_timer.append(int(match.group(12)))
+        self.data.date_time_xeos.append(int(match.group(13)))
+        self.data.latitude.append(float(match.group(14)))
+        self.data.longitude.append(float(match.group(15)))
+        self.data.altitude.append(float(match.group(16)))
+        self.data.signal_strength.append(int(match.group(17)))
+        self.data.num_satellites.append( int(match.group(18)))
+        self.data.bearing.append(float(match.group(19)))
+        self.data.measurement_speed.append(float(match.group(20)))
+        self.data.time_to_fix.append(int(match.group(21)))
+        self.data.highest_hdop.append(float(match.group(22)))
+
+        self.data.subsurface_beacon.append(self.surface)
 
         # Legacy fields unused in x format messages
-        self.data.estimated_latitude.append(0.0)
-        self.data.estimated_longitude.append(0.0)
-        self.data.cep_radius.append(0)
-        self.data.subsurface_beacon.append(self.surface)
-        self.data.watch_circle_status.append(0)
+
+        # Per discussion w/ C. Wingard; use sched_timer to flag watch circle alarm
+        if match.group(12) == '5':
+            self.data.watch_circle_status.append(2) # alarm
+        else:
+            self.data.watch_circle_status.append(0)
+
         self.data.distance_from_center.append(0)
         self.data.time_in_circle.append(0)
  

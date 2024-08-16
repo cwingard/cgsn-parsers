@@ -171,4 +171,4 @@ MOMSN=188, Fri Aug  9 00:02:36 2024, 00 - Transfer OK, bytes=94,  CEPradius: , A
 MOMSN=189, Sat Aug 10 00:03:10 2024, 00 - Transfer OK, bytes=17,  CEPradius: , b i n a r y
 MOMSN=190, Sun Aug 11 00:01:20 2024, 02 - Transfer OK Bad Location, bytes=91,  CEPradius: , AG, 16.44, 15.24, 0, 1723334462, 35.9547415, -74.8459249, 5.0, 45, 3, 149.6, 9.09, 64, 33.5
 MOMSN=191, Mon Aug 12 00:01:12 2024, 00 - Transfer OK, bytes=91,  CEPradius: , AG, 16.44, 15.24, 0, 1723420862, 35.9546683, -74.8460050, 5.0, 44, 5, 319.2, 9.40, 63, 50.1
-MOMSN=192, Tue Aug 13 00:01:06 2024, 02 - Transfer OK Bad Location, bytes=90,  CEPradius: , AG, 16.44, 15.27, 0, 1723507256, 35.9546933, -74.8458866, 8.0, 48, 3, 57.4, 8.50, 57, 74.2
+MOMSN=192, Tue Aug 13 00:01:06 2024, 02 - Transfer OK Bad Location, bytes=90,  CEPradius: , AG, 16.44, 15.27, 5, 1723507256, 35.9546933, -74.8458866, 8.0, 48, 3, 57.4, 8.50, 57, 74.2
