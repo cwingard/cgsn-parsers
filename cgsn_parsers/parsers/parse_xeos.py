@@ -55,8 +55,8 @@ _parameter_names_xeos = [
         'date_time_xeos',
         'watch_circle_status',
         'subsurface_beacon',
-        'latitude',
-        'longitude',
+        'latitude_xeos',
+        'longitude_xeos',
         'distance_from_center',
         'time_in_circle',
         'signal_strength',
@@ -152,8 +152,8 @@ class Parser(ParserCommon):
         self.data.loaded_voltage.append(float(match.group(11)))
         self.data.sched_timer.append(int(match.group(12)))
         self.data.date_time_xeos.append(int(match.group(13)))
-        self.data.latitude.append(float(match.group(14)))
-        self.data.longitude.append(float(match.group(15)))
+        self.data.latitude_xeos.append(float(match.group(14)))
+        self.data.longitude_xeos.append(float(match.group(15)))
         self.data.altitude.append(float(match.group(16)))
         self.data.signal_strength.append(int(match.group(17)))
         self.data.num_satellites.append( int(match.group(18)))
@@ -201,7 +201,10 @@ class Parser(ParserCommon):
         self.data.estimated_latitude.append(float(match.group(6)))
         self.data.estimated_longitude.append(float(match.group(7)))
         self.data.cep_radius.append(int(match.group(8)))
-        self.data.date_time_xeos.append(str(match.group(9)))
+        # use unixtime here for compatibility with -x data
+        #self.data.date_time_xeos.append(int(match.group(9)))
+        self.data.date_time_xeos.append(epts)
+
         # convert the watch circle status text to numeric values and append to the list
         mode = 'watch'
         if match.group(10) == ' ':
@@ -212,8 +215,8 @@ class Parser(ParserCommon):
         elif match.group(10) == 'ALARM':
             self.data.watch_circle_status.append(2)
         self.data.subsurface_beacon.append(self.surface)
-        self.data.latitude.append(float(match.group(11)))
-        self.data.longitude.append(float(match.group(12)))
+        self.data.latitude_xeos.append(float(match.group(11)))
+        self.data.longitude_xeos.append(float(match.group(12)))
         if mode == 'watch':
             # if we have a full match, then the beacon is in watch circle mode, and we have the distance from the
             # center, time in the circle, signal strength, and the battery voltage
