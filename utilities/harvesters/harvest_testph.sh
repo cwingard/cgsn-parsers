@@ -16,11 +16,11 @@ source "$DIR/harvest_options.sh"
 
 # check the processing flag for the correct pH sensor type
 case $FLAG in
-    "idron" | "sphox" )
+    "anb" | "idron" | "sphox" )
         ;;
     * )
         echo "ERROR: Incorrect pH sensor name $FLAG in the processing flag. Please"
-        echo "specify either idron or sphox for the pH test sensor with the -f option."
+        echo "specify either anb, idron or sphox for the pH test sensor with the -f option."
         exit 1 # exit and indicate error
         ;;
 esac
@@ -28,5 +28,5 @@ esac
 # Parse the file
 if [ -e "$IN_FILE" ]; then
     cd /home/ooiuser/code/cgsn-parsers || exit
-    python -m cgsn_parsers.parsers.parse_testph -i "$IN_FILE" -o "$OUT_FILE" -s $FLAG || echo "ERROR: Failed to parse $IN_FILE"
+    python -m cgsn_parsers.parsers.parse_testph -i "$IN_FILE" -o "$OUT_FILE" -s "$FLAG" || echo "ERROR: Failed to parse $IN_FILE"
 fi
