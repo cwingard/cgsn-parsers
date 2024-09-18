@@ -338,6 +338,7 @@ class Parser(ParserCommon):
         pressure = float(self.ascii_hex_long_to_long( start + 5 )) / 100.0
         temp = float( self.ascii_hex_long_to_long( start + 10 )) / 1000.0
         cond = float( self.ascii_hex_long_to_long( start + 15 )) / 1000.0
+        cond = cond / 10.0  # convert from mmho/cm to S/m units
         opt_temp = float( self.ascii_hex_long_to_long( start + 20 )) / 1000.0
         opt_o2 = float( self.ascii_hex_long_to_long( start + 25 )) / 1000.0
 

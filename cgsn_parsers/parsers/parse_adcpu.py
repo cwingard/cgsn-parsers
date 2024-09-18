@@ -168,7 +168,6 @@ class ParameterNames(object):
         bunch.config = Bunch()
         bunch.sensor= Bunch()
         bunch.current = Bunch()
-        bunch.cells = {}         # runtime sized
 
         for name in self._config:
             bunch.config[name] = []
@@ -243,14 +242,6 @@ class Parser(ParserCommon):
 
         self.data.config.coord_system.append(int(match.group(8)))
 
-        # Use the number of cells to size the cells dictionary if not yet done
-        # Populate it with fields from the "current" dictionary
-        
-        if len(self.data.cells) == 0:
-            num_cells = int(match.group(5))
-            for i in range(num_cells):
-                self.data.cells[str(i+1)] = copy.deepcopy(self.data.current)
-
         
     def _build_sensor_parsed_values(self, match):
         """
@@ -296,45 +287,44 @@ class Parser(ParserCommon):
         Extract the data from the current regex groups and assign to elements
         of the data dictionary.
         """
-        cell_number = match.group(4)
 
         # Assign the DCL date_time_string
-        self.data.cells[cell_number].dcl_datetime.append(match.group(1))
+        self.data.current.dcl_datetime.append(match.group(1))
         
         # Compute and use unix time from sensor date and time
         sensor_date_time = match.group(2) + ' ' + match.group(3)
         date_time = pd.to_datetime(sensor_date_time, format='%m%d%y %H%M%S', exact=False, utc=True)
         unix_time = timegm(date_time.timetuple())    
-        self.data.cells[cell_number].sensor_datetime.append(unix_time)
+        self.data.current.sensor_datetime.append(unix_time)
 
-        self.data.cells[cell_number].cell_number = int(cell_number)
-        self.data.cells[cell_number].velocity_beam_1.append(float(match.group(5)))
-        self.data.cells[cell_number].velocity_beam_2.append(float(match.group(6)))
-        self.data.cells[cell_number].velocity_beam_3.append(float(match.group(7)))
+        self.data.current.cell_number.append(int(match.group(4)))
+        self.data.current.velocity_beam_1.append(float(match.group(5)))
+        self.data.current.velocity_beam_2.append(float(match.group(6)))
+        self.data.current.velocity_beam_3.append(float(match.group(7)))
         if match.group(8) is not None:
-            self.data.cells[cell_number].velocity_beam_4.append(float(match.group(8)))
+            self.data.current.velocity_beam_4.append(float(match.group(8)))
         else:
-            self.data.cells[cell_number].velocity_beam_4.append(float('NaN'))
+            self.data.current.velocity_beam_4.append(float('NaN'))
 
-        self.data.cells[cell_number].speed.append(float(match.group(9)))
-        self.data.cells[cell_number].direction.append(float(match.group(10)))
-        self.data.cells[cell_number].amplitude_units.append(match.group(11))
+        self.data.current.speed.append(float(match.group(9)))
+        self.data.current.direction.append(float(match.group(10)))
+        self.data.current.amplitude_units.append(match.group(11))
 
-        self.data.cells[cell_number].amplitude_beam_1.append(int(match.group(12)))
-        self.data.cells[cell_number].amplitude_beam_2.append(int(match.group(13)))
-        self.data.cells[cell_number].amplitude_beam_3.append(int(match.group(14)))
+        self.data.current.amplitude_beam_1.append(int(match.group(12)))
+        self.data.current.amplitude_beam_2.append(int(match.group(13)))
+        self.data.current.amplitude_beam_3.append(int(match.group(14)))
         if match.group(15) is not None:
-            self.data.cells[cell_number].amplitude_beam_4.append(int(match.group(15)))
+            self.data.current.amplitude_beam_4.append(int(match.group(15)))
         else:
-            self.data.cells[cell_number].amplitude_beam_4.append(0)
+            self.data.current.amplitude_beam_4.append(0)
 
-        self.data.cells[cell_number].correlation_beam_1.append(int(match.group(16)))
-        self.data.cells[cell_number].correlation_beam_2.append(int(match.group(17)))
-        self.data.cells[cell_number].correlation_beam_3.append(int(match.group(18)))
+        self.data.current.correlation_beam_1.append(int(match.group(16)))
+        self.data.current.correlation_beam_2.append(int(match.group(17)))
+        self.data.current.correlation_beam_3.append(int(match.group(18)))
         if match.group(19) is not None:
-            self.data.cells[cell_number].correlation_beam_4.append(int(match.group(19)))
+            self.data.current.correlation_beam_4.append(int(match.group(19)))
         else:
-            self.data.cells[cell_number].correlation_beam_4.append(0)
+            self.data.current.correlation_beam_4.append(0)
 
 
 def main(argv=None):
@@ -349,9 +339,6 @@ def main(argv=None):
     # load the data into a buffered object and parse the data into a dictionary
     adcpu.load_ascii()
     adcpu.parse_data()
-
-    # The current dictionary was just used to prime cell dictionaries. Lose it.
-    del adcpu.data['current']
 
     # write the resulting Bunch object via the toJSON method to a JSON
     # formatted data file (note, no pretty-printing keeping things compact)
