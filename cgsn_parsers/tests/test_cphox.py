@@ -56,7 +56,7 @@ class TestParsingUnit(unittest.TestCase):
         Test parsing of the cphox data
         """
         self.cphox.load_ascii()
-        self.cphox.parse_ascii()
+        self.cphox.parse_data()
         parsed = self.cphox.data.toDict()
 
         # check the parsed data against the expected output
