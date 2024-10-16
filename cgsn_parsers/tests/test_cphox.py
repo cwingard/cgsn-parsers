@@ -60,18 +60,18 @@ class TestParsingUnit(unittest.TestCase):
         parsed = self.cphox.data.toDict()
 
         # check the parsed data against the expected output
-        np.testing.assert_array_equal(parsed['serial_number'], self.expected[:, 0].astype(int))
-        np.testing.assert_array_equal(parsed['sample_number'], self.expected[:, 1].astype(int))
-        np.testing.assert_array_equal(parsed['error_flag'], self.expected[:, 2].astype(float))
-        np.testing.assert_array_equal(parsed['temperature'], self.expected[:, 3].astype(float))
-        np.testing.assert_array_equal(parsed['seawater_ph'], self.expected[:, 4].astype(float))
-        np.testing.assert_array_equal(parsed['external_reference'], self.expected[:, 5].astype(float))
-        np.testing.assert_array_equal(parsed['pressure'], self.expected[:, 6].astype(float))
-        np.testing.assert_array_equal(parsed['salinity'], self.expected[:, 7].astype(float))
-        np.testing.assert_array_equal(parsed['conductivity'], self.expected[:, 8].astype(float))
-        np.testing.assert_array_equal(parsed['oxygen_concentration'], self.expected[:, 9].astype(float))
-        np.testing.assert_array_equal(parsed['internal_humidity'], self.expected[:, 10].astype(float))
-        np.testing.assert_array_equal(parsed['internal_temperature'], self.expected[:, 11].astype(float))
+        np.testing.assert_array_equal(parsed['serial_number'].astype(int), self.expected[:, 0])
+        np.testing.assert_array_equal(parsed['sample_number'], self.expected[:, 1])
+        np.testing.assert_array_equal(parsed['error_flag'], self.expected[:, 2])
+        np.testing.assert_array_equal(parsed['temperature'], self.expected[:, 3])
+        np.testing.assert_array_equal(parsed['seawater_ph'], self.expected[:, 4])
+        np.testing.assert_array_equal(parsed['external_reference'], self.expected[:, 5])
+        np.testing.assert_array_equal(parsed['pressure'], self.expected[:, 6])
+        np.testing.assert_array_equal(parsed['salinity'], self.expected[:, 7])
+        np.testing.assert_array_equal(parsed['conductivity'], self.expected[:, 8])
+        np.testing.assert_array_equal(parsed['oxygen_concentration'], self.expected[:, 9])
+        np.testing.assert_array_equal(parsed['internal_humidity'], self.expected[:, 10])
+        np.testing.assert_array_equal(parsed['internal_temperature'], self.expected[:, 11])
 
 
 if __name__ == '__main__':
