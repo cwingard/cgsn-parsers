@@ -60,7 +60,7 @@ class TestParsingUnit(unittest.TestCase):
         parsed = self.cphox.data.toDict()
 
         # check the parsed data against the expected output
-        np.testing.assert_array_equal(parsed['serial_number'].astype(int), self.expected[:, 0])
+        np.testing.assert_array_equal(parsed['serial_number'], self.expected[:, 0])
         np.testing.assert_array_equal(parsed['sample_number'], self.expected[:, 1])
         np.testing.assert_array_equal(parsed['error_flag'], self.expected[:, 2])
         np.testing.assert_array_equal(parsed['temperature'], self.expected[:, 3])

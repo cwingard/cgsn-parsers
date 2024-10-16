@@ -81,10 +81,10 @@ class Parser(ParserCommon):
         self.data.dcl_date_time_string.append(str(match.group(1)))
 
         # Add the remaining data to the data dictionary
-        self.data.serial_number.append(str(match.group(2)))
+        self.data.serial_number.append(int(match.group(2)))
         self.data.sphox_date_time_string.append(str(match.group(3)))
         self.data.sample_number.append(int(match.group(4)))
-        self.data.error_flag.append(str(match.group(5)))
+        self.data.error_flag.append(int(match.group(5)))
         self.data.temperature.append(float(match.group(6)))
         self.data.seawater_ph.append(float(match.group(7)))
         self.data.external_reference.append(float(match.group(8)))
