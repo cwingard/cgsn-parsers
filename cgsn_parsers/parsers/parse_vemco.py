@@ -131,7 +131,7 @@ class Parser(object):
         Create a buffered data object by opening the data file and reading in
         the contents as a single string
         """
-        with open(self.infile, 'r') as fid:
+        with open(self.infile, 'r', errors='ignore') as fid:
             self.raw = fid.read()
 
     def parse_status(self):
