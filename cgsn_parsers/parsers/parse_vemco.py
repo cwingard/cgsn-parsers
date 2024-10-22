@@ -14,7 +14,6 @@ from munch import Munch as Bunch
 from calendar import timegm
 
 # Import common utilities and base classes
-from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, INTEGER, FLOAT, NEWLINE
 
 # Regex pattern for a line with a DCL time stamp and the VR2C status data
