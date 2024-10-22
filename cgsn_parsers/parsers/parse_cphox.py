@@ -3,7 +3,7 @@
 """
 @package cgsn_parsers.parsers.parse_cphox
 @file cgsn_parsers/parsers/parse_cphox.py
-@author Christopher Wingard
+@author Christopher Wingard and Paul Whelan
 @brief Parses the data from the Sea-Bird Scientific Deep SeapHOx (CPHOX) sensor.
 """
 import os
@@ -114,6 +114,10 @@ def main(argv=None):
     cphox = Parser(infile)
     cphox.load_ascii()
     cphox.parse_data()
+
+    # remove the dcl_date_time_string if it is empty (not present in the IMM-recorded data)
+    if len(cphox.data.dcl_date_time_string) == 0:
+        cphox.data.pop('dcl_date_time_string')
 
     # write the resulting Bunch object via the toJSON method to a JSON formatted data file (note, no pretty-printing
     # keeping things compact)
