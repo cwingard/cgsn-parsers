@@ -43,21 +43,21 @@ class TestParsingUnit(unittest.TestCase):
         ])
 
         self.expected_detections = np.array([
-            [450307, 53, 'A69-9001-61461'],
-            [450307, 54, 'A69-9001-61461'],
-            [450307, 55, 'A69-9001-61461'],
-            [450307, 56, 'A69-9001-61461'],
-            [450307, 58, 'A69-9001-61461'],
-            [450307, 59, 'A69-9001-61461'],
-            [450307, 60, 'A69-9001-61461'],
-            [450307, 61, 'A69-9001-61461'],
-            [450307, 62, 'A69-9001-61461'],
-            [450307, 63, 'A69-9001-61461'],
-            [450307, 64, 'A69-9001-61461'],
-            [450307, 65, 'A69-9001-61461'],
-            [450307, 66, 'A69-9001-61461'],
-            [450307, 68, 'A69-9001-61461'],
-            [450307, 69, 'A69-9001-61461'],
+            [450307, 53, 'A69-9001', '61461'],
+            [450307, 54, 'A69-9001', '61461'],
+            [450307, 55, 'A69-9001', '61461'],
+            [450307, 56, 'A69-9001', '61461'],
+            [450307, 58, 'A69-9001', '61461'],
+            [450307, 59, 'A69-9001', '61461'],
+            [450307, 60, 'A69-9001', '61461'],
+            [450307, 61, 'A69-9001', '61461'],
+            [450307, 62, 'A69-9001', '61461'],
+            [450307, 63, 'A69-9001', '61461'],
+            [450307, 64, 'A69-9001', '61461'],
+            [450307, 65, 'A69-9001', '61461'],
+            [450307, 66, 'A69-9001', '61461'],
+            [450307, 68, 'A69-9001', '61461'],
+            [450307, 69, 'A69-9001', '61461'],
         ])
 
     def test_parse_vemco(self):
@@ -88,7 +88,8 @@ class TestParsingUnit(unittest.TestCase):
         # check the tag detection data
         np.testing.assert_array_equal(parsed['tags']['serial_number'], self.expected_detections[:, 0].astype(int))
         np.testing.assert_array_equal(parsed['tags']['sequence'], self.expected_detections[:, 1].astype(int))
-        np.testing.assert_array_equal(parsed['tags']['tag_id'], self.expected_detections[:, 2].astype(str))
+        np.testing.assert_array_equal(parsed['tags']['code_space'], self.expected_detections[:, 2].astype(str))
+        np.testing.assert_array_equal(parsed['tags']['tag_id'], self.expected_detections[:, 3].astype(str))
 
 
 if __name__ == '__main__':

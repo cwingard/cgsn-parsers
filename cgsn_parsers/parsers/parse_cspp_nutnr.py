@@ -40,7 +40,7 @@ _parameter_names_nutnr = [
     'nitrate_concentration',
     'nitrogen_in_nitrate',
     'absorbance_254',
-    'absorbance_250',
+    'absorbance_350',
     'bromide_trace',
     'spectral_average',
     'dark_value',

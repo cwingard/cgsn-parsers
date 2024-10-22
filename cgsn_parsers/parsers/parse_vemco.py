@@ -14,7 +14,6 @@ from munch import Munch as Bunch
 from calendar import timegm
 
 # Import common utilities and base classes
-from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, INTEGER, FLOAT, NEWLINE
 
 # Regex pattern for a line with a DCL time stamp and the VR2C status data
@@ -70,9 +69,10 @@ class ParameterNames(object):
 
         # tag detection data
         self._tags = [
-            'vr2c_date_time',
+            'time',
             'serial_number',
             'sequence',
+            'code_space',
             'tag_id',
             'sensor_data'
         ]
@@ -130,7 +130,7 @@ class Parser(object):
         Create a buffered data object by opening the data file and reading in
         the contents as a single string
         """
-        with open(self.infile, 'r') as fid:
+        with open(self.infile, 'r', errors='ignore') as fid:
             self.raw = fid.read()
 
     def parse_status(self):
@@ -190,17 +190,18 @@ class Parser(object):
         # Use the VR2C date_time_string to calculate an epoch timestamp (seconds since 1970-01-01). Don't use the DCL
         # time stamp for this since the VR2C time records when a detection occurred, not when the data was logged by
         # the DCL. Can use the DCL time stamp in the status packets to determine the VR2C clock offset and drift.
-        self.data.tags.vr2c_date_time.append(_vr2c_date_time(match.group(4)))
+        self.data.tags.time.append(_vr2c_date_time(match.group(4)))
 
         # Assign the remaining status data to the named parameters
         self.data.tags.serial_number.append(int(match.group(2)))
         self.data.tags.sequence.append(int(match.group(3)))
-        tag_id = str(match.group(6)).split(',')
-        self.data.tags.tag_id.append(str(match.group(5)) + '-' + tag_id[0])
+        self.data.tags.code_space.append(str(match.group(5)))
+        tag_id = str(match.group(6)).split(',')  # tag_id[0] is the tag_id, tag_id[1] is the sensor data (if present)
+        self.data.tags.tag_id.append(tag_id[0])
         if len(tag_id) > 1:
             self.data.tags.sensor_data.append(int(tag_id[1]))
         else:
-            self.data.tags.sensor_data.append('-9999999')
+            self.data.tags.sensor_data.append(-9999999)
 
 
 def main(argv=None):

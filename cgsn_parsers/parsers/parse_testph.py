@@ -4,7 +4,8 @@
 @package cgsn_parsers.parsers.parse_phtest
 @file cgsn_parsers/parsers/parse_phtest.py
 @author Christopher Wingard
-@brief Parses the 2 pH sensors being tested, the Idronaut Ocean Seven 310 and the Deep SeapHOx V2.
+@brief Parses the 3 pH sensors tested, the ANB OC300, Idronaut Ocean Seven 310
+    and the Sea-Bird Deep SeapHOx V2.
 """
 import os
 import re
@@ -13,8 +14,24 @@ import re
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, INTEGER, NEWLINE
 
-# Set regex strings to find the pH data from the sensors.
-IDRON_REGEX = (
+# Set the regex patterns to find the pH data from the sensors.
+ANB_PATTERN = (
+    DCL_TIMESTAMP + r'\s*' +        # DCL Time-Stamp
+    r'$ANB,([A-F0-9]{4}),' +        # Data header and CRC
+    r'(\d{4}:\d{2}:\d{2}:\d{2}:\d{2}:\d{2}),' +  # instrument clock
+    FLOAT + r',' +                  # pH
+    FLOAT + r',' +                  # temperature (degC)
+    FLOAT + r',' +                  # salinity (psu)
+    FLOAT + r',' +                  # conductivity (mS/cm)
+    INTEGER + r',' +                # transducer health
+    INTEGER + r',' +                # sensor diagnostics
+    INTEGER + r',' +                # reserved for future use (default to 0)
+    INTEGER + r',' +                # Modbus address
+    INTEGER + r',' +                # file number
+    NEWLINE
+)
+
+IDRON_PATTERN = (
     DCL_TIMESTAMP + r'\s*' +        # DCL Time-Stamp
     FLOAT + r'\s*' +                # pressure (dbar)
     FLOAT + r'\s*' +                # Temperature (degC)
@@ -28,7 +45,7 @@ IDRON_REGEX = (
     r'(\S{2})' + NEWLINE            # memory status
 )
 
-SPHOX_REGEX = (
+CPHOX_PATTERN = (
     DCL_TIMESTAMP + r'\s*' +        # DCL Time-Stamp
     r'DSPHOX(\d{5}),' + r'\s*' +    # Serial number
     r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}),' + r'\s*' +  # Instrument clock
@@ -46,21 +63,34 @@ SPHOX_REGEX = (
 )
 
 # Set an error message string for use when testing the parser switch.
-SWITCH_ERROR = 'The test pH sensor must be a string set as either idron or sphox (case insensitive).'
+SWITCH_ERROR = 'The test pH sensor must be a string set as either anb, idron or cphox (case insensitive).'
 
 
 def _parameter_names_phtest(ph_type):
     """
     Create the list of parameter names corresponding to the pH sensor being
-    used for the test. Options are either the Idronaut Ocean Seven 310, or the
-    Sea-Bird Deep SeapHOx V2.
+    used for the test. Options are either the ANB Sensors OC300, the Idronaut
+    Ocean Seven 310, or the Sea-Bird Electronics Deep SeapHOx V2.
 
     :param ph_type: string indicating the ph sensor type
     :return parameter_names: list of parameter names
     """
-    parameter_names = None
-
-    if ph_type == 'idron':
+    if ph_type == 'anb':
+        parameter_names = [
+            'dcl_date_time_string',
+            'checksum',
+            'anb_date_time_string',
+            'seawater_ph',
+            'temperature',
+            'salinity',
+            'conductivity',
+            'transducer_health',
+            'sensor_diagnostics',
+            # 'reserved',  # keep this in case we need to add it back in
+            # 'modbus_address',  # keep this in case we need to add it back in
+            'file_number'
+        ]
+    elif ph_type == 'idron':
         parameter_names = [
             'dcl_date_time_string',
             'pressure',
@@ -74,11 +104,11 @@ def _parameter_names_phtest(ph_type):
             'idron_time_string',
             'memory_status'
         ]
-    elif ph_type == 'sphox':
+    elif ph_type == 'cphox':
         parameter_names = [
             'dcl_date_time_string',
             'serial_number',
-            'sphox_date_time_string',
+            'cphox_date_time_string',
             'sample_number',
             'error_flag',
             'temperature',
@@ -107,7 +137,7 @@ class Parser(ParserCommon):
         # test the ph_type to make sure it is a string
         try:
             ph_type = ph_type.lower()
-        except ValueError as e:
+        except ValueError:
             print(SWITCH_ERROR)
 
         # test ph_type to make sure it is one of our recognized configurations
@@ -122,13 +152,14 @@ class Parser(ParserCommon):
         Iterate through the record lines (defined via the regex expression above) in the data object, and parse the
         data into a pre-defined dictionary object created using the Bunch class.
         """
-        regex = None
-
-        if self.ph_type == 'idron':
-            regex = re.compile(IDRON_REGEX, re.DOTALL)
-
-        if self.ph_type == 'sphox':
-            regex = re.compile(SPHOX_REGEX, re.DOTALL)
+        if self.ph_type == 'anb':
+            regex = re.compile(ANB_PATTERN, re.DOTALL)
+        elif self.ph_type == 'idron':
+            regex = re.compile(IDRON_PATTERN, re.DOTALL)
+        elif self.ph_type == 'cphox':
+            regex = re.compile(CPHOX_PATTERN, re.DOTALL)
+        else:
+            raise ValueError(SWITCH_ERROR)
 
         for line in self.raw:
             match = regex.match(line)
@@ -144,6 +175,19 @@ class Parser(ParserCommon):
         epts = dcl_to_epoch(match.group(1))
         self.data.time.append(epts)
         self.data.dcl_date_time_string.append(str(match.group(1)))
+
+        if self.ph_type == 'anb':
+            self.data.checksum.append(str(match.group(2)))
+            self.data.anb_date_time_string.append(str(match.group(3)))
+            self.data.seawater_ph.append(float(match.group(4)))
+            self.data.temperature.append(float(match.group(5)))
+            self.data.salinity.append(float(match.group(6)))
+            self.data.conductivity.append(float(match.group(7)))
+            self.data.transducer_health.append(int(match.group(8)))
+            self.data.sensor_diagnostics.append(int(match.group(9)))
+            # self.data.reserved.append(int(match.group(10)))  # keep this in case we need to add it back in
+            # self.data.modbus_address.append(int(match.group(11)))  # keep this in case we need to add it back in
+            self.data.file_number.append(int(match.group(10)))
 
         if self.ph_type == 'idron':
             self.data.pressure.append(float(match.group(2)))
@@ -183,7 +227,7 @@ def main(argv=None):
     # initialize the Parser object for the pH data
     try:
         ph = Parser(infile, ph_type)
-    except ValueError as e:
+    except ValueError:
         print(SWITCH_ERROR)
         return None
 
