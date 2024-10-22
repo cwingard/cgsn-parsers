@@ -7,27 +7,30 @@
 @brief Parses the data from the Sea-Bird Scientific Deep SeapHOx (CPHOX) sensor.
 """
 import os
+import pandas as pd
 import re
+
+from calendar import timegm
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, INTEGER, NEWLINE
 
 PATTERN = (
-    DCL_TIMESTAMP + r'\s*' +        # DCL Time-Stamp
-    r'DSPHOX(\d{5}),' + r'\s*' +    # Serial number
+    r'(' + DCL_TIMESTAMP + r'\s+)?' +  # DCL Time-Stamp (will not be present if recorded by IMM)
+    r'DSPHOX(\d{5}),' + r'\s*' +       # Serial number
     r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}),' + r'\s*' +  # Instrument clock
-    INTEGER + r',\s*' +             # Sample Number
-    INTEGER + r',\s*' +             # Error code
-    FLOAT + r',\s*' +               # Temperature (degC)
-    FLOAT + r',\s*' +               # pH
-    FLOAT + r',\s*' +               # external reference electrode (volts)
-    FLOAT + r',\s*' +               # pressure (dbar)
-    FLOAT + r',\s*' +               # salinity (psu)
-    FLOAT + r',\s*' +               # conductivity (mS/cm)
-    FLOAT + r',\s*' +               # oxygen (mL/L)
-    FLOAT + r',\s*' +               # internal relative humidity (%)
-    FLOAT + NEWLINE                 # internal temperature (degC)
+    INTEGER + r',\s*' +                # Sample Number
+    INTEGER + r',\s*' +                # Error code
+    FLOAT + r',\s*' +                  # Temperature (degC)
+    FLOAT + r',\s*' +                  # pH
+    FLOAT + r',\s*' +                  # external reference electrode (volts)
+    FLOAT + r',\s*' +                  # pressure (dbar)
+    FLOAT + r',\s*' +                  # salinity (psu)
+    FLOAT + r',\s*' +                  # conductivity (mS/cm)
+    FLOAT + r',\s*' +                  # oxygen (mL/L)
+    FLOAT + r',\s*' +                  # internal relative humidity (%)
+    FLOAT + NEWLINE                    # internal temperature (degC)
 )
 REGEX = re.compile(PATTERN, re.DOTALL)
 
@@ -74,11 +77,16 @@ class Parser(ParserCommon):
         Extract the data from the relevant regex groups and assign to elements
         of the data dictionary.
         """
-        # Use the date_time_string to calculate an epoch timestamp (seconds since
-        # 1970-01-01)
-        epts = dcl_to_epoch(match.group(1))
+        # Use the dcl_date_time_string to calculate an epoch timestamp (seconds since
+        # 1970-01-01) if present, otherwise use the instrument's internal clock
+        if match.group(1) is not None:
+            epts = dcl_to_epoch(match.group(1))
+            self.data.dcl_date_time_string.append(str(match.group(1)))
+        else:
+            utc = pd.to_datetime(match.group(4), format='%Y-%m-%dT%H:%M:%S', utc=True)
+            epts = timegm(utc.timetuple())
+
         self.data.time.append(epts)
-        self.data.dcl_date_time_string.append(str(match.group(1)))
 
         # Add the remaining data to the data dictionary
         self.data.serial_number.append(int(match.group(2)))
