@@ -14,10 +14,10 @@ from calendar import timegm
 
 # Import common utilities and base classes
 from cgsn_parsers.parsers.common import ParserCommon
-from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP, FLOAT, INTEGER, NEWLINE
+from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, FLOAT, INTEGER, NEWLINE
 
 PATTERN = (
-    r'(' + DCL_TIMESTAMP + r'\s+)?' +  # DCL Time-Stamp (will not be present if recorded by IMM)
+    r'(\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})?' + r'\s*' +  # DCL Time-Stamp (will not be in IMM-recorded data)
     r'DSPHOX(\d{5}),' + r'\s*' +       # Serial number
     r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}),' + r'\s*' +  # Instrument clock
     INTEGER + r',\s*' +                # Sample Number
