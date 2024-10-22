@@ -18,7 +18,7 @@ from cgsn_parsers.parsers.common import ParserCommon, inputs #, INTEGER, STRING,
 
 # constants
 ENG_DATA_SIZE = 34
-SCI_DATA_SIZE = 31
+SCI_DATA_SIZE = 31  # w/o flu, 46 with flu
 STN_DATA_SIZE =  8
 
 # byte representations of constants
@@ -147,7 +147,10 @@ class ParameterNames(object):
             'temperature',
             'conductivity',
             'optode_temperature',
-            'optode_dissolved_oxygen'
+            'optode_dissolved_oxygen',
+            'flu_beta_count',
+            'flu_chl_count',
+            'flu_cdom_count'
         ]
 
         # Each station list message consists of the following:
@@ -266,9 +269,9 @@ class Parser(ParserCommon):
                 eol = unpack_from( '2s', self.raw, here )[0]
                 while eol != b'\x0d\x0a':
 
-                    self.unpack_scidata(here)
+                    size = self.unpack_scidata(here)
 
-                    here = here + SCI_DATA_SIZE
+                    here = here + size
                     eol = unpack_from( '2s', self.raw, here )[0]
 
             # Station list data ?
@@ -329,6 +332,9 @@ class Parser(ParserCommon):
         data file into a pre-defined dictionary object created using the Bunch class.
         """
 
+        # Science data packets can be variable in size (flu optional), so return the size found
+        sci_packet_size = SCI_DATA_SIZE
+
         # Note: have seen science data packets terminate prematurely in files. When this
         # happens, ascii_hex_long_to_long throws an exception. So, make all the calls to that first.
         # If no exception is thrown, add the packet to the science data so we don't end up with partial
@@ -338,8 +344,23 @@ class Parser(ParserCommon):
         pressure = float(self.ascii_hex_long_to_long( start + 5 )) / 100.0
         temp = float( self.ascii_hex_long_to_long( start + 10 )) / 1000.0
         cond = float( self.ascii_hex_long_to_long( start + 15 )) / 1000.0
+        cond = cond / 10.0  # convert from mmho/cm to S/m units
         opt_temp = float( self.ascii_hex_long_to_long( start + 20 )) / 1000.0
         opt_o2 = float( self.ascii_hex_long_to_long( start + 25 )) / 1000.0
+        flu_beta_count = 0.0
+        flu_chl_count = 0.0
+        flu_cdom_count = 0.0
+
+        # some models do not have a fluorometer
+        if self.raw[ start + 29] == ord(b','):
+            flu_beta_count = float( self.ascii_hex_long_to_long( start + 30))
+            sci_packet_size = sci_packet_size + 5
+            if self.raw[ start + 34] == ord(b','):
+                flu_chl_count = float( self.ascii_hex_long_to_long( start + 35))
+                sci_packet_size = sci_packet_size + 5
+                if self.raw[ start + 39] == ord(b','):
+                    flu_cdom_count = float( self.ascii_hex_long_to_long( start+40 ))
+                    sci_packet_size = sci_packet_size + 5
 
         self.data.scidata.epoch_time.append( epoch_time )
         self.data.scidata.pressure.append( pressure )
@@ -347,6 +368,11 @@ class Parser(ParserCommon):
         self.data.scidata.conductivity.append( cond )
         self.data.scidata.optode_temperature.append( opt_temp )
         self.data.scidata.optode_dissolved_oxygen.append( opt_o2 )
+        self.data.scidata.flu_beta_count.append( flu_beta_count )
+        self.data.scidata.flu_chl_count.append( flu_chl_count )
+        self.data.scidata.flu_cdom_count.append( flu_cdom_count )
+
+        return sci_packet_size
 
     def unpack_stndata(self, start):
         """
