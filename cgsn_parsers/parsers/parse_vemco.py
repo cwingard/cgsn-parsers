@@ -70,7 +70,7 @@ class ParameterNames(object):
 
         # tag detection data
         self._tags = [
-            'vr2c_date_time',
+            'time',
             'serial_number',
             'sequence',
             'code_space',
@@ -191,7 +191,7 @@ class Parser(object):
         # Use the VR2C date_time_string to calculate an epoch timestamp (seconds since 1970-01-01). Don't use the DCL
         # time stamp for this since the VR2C time records when a detection occurred, not when the data was logged by
         # the DCL. Can use the DCL time stamp in the status packets to determine the VR2C clock offset and drift.
-        self.data.tags.vr2c_date_time.append(_vr2c_date_time(match.group(4)))
+        self.data.tags.time.append(_vr2c_date_time(match.group(4)))
 
         # Assign the remaining status data to the named parameters
         self.data.tags.serial_number.append(int(match.group(2)))
@@ -202,7 +202,7 @@ class Parser(object):
         if len(tag_id) > 1:
             self.data.tags.sensor_data.append(int(tag_id[1]))
         else:
-            self.data.tags.sensor_data.append('-9999999')
+            self.data.tags.sensor_data.append(-9999999)
 
 
 def main(argv=None):
