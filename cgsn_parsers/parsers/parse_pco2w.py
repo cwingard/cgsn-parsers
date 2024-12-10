@@ -90,12 +90,12 @@ class Parser(ParserCommon):
         marker = None
         regex = None
 
-        if polled_marker:
-            marker = polled_marker
-            regex = POLLED_REGEX
-        elif auto_marker:
+        if auto_marker:
             marker = auto_marker
             regex = AUTO_REGEX
+        elif polled_marker:
+            marker = polled_marker
+            regex = POLLED_REGEX
 
         # if we have found polled or autonomous record markers, work through the data...
         while marker:
