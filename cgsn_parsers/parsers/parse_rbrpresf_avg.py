@@ -50,6 +50,7 @@ DATA_REGEX = re.compile( DATA_PATTERN, re.DOTALL )
 
 _parameter_names_presf = [
         'date_time_string',
+        'unix_date_time_ms',
         'temperature_00',
         'pressure_00',
         'temperature_01',
@@ -75,8 +76,6 @@ class Parser(ParserCommon):
         # set the infile names
         self.infile = infile
 
-        # initialize the data dictionary using the parameter names defined above
-        #self.data = self.create_dict()
 
     def parse_data(self):
         """
@@ -92,10 +91,6 @@ class Parser(ParserCommon):
                 self.update_channel_count( channelsMatch )
                 break
 
-
-        #channels = COLS_REGEX.finditer(self.raw)
-        #self.update_channel_count( channelMatch )
-
         # Iterate through datestamped hourly average records for output
 
         for line in self.raw:
@@ -103,20 +98,12 @@ class Parser(ParserCommon):
             if data_match:
 
                 self.data.date_time_string.append(data_match.group(1))
+                self.data.unix_date_time_ms.append(data_match.group(2))
                 self.data.time.append( int( data_match.group(2)))
 
                 data_vals = line.split(',')
                 for i in range(0, self.num_channels):
                     self.data[self.active_channels[i]].append( float(data_vals[2+i].rstrip()))
-
-        #data_recs = DATA_REGEX.finditer(self.raw)
-        #for data_match in data_recs:
-
-        #    self.data.date_time_string.append(data_match.group(1))
-        #    self.data.unix_date_time_ms.append(data_match.group(2))
-
-        #    for i in range(2, self.num_channels):
-        #        self.data[self.active_channels[i]].append( data_match.group(2+i))
 
 
     def update_channel_count( self, channelMatch ):
