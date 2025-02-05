@@ -193,7 +193,6 @@ class Parser(ParserCommon):
         checksum &= 65535
         return checksum
 
-
     def parse_gx5_data(self):
         """
         Iterate through packets to parse the data into a pre-defined
@@ -256,9 +255,10 @@ class Parser(ParserCommon):
 
             payload_start = packet_start + GX5_HDR_LEN
 
+            # A packet may contain 1 or more of the following data sets:
+            #   acceleration, rate, magnetometer or gps time
             while payload_start < packet_stop:
 
-                #payload_bytes = self.raw[ payload_start:payload_start+2]
                 payload_hdr = GX5_PAYLD_HDR_STR.unpack(self.raw[ payload_start : payload_start+2 ])
                 payload_len = payload_hdr[0]
                 payload_type = payload_hdr[1]

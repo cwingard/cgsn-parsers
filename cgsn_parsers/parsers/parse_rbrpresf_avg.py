@@ -11,6 +11,10 @@ Note: The quartz3 supports configurable, active columns of data. It was therefor
 in the logger to query active columns and log the list of active columns. This parser looks
 for that log entry and will replace the default list of all data columns with those that are
 reported as active. Data in logged data lines is then mapped in order to those column names.
+Note: output files from the parse_rbrpresf_avg parser contain are the same as those produced by
+    the parse_rbrq3 parser from raw log files (the data values are just hourly averages of the
+    same data). Therefore, these files can be processed by the proc_rbrpresf processor that
+    handles raw presf data. No new processor was written for this data.
 """
 import os
 import re
@@ -30,7 +34,7 @@ TIMESTAMP = r'(\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}:\d{2})'
 COLS_PATTERN = (
     r'(\[presf:\w+\]:)# Active channels: ([a-zA-Z0-9_|]+)' + NEWLINE
 )
-COLS_REGEX = re.compile( COLS_PATTERN, re.DOTALL )
+COLS_REGEX = re.compile(COLS_PATTERN, re.DOTALL)
 
 # Regex pattern for data line: timestamp,unixtime[,float]+
 
@@ -43,7 +47,7 @@ DATA_PATTERN = (
     TIMESTAMP + r',' +
     INTEGER + r',.+' + NEWLINE
 )
-DATA_REGEX = re.compile( DATA_PATTERN, re.DOTALL )
+DATA_REGEX = re.compile(DATA_PATTERN, re.DOTALL)
 
 # Default list of reported data columns, in order.
 # Can be overridden with log entry containing active columns
@@ -60,7 +64,6 @@ _parameter_names_presf = [
         'period_01'
     ]
 
-
 class Parser(ParserCommon):
     """
     A Parser subclass that calls the Parser base class, adds the rbr quartz3 presf specific
@@ -71,7 +74,7 @@ class Parser(ParserCommon):
         self.initialize(infile, _parameter_names_presf)
 
         self.num_channels = 7   #default: all channels active
-        self.active_channels = _parameter_names_presf[ 2: ]
+        self.active_channels = _parameter_names_presf[2:]
 
         # set the infile names
         self.infile = infile
@@ -86,9 +89,9 @@ class Parser(ParserCommon):
         # update the list of channels to output
 
         for line in self.raw:
-            channelsMatch = COLS_REGEX.match(line)
-            if channelsMatch:
-                self.update_channel_count( channelsMatch )
+            channels_match = COLS_REGEX.match(line)
+            if channels_match:
+                self.update_channel_count(channels_match)
                 break
 
         # Iterate through datestamped hourly average records for output
@@ -99,11 +102,11 @@ class Parser(ParserCommon):
 
                 self.data.date_time_string.append(data_match.group(1))
                 self.data.unix_date_time_ms.append(data_match.group(2))
-                self.data.time.append( int( data_match.group(2)))
+                self.data.time.append( int( data_match.group(2)) )
 
                 data_vals = line.split(',')
                 for i in range(0, self.num_channels):
-                    self.data[self.active_channels[i]].append( float(data_vals[2+i].rstrip()))
+                    self.data[self.active_channels[i]].append( float(data_vals[2+i].rstrip()) )
 
 
     def update_channel_count( self, channelMatch ):
