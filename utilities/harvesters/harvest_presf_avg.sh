@@ -1,7 +1,7 @@
 #!/bin/bash
-# harvest_presf.sh
+# harvest_presf_avg.sh
 #
-# Reads the raw PRESF data files from the Endurance and Pioneer Coastal Surface
+# Reads the averaged RBR-PRESF data files from the Endurance and Pioneer Coastal Surface
 # Moorings and create parsed datasets available in JSON formatted files for
 # further processing and review.
 #
