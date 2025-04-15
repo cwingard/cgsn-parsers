@@ -18,7 +18,7 @@ from cgsn_parsers.parsers.common import ParserCommon, inputs #, INTEGER, STRING,
 
 # constants
 ENG_DATA_SIZE = 34
-SCI_DATA_SIZE = 31  # w/o flu, 46 with flu
+SCI_DATA_SIZE = 31  # w/o flu, variable with flu
 STN_DATA_SIZE =  8
 
 # byte representations of constants
@@ -353,6 +353,7 @@ class Parser(ParserCommon):
 
         # some models do not have a fluorometer
         if self.raw[ start + 29] == ord(b','):
+
             # fluorometer fields can be an arbitrary number bytes, separated by commas
 
             next_offset = 30
