@@ -353,14 +353,27 @@ class Parser(ParserCommon):
 
         # some models do not have a fluorometer
         if self.raw[ start + 29] == ord(b','):
-            flu_beta_count = float( self.ascii_hex_long_to_long( start + 30))
-            sci_packet_size = sci_packet_size + 5
-            if self.raw[ start + 34] == ord(b','):
-                flu_chl_count = float( self.ascii_hex_long_to_long( start + 35))
-                sci_packet_size = sci_packet_size + 5
-                if self.raw[ start + 39] == ord(b','):
-                    flu_cdom_count = float( self.ascii_hex_long_to_long( start+40 ))
-                    sci_packet_size = sci_packet_size + 5
+            # fluorometer fields can be an arbitrary number bytes, separated by commas
+
+            next_offset = 30
+            fldlen = 0
+            while (self.raw[ start + next_offset + fldlen] != ord(b',')):
+                fldlen = fldlen + 1
+            flu_beta_count = float( self.ascii_hex_long_to_long( start + next_offset, fldlen ))
+            next_offset = next_offset + fldlen + 1
+            
+            fldlen = 0
+            while (self.raw[ start + next_offset + fldlen] != ord(b',')):
+                fldlen = fldlen + 1
+            flu_chl_count = float( self.ascii_hex_long_to_long( start + next_offset, fldlen ))
+            next_offset = next_offset + fldlen + 1
+
+            fldlen = 0
+            while (self.raw[ start + next_offset + fldlen] != ord(b'\n')):
+                fldlen = fldlen + 1
+            flu_cdom_count = float( self.ascii_hex_long_to_long( start + next_offset, fldlen ))
+
+            sci_packet_size = next_offset + fldlen + 2 # \r\n
 
         self.data.scidata.epoch_time.append( epoch_time )
         self.data.scidata.pressure.append( pressure )
@@ -384,17 +397,22 @@ class Parser(ParserCommon):
         self.data.stndata.wait_time.append( unpack_from( '>H', self.raw, start + 4 )[0])
         self.data.stndata.sample_rate.append( unpack_from( '>H', self.raw, start + 6 )[0])
 
-    def ascii_hex_long_to_long(self, start):
+    def ascii_hex_long_to_long(self, start, fldlen = 4):
         """
-        Converts a 4 char sequence of ascii hex characters into a long value in big endian order
+        Converts a char sequence of ascii hex characters into a long value in big endian order
         """
+
+        fmt = str(fldlen) + 's'
+
         # int conversion requires no comma trailing hex long
-        long_str = unpack_from( '4s', self.raw, start )[0]
+        long_str = unpack_from( fmt, self.raw, start )[0]
         long_out = -9999
         try:
             long_out = int( long_str, 16 )
-        except:
-            raise RuntimeError("Error converting data to long at " + str(start) + " value found: " + str(long_str))
+        except ArithmeticError as e:
+            print("Error converting byte data to long at " + str(start) + " value found: " + str(long_str) + "\n")
+            print("Exception:", e)
+            raise RuntimeError("Error converting 4 byte data to long at " + str(start) + " value found: " + str(long_str))
         
         return long_out
 
