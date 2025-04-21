@@ -25,6 +25,8 @@ REGEX = re.compile(PATTERN, re.DOTALL)
 PD12 = struct.Struct('<2HI3BH6BH3hi3B')
 VEL = struct.Struct('<4h')
 
+RCV_ERROR = b'ReceiveFailure'
+
 # assign parameter names
 _parameter_names_pd12 = [
     'imm_record_number',
@@ -68,7 +70,9 @@ class Parser(ParserCommon):
         """
         for match in REGEX.findall(self.raw):
             try:
-                self._build_parsed_values(match)
+                # Ignore "receive errors"
+                if match[1].find( RCV_ERROR ) == -1:
+                    self._build_parsed_values(match)
             except ValueError as e:
                 print(e)
                 continue
