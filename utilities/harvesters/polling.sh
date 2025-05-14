@@ -38,16 +38,29 @@
 # One optional argument is available to reset the checksum files and force a
 # re-parsing of the directory. This is useful when the parsing script has been
 # updated and the directory needs to be re-parsed. To use this option, add
-# a reset flag (-r|--reset) as the first argument. For example:
+# a reset flag (-r) as the first argument. For example:
 #
 #   ./polling.sh -r "./harvest_wavss.sh $INPUTS" "$RAW_DATA/dcl12/wavss/*.log"
 #
 # An additional optional argument is available to skip creating the checksum
 # files and force a re-parsing of the directory. This is useful when the same
-# directory is being monitored by multiple scripts. To use this option, add
-# a skip flag (-s|--skip) as the first argument. For example:
+# directory and file glob is being monitored by multiple scripts. To use this
+# option, add a skip flag (-s) as the first argument. For example:
 #
 #   ./polling.sh -s "./harvest_syslog_gps.sh $INPUTS" "$RAW_DATA/syslog/*.log"
+#
+# A final option is available to monitor the same directory with different
+# file patterns. This is useful when the same directory has multiple file
+# patterns that need to be handled separately. To use this option, add a
+# multiple flag (-m) with a unique value indicating the file pattern to
+# monitor as the first argument. For example:
+#
+#   RAW_DATA="/home/ooiuser/data/raw/cp10cnsm/D0002/cg_data/dcl27/plims"
+#   HARVEST="/home/ooiuser/code/cgsn-parsers/utilities/harvesters"
+#   INPUTS="cp10cnsm D0002 nsif plims"
+#   cd $HARVEST
+#   ./polling.sh -m "hdr" "./harvest_ifcb.sh $INPUTS" "$RAW_DATA/*.hdr"
+#   ./polling.sh -m "adc" "./harvest_ifcb_adc.sh $INPUTS" "$RAW_DATA/*.adc"
 #
 # Code inspired by: https://www.baeldung.com/linux/command-execute-file-dir-change
 # with hints and suggestions from the GitHub CoPilot.
@@ -55,41 +68,43 @@
 # C. Wingard 2024-03-08 -- Original code
 # C. Wingard 2024-05-01 -- Added the skip option to allow for multiple scripts
 #                          to monitor the same directory
+# C. Wingard 2025-04-25 -- Added the multiple option to allow for different
+#                          file patterns to be monitored in the same directory
 
 help()
 {
-   # Display Help
-   echo "Poll a directory for new or updated files and process them using the specified command."
-   echo
-   echo "Syntax: polling [OPTION] ""command_to_execute"" ""/path/to/directory/file_pattern"""
-   echo "options:"
-   echo "-h | --help     Print this help message."
-   echo "-r | --reset    Reset the checksum files and force a re-parsing of the entire directory."
-   echo "-s | --skip     Skip updating/creating the checksum files allowing for more than one"
-   echo "                script to parse the same directory."
-   echo
+  # Display Help
+  echo "Poll a directory for new or updated files and process them using the specified command."
+  echo
+  echo "Syntax: polling [OPTION] ""command_to_execute"" ""/path/to/directory/file_pattern"""
+  echo "options:"
+  echo "-h  Print this help message."
+  echo "-m  Monitor the same directory with different file patterns."
+  echo "-r  Reset the checksum files and force a re-parsing of the entire directory."
+  echo "-s  Skip updating/creating the checksum files allowing for more than one"
+  echo "                script to parse the same directory."
+  echo
 }
 
 # First parse the optional command line inputs
 RESET=0  # default to NOT resetting the checksum files
 SKIP=0   # default to NOT skipping creating/updating the checksum files
-while getopts "hrs-:" option; do
-  if [ "$option" = "-" ]; then  # long option
-    option="$OPTARG"            # extract long option (no inputs for any of the options)
-  fi
-  # shellcheck disable=SC2213
+MULTIPLE=0  # default to NOT monitoring multiple file patterns
+while getopts "hm:rs" option; do
   # shellcheck disable=SC2214
   case "$option" in
-    h | help ) # display help
+    h ) # display help
       help
       exit;;
-    r | reset ) # reset flag
-      RESET=1
-      shift $((OPTIND - 1))
+    m ) # multiple flag
+      MULTIPLE=1
+      MTYPE=${OPTARG,,}  # convert to lower case
       ;;
-    s | skip ) # skip flag
+    r ) # reset flag
+      RESET=1
+      ;;
+    s ) # skip flag
       SKIP=1
-      shift $((OPTIND - 1))
       ;;
     \?) # Invalid option
       echo "Error: Invalid option"
@@ -97,6 +112,7 @@ while getopts "hrs-:" option; do
       exit;;
   esac
 done
+shift $((OPTIND - 1))
 
 # Parse the command line inputs
 if [ "$#" -ne 2 ]; then
@@ -122,18 +138,26 @@ DIR_TO_WATCH=$(dirname "$PATH_GLOB")
 FILE_GLOB=$(basename "$PATH_GLOB")
 echo "Monitoring $DIR_TO_WATCH for new or updated files matching $FILE_GLOB"
 
+if [ $MULTIPLE -eq 1 ]; then
+    DIRSHA=".directory_sha_$MTYPE"
+    FILESHA=".file_stats_$MTYPE"
+else
+    DIRSHA=".directory_sha"
+    FILESHA=".file_stats"
+fi
+
 # next, check if the checksum files exists (used to monitor for changes in the directory),
 # if not, that means this is the first time we are processing this directory. parse all
 # existing files, create the directory checksum and the file status to monitor for future
 # changes, and exit
 if [ $RESET -eq 1 ]; then
     # reset the checksum files and force a re-processing of the directory
-    if [ -e "$DIR_TO_WATCH/.directory_sha" ]; then
+    if [ -e "$DIR_TO_WATCH/$DIRSHA" ]; then
         echo "Resetting the checksum and file status records for $DIR_TO_WATCH prior to re-processing"
-        rm -f "$DIR_TO_WATCH/.directory_sha" "$DIR_TO_WATCH/.file_stats"
+        rm -f "$DIR_TO_WATCH/$DIRSHA" "$DIR_TO_WATCH/$FILESHA"
     fi
 fi
-if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
+if [ ! -e "$DIR_TO_WATCH/$DIRSHA" ]; then
     echo "First processing run for $DIR_TO_WATCH, processing all files"
     # create a checksum of the directory contents and a listing of file stats to monitor for
     # future changes (directory as a whole and individual files based on size, creation and
@@ -141,8 +165,8 @@ if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
     if [ $SKIP -eq 1 ]; then
         echo "Skipping the creation of the checksum and file status records for $DIR_TO_WATCH"
     else
-        find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum > "$DIR_TO_WATCH/.directory_sha"  # directory as a whole
-        find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/.file_stats"  # individual files in the directory
+        find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum > "$DIR_TO_WATCH/$DIRSHA"  # directory as a whole
+        find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/$FILESHA"  # individual files in the directory
     fi
     # process all the files in the directory (using parallel processing to parse up to 7 files at a time)
     for file in $PATH_GLOB; do
@@ -161,13 +185,13 @@ if [ ! -e "$DIR_TO_WATCH/.directory_sha" ]; then
 fi
 
 # The directory exists, it is not empty and the checksum file exists, checking for new or updated files
-find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum --check --status "$DIR_TO_WATCH/.directory_sha"
+find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum --check --status "$DIR_TO_WATCH/$DIRSHA"
 if [ $? -eq 1 ]; then
     echo "Contents of $DIR_TO_WATCH have changed, looking for new or modified files"
     TMPFILE=$(mktemp /tmp/polling-XXXXXXX)
     find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + > "$TMPFILE"
     # list any new or modified files based on the file stats
-    UPDATED_FILES=$(sort "$TMPFILE" "$DIR_TO_WATCH/.file_stats" | uniq -u | awk '{print $2}' | sort | uniq)
+    UPDATED_FILES=$(sort "$TMPFILE" "$DIR_TO_WATCH/$FILESHA" | uniq -u | awk '{print $2}' | sort | uniq)
     if [ -n "$UPDATED_FILES" ]; then
         # Parse the files (using parallel processing to parse up to 7 files at a time)
         for file in $UPDATED_FILES; do
@@ -187,8 +211,8 @@ if [ $? -eq 1 ]; then
     if [ $SKIP -eq 1 ]; then
         echo "Skipping the creation of the checksum and file status records for $DIR_TO_WATCH"
     else
-      find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum > "$DIR_TO_WATCH/.directory_sha"  # directory as a whole
-      find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/.file_stats"  # individual files in the directory
+      find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + | sha1sum > "$DIR_TO_WATCH/$DIRSHA"  # directory as a whole
+      find "$DIR_TO_WATCH" -name "$FILE_GLOB" -type f -exec stat -c "%s%W%Y%Z %n" {} + > "$DIR_TO_WATCH/$FILESHA"  # individual files in the directory
     fi
     rm "$TMPFILE"  # remove the temporary file
     exit  # exit with no error, updated files have been parsed
