@@ -3,8 +3,9 @@
 """
 @package cgsn_parsers.parsers.parse_imm_phsen
 @file cgsn_parsers/parsers/parse_imm_phsen.py
-@author Christopher Wingard
-@brief Parses PHSEN data logged by the custom built WHOI data loggers via Inductive Modem (IMM) communications.
+@author Christopher Wingard and Paul Whelan
+@brief Parses PHSEN data logged by the custom-built WHOI data loggers via
+    Inductive Modem (IMM) communications.
 """
 import os
 import re
@@ -17,22 +18,20 @@ from pytz import timezone
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import inputs, NEWLINE
 
-# Regex pattern for a line with the IMM record number followed by the "*" character, 4 unknown characters (2 for a 1
-# byte hash of the unit serial number and calibration, and 2 for the length byte), and a '0A' (indicating a Type 10 data
-# record), with the follow on characters for the remaining bytes through the checksum and carriage return.
-
-# replaced following regex line to support new sami rev k format
-#     r'Record\[(\d+)\]:\*([0-9A-F]{2})([0-9A-F]{2})(0A)'         # Unique ID, record length and record type
-
+# Regex pattern for a line with the IMM record number followed by the '*' or ': + number' characters, 4 unknown
+# characters (2 for a 1 byte hash of the unit serial number and calibration, and 2 for the length byte), and a
+# '0A' (indicating a Type 10, or pH, data record), all of which combine to denote the start of a sampling record.
+# This regex will work for both the original SAMIs and the newer SAMIs with Rev K and above data formats (which
+# use ': + number' instead of '*') to indicate a record start.
 sample = (
-    r'Record\[(\d+)\](?:\*|::\d)([0-9A-F]{2})([0-9A-F]{2})(0A)'         # Unique ID, record length and record type
-    r'([0-9A-F]{8})([0-9A-F]{4})([0-9A-F]{64})' +               # Time, thermistor, and set of 16 reference measurements
-    r'([0-9A-F]{368})[0-9A-F]{4}' +                             # 23 sets of 4 light measurements
-    r'([0-9A-F]{4})([0-9A-F]{4})([0-9A-F]{2})' + NEWLINE        # Battery voltage, thermistor and checksum
+    r'Record\[(\d+)\]:(?:\*|:\d)([0-9A-F]{2})([0-9A-F]{2})(0A)'  # Unique ID, record length and record type
+    r'([0-9A-F]{8})([0-9A-F]{4})([0-9A-F]{64})' +                # Time, thermistor, and the reference measurements
+    r'([0-9A-F]{368})[0-9A-F]{4}' +                              # 23 sets of 4 light measurements
+    r'([0-9A-F]{4})([0-9A-F]{4})([0-9A-F]{2})' + NEWLINE         # Battery voltage, thermistor and checksum
 )
 REGEX = re.compile(sample, re.DOTALL)
 
-# setup a base timestamp to convert the SAMI time in seconds since 1904 to an epoch timestamp (seconds since 1970)
+# set up a base timestamp to convert the SAMI time in seconds since 1904 to an epoch timestamp (seconds since 1970)
 dt = datetime.strptime('1904-01-01', '%Y-%m-%d')
 dt.replace(tzinfo=timezone('UTC'))
 BASE = timegm(dt.timetuple())
@@ -57,6 +56,7 @@ class Parser(ParserCommon):
     """
     def __init__(self, infile):
         self.initialize(infile, _parameter_names_phsen)
+        self.raw = None  # Initialize raw data to None
 
     def load_imm(self):
         """
