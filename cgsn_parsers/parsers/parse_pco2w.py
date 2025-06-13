@@ -4,7 +4,7 @@
 @package cgsn_parsers.parsers.parse_pco2w
 @file cgsn_parsers/parsers/parse_pco2w.py
 @author Christopher Wingard
-@brief Parses PCO2W data logged by the custom built WHOI data loggers.
+@brief Parses PCO2W data logged by the custom-built WHOI data loggers.
 """
 import os
 import re
@@ -13,33 +13,25 @@ import re
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP
 
-# replaced following lines in regex to support sami rev k ( :# insteadn of * )
-#    r'(\*[A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
-#    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
-
+# The regex patterns below will work for both the original SAMIs and the newer SAMIs with Rev K and above
+# data formats (which use ': + number' instead of '*') to indicate a record start.
 
 # Regex patterns for PCO2W data logged either via direct polling...
 POLLED_PATTERN = (
-    DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
-    r'(?:\*|:\d)([A-F0-9]{4}11[A-F0-9]+)' + r'\s' +         # Device 1 (external pump) sample collection
-    DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
-    r'(?:\*|:\d)([A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
+    DCL_TIMESTAMP + r'\s+' +                         # DCL Time-Stamp
+    r'(?:\*|:\d)([A-F0-9]{4}11[A-F0-9]+)' + r'\s' +  # Device 1 (external pump) sample collection
+    DCL_TIMESTAMP + r'\s+' +                         # DCL Time-Stamp
+    r'(?:\*|:\d)([A-F0-9]{4})(04|05)([A-F0-9]+)'     # Device 0 sample processing
 )
 POLLED_REGEX = re.compile(POLLED_PATTERN, re.DOTALL)
 
-
 # ...or if the unit is configured to run autonomously.
-
-# replaced the following lines in regex to support sami rev k ( :# instead of * )
-#    r'(\*[A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
-#    r'(\*[A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
-
 AUTO_PATTERN = (
     DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
-    r'(?:\*|:\d)([A-F0-9]{4}11[A-F0-9]+)' +                 # Device 1 (external pump) sample collection
-    r'[\s\S]*?' +                                    # Nonessential text and lines between samples
+    r'(?:\*|:\d)([A-F0-9]{4}11[A-F0-9]+)' +         # Device 1 (external pump) sample collection
+    r'[\s\S]*?' +                                   # Nonessential text and lines between samples
     DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
-    r'(?:\*|:\d)([A-F0-9]{4})(04|05)([A-F0-9]+)'            # Device 0 sample processing
+    r'(?:\*|:\d)([A-F0-9]{4})(04|05)([A-F0-9]+)'    # Device 0 sample processing
 )
 AUTO_REGEX = re.compile(AUTO_PATTERN, re.DOTALL)
 
@@ -71,8 +63,8 @@ _parameter_names_pco2w = [
 
 class Parser(ParserCommon):
     """
-    A Parser subclass that calls the Parser base class, adds the pco2w specific
-    methods to parse the data, and extracts the pco2w data records from the DCL
+    A Parser subclass that calls the Parser base class, adds the PCO2W specific
+    methods to parse the data, and extracts the PCO2W data records from the DCL
     daily log files.
     """
     def __init__(self, infile):
@@ -116,14 +108,10 @@ class Parser(ParserCommon):
                 # pull out of the initial sample string the DCL timestamps and a cleaned sample string
                 collect_time = match.group(1)
                 process_time = match.group(3)
- 
-                # required for sami rev k (stuff '*' ahead of group 4
-                #cleaned = match.group(4) + match.group(5) + match.group(6)
-                cleaned = '*' + match.group(4) + match.group(5) + match.group(6)
+                cleaned = match.group(4) + match.group(5) + match.group(6)
 
- 
                 # if we have a complete sample, process it.
-                if len(cleaned) == 81:
+                if len(cleaned) == 80:
                     # print '%s --- %s\n' % (timestamp, sample)
                     self._build_parsed_values(collect_time, process_time, cleaned)
 
@@ -143,26 +131,26 @@ class Parser(ParserCommon):
         self.data.collect_date_time.append(collect_time)
         self.data.process_date_time.append(process_time)
 
-        self.data.unique_id.append(int(sample[1:3], 16))
-        self.data.record_length.append(int(sample[3:5], 16))
-        self.data.record_type.append(int(sample[5:7], 16))
-        self.data.record_time.append(int(sample[7:15], 16))
-        self.data.dark_reference_a.append(int(sample[15:19], 16))
-        self.data.dark_signal_a.append(int(sample[19:23], 16))
-        self.data.reference_434_a.append(int(sample[23:27], 16))
-        self.data.signal_434_a.append(int(sample[27:31], 16))
-        self.data.reference_620_a.append(int(sample[31:35], 16))
-        self.data.signal_620_a.append(int(sample[35:39], 16))
-        self.data.ratio_434.append(int(sample[39:43], 16))
-        self.data.ratio_620.append(int(sample[43:47], 16))
-        self.data.dark_reference_b.append(int(sample[47:51], 16))
-        self.data.dark_signal_b.append(int(sample[51:55], 16))
-        self.data.reference_434_b.append(int(sample[55:59], 16))
-        self.data.signal_434_b.append(int(sample[59:63], 16))
-        self.data.reference_620_b.append(int(sample[63:67], 16))
-        self.data.signal_620_b.append(int(sample[67:71], 16))
-        self.data.voltage_raw.append(int(sample[71:75], 16))
-        self.data.thermistor_raw.append(int(sample[75:79], 16))
+        self.data.unique_id.append(int(sample[0:2], 16))
+        self.data.record_length.append(int(sample[2:4], 16))
+        self.data.record_type.append(int(sample[4:6], 16))
+        self.data.record_time.append(int(sample[6:14], 16))
+        self.data.dark_reference_a.append(int(sample[14:18], 16))
+        self.data.dark_signal_a.append(int(sample[18:22], 16))
+        self.data.reference_434_a.append(int(sample[22:26], 16))
+        self.data.signal_434_a.append(int(sample[26:30], 16))
+        self.data.reference_620_a.append(int(sample[30:34], 16))
+        self.data.signal_620_a.append(int(sample[34:38], 16))
+        self.data.ratio_434.append(int(sample[38:42], 16))
+        self.data.ratio_620.append(int(sample[42:46], 16))
+        self.data.dark_reference_b.append(int(sample[46:50], 16))
+        self.data.dark_signal_b.append(int(sample[50:54], 16))
+        self.data.reference_434_b.append(int(sample[54:58], 16))
+        self.data.signal_434_b.append(int(sample[58:62], 16))
+        self.data.reference_620_b.append(int(sample[62:66], 16))
+        self.data.signal_620_b.append(int(sample[66:70], 16))
+        self.data.voltage_raw.append(int(sample[70:74], 16))
+        self.data.thermistor_raw.append(int(sample[74:78], 16))
 
 
 def main(argv=None):
@@ -171,7 +159,7 @@ def main(argv=None):
     infile = os.path.abspath(args.infile)
     outfile = os.path.abspath(args.outfile)
 
-    # initialize the Parser object for pco2w
+    # initialize the Parser object for the PCO2W data
     pco2w = Parser(infile)
 
     # load the data into a buffered object and parse the data into a dictionary

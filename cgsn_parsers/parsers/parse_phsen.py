@@ -3,8 +3,8 @@
 """
 @package cgsn_parsers.parsers.parse_phsen
 @file cgsn_parsers/parsers/parse_phsen.py
-@author Christopher Wingard
-@brief Parses PHSEN data logged by the custom built WHOI data loggers.
+@author Christopher Wingard and Paul Whelan
+@brief Parses PHSEN data logged by the custom-built WHOI data loggers.
 """
 import os
 import re
@@ -13,28 +13,29 @@ import re
 from cgsn_parsers.parsers.common import ParserCommon
 from cgsn_parsers.parsers.common import dcl_to_epoch, inputs, DCL_TIMESTAMP
 
-# Regex pattern for a line with a DCL time stamp, the "*" character, 4 unknown
-# characters (2 for a 1 byte hash of the unit serial number and calibration,
-# and 2 for the length byte), and a '0A' (indicating a Type 10, or pH, data
-# record), all of which combine to denote the start of a sampling record.
+# Regex pattern for a line with a DCL time stamp, the '*' or ': + number' characters, 4 unknown characters
+# (2 for a 1 byte hash of the unit serial number and calibration, and 2 for the length byte), and a '0A'
+# (indicating a Type 10, or pH, data record), all of which combine to denote the start of a sampling record.
+# This regex will work for both the original SAMIs and the newer SAMIs with Rev K and above data formats (which
+# use ': + number' instead of '*') to indicate a record start.
 PATTERN_START = (
-    DCL_TIMESTAMP + r'\s+' +                # DCL Time-Stamp
-    r'(\*[A-F0-9]{4}0A[A-F0-9]+)' + r'\s'   # Beginning of a pH sampling record
+    DCL_TIMESTAMP + r'\s+' +                        # DCL Time-Stamp
+    r'(?:\*|:\d)([A-F0-9]{4}0A[A-F0-9]+)' + r'\s+'  # Beginning of a pH sampling record
 )
 REGEX_START = re.compile(PATTERN_START, re.DOTALL)
 
 _parameter_names_phsen = [
-        'dcl_date_time_string',
-        'unique_id',
-        'record_length',
-        'record_type',
-        'record_time',
-        'thermistor_start',
-        'reference_measurements',
-        'light_measurements',
-        'voltage_battery',
-        'thermistor_end'
-    ]
+    'dcl_date_time_string',
+    'unique_id',
+    'record_length',
+    'record_type',
+    'record_time',
+    'thermistor_start',
+    'reference_measurements',
+    'light_measurements',
+    'voltage_battery',
+    'thermistor_end'
+]
 
 
 class Parser(ParserCommon):
@@ -73,12 +74,13 @@ class Parser(ParserCommon):
             timestamp = REGEX_START.match(sample).group(1)
 
             # clean up the rest of the extraneous strings in the sample string
-            sample = re.sub(DCL_TIMESTAMP, '', sample)  # get rid of the extra time stamps
-            sample = re.sub(r'\s+', '', sample)         # get rid of newlines and spaces
-            sample = re.sub(r'\[\w+:\w+\]:.+', '', sample)  # get rid of the stop messages
+            sample = re.sub(DCL_TIMESTAMP, '', sample)     # get rid of the DCL time stamp(s)
+            sample = re.sub(r'\s+', '', sample)            # get rid of extra newlines and spaces
+            sample = re.sub(r'\[\w+:\w+]:.+', '', sample)  # get rid of all the stop messages
+            sample = re.sub(r'^(:\d|\*)', '', sample)      # get rid of the * or :# at the start of the record
 
             # if we have a complete sample, process it.
-            if len(sample) == 465:
+            if len(sample) == 464:
                 # print '%s --- %s\n' % (timestamp, sample)
                 self._build_parsed_values(timestamp, sample)
 
@@ -96,22 +98,23 @@ class Parser(ParserCommon):
         self.data.time.append(epts)
         self.data.dcl_date_time_string.append(timestamp)
 
-        self.data.unique_id.append(int(sample[1:3], 16))
-        self.data.record_length.append(int(sample[3:5], 16))
-        self.data.record_type.append(int(sample[5:7], 16))
-        self.data.record_time.append(int(sample[7:15], 16))
-        self.data.thermistor_start.append(int(sample[15:19], 16))
+        self.data.unique_id.append(int(sample[0:2], 16))
+        self.data.record_length.append(int(sample[2:4], 16))
+        self.data.record_type.append(int(sample[4:6], 16))
+        self.data.record_time.append(int(sample[6:14], 16))
+        self.data.thermistor_start.append(int(sample[14:18], 16))
 
-        cnt = 19
-        reference = []  # create empty list to hold the 16 reference measurements
+        cnt = 18  # reset the counter to start with the reference (seawater blank) measurements
+        indx = 0  # initialize the index counter
+        reference = []  # create list to hold the 16 reference measurements (4 sets of 4 measurements)
         for i in range(0, 16):
             indx = (i * 4) + cnt
             reference.append(int(sample[indx:indx+4], 16))
 
         self.data.reference_measurements.append(reference)
 
-        cnt = indx + 4  # reset the counter to start with the light measurements
-        light = []  # create empty list to hold the 92 light measurements
+        cnt = indx + 4  # reset the counter to start with the light (seawater + reagent) measurements
+        light = []  # create list to hold the 92 light measurements (4 sets of 23 measurements)
         for i in range(0, 92):
             indx = (i * 4) + cnt
             light.append(int(sample[indx:indx+4], 16))
