@@ -1,0 +1,12 @@
+pipelines:
+  tags:
+    '*.*.*'
+    - step:
+        name: Zenodo GitHub Sync
+        image: alpine/git:latest
+        clone:
+          enabled: false
+        script:
+          - git clone --bare git@bitbucket.org:ooicgsn/cgsn-parsers.git
+          - cd cgsn-parsers
+          - git push --mirror git@github.com:cwingard/cgsn-parsers.git
