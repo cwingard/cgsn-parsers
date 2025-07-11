@@ -1,30 +1,27 @@
-# CGSN Parsers
+# NSF Ocean Observatories Initiative (OOI) Raw Mooring Data Parsers
 
-[![version](https://anaconda.org/conda-forge/cgsn_parsers/badges/version.svg)](https://anaconda.org/conda-forge/cgsn_parsers) [![release](https://anaconda.org/conda-forge/cgsn_parsers/badges/latest_release_date.svg)](https://anaconda.org/conda-forge/cgsn_parsers/files) [![ooicgsn](https://circleci.com/bb/ooicgsn/cgsn-parsers.svg?style=shield)](https://app.circleci.com/pipelines/bitbucket/ooicgsn/cgsn-parsers?branch=master) [![license](https://anaconda.org/conda-forge/cgsn_parsers/badges/license.svg)](https://opensource.org/license/mit/) [![downloads](https://anaconda.org/conda-forge/cgsn_parsers/badges/downloads.svg)](https://bitbucket.org/ooicgsn/cgsn-parsers/downloads/?tab=tags)
+[![version](https://anaconda.org/conda-forge/cgsn_parsers/badges/version.svg)](https://anaconda.org/conda-forge/cgsn_parsers) [![release](https://anaconda.org/conda-forge/cgsn_parsers/badges/latest_release_date.svg)](https://anaconda.org/conda-forge/cgsn_parsers/files) [![ooicgsn](https://circleci.com/bb/ooicgsn/cgsn-parsers.svg?style=shield)](https://app.circleci.com/pipelines/bitbucket/ooicgsn/cgsn-parsers?branch=master) [![license](https://anaconda.org/conda-forge/cgsn_parsers/badges/license.svg)](https://opensource.org/license/mit/) [![downloads](https://anaconda.org/conda-forge/cgsn_parsers/badges/downloads.svg)](https://bitbucket.org/ooicgsn/cgsn-parsers/downloads/?tab=tags) [![doi](https://zenodo.org/badge/DOI/10.5281/zenodo.15659314.svg)](https://zenodo.org/badge/DOI/10.5281/zenodo.15659314.svg)
 
-Python modules and shell script utilities used to parse the raw data files logged by the custom-built CGSN data logger
-systems. Resulting parsed data is saved in JSON files for further processing, analysis and plotting.
+Python modules and shell scripts used to parse the raw data files logged by the custom-built OOI surface and profiler 
+mooring control systems. These systems are used to control and record sensors on the surface and profiler moorings used 
+in the OOI Coastal and Global Arrays. The resulting parsed data is saved in JSON files for further processing, analysis 
+and plotting. Several tools in multiple languages (your browser, Matlab, Python, R, Java, etc.) exist that will enable 
+a user to load a parsed JSON formatted data file for further processing and review.
 
 The parsers convert the data from the different formats found in the raw log files (binary, ASCII, ASCIIHEX, mixed 
-ASCII/binary) into a common format (JSON) that can be used for further processing and analysis. They do not convert the
+ASCII/binary) into a common format (JSON) that can be used for further processing and analysis. They do not convert the 
 data values (for the most part) found within the raw data. In other words, if a particular measurement contained in the 
-raw data file is reported in counts, the parser does not convert that measurement to scientific units.
+raw data file is reported in counts, the parser does not convert that measurement to scientific units. 
 
-An exception to the above conversion applies to calculating an Epoch time stamp (seconds since 1970-01-01) from the date
-and time string information contained in the files. The preferred source of time is the DCL timestamp as the DCL systems
+An exception to the above conversion applies to calculating an Epoch time stamp (seconds since 1970-01-01) from the date 
+and time string information contained in the files. The preferred source of time is the data looger timestamp as those 
 are synced to GPS via a LAN NTP server and their clocks are accurate to within a few milliseconds.
 
-# Usage
-Current usage is for monitoring the system health of the moorings (e.g. hydrogen concentration levels, battery voltages,
-leak detect currents) and current environmental conditions (e.g. surface meteorological conditions, wave field and
-subsurface currents) for deployment planning and troubleshooting (e.g. low salinity surface water from the Columbia 
-River Plume may impact the ability of gliders to surface).
+The code is used internally by the operations teams at Oregon State University (managing the uncabled elements of the 
+Coastal Endurance Array) and Woods Hole Oceanographic Institution (managing the Coastal Pioneer and Global Irminger and 
+Station Papa arrays) to monitor the system health of the moorings and current environmental conditions.
 
-Several tools in multiple languages (a browser, Matlab, Python, R, Java, etc.) exist that will enable a user to load a 
-parsed JSON formatted data file for further processing and review.
-
-This code is provided "as-is" for other users who may wish to interact directly with the
-[raw data](https://rawdata.oceanobservatories.org/files/).
+This code is provided "as-is" for other users who may wish to interact directly with the [raw data](https://rawdata.oceanobservatories.org/files/).
 
 # Directory Organization
 The python code for this project is available in the cgsn_parsers/parsers directory. A limited number of unit tests are 
@@ -46,11 +43,15 @@ The code has been used on Windows machines (7 and 10), as well as Linux servers 
 
 The following python packages are used by this code:
 
-   * nose (provided in anaconda)
-   * numpy (provided in anaconda)
-   * munch >= 2.1.0
-   * pandas
-   * pytz (provided in anaconda)
+* setuptools>=79.0.0
+* requests>=2.32.3
+* pandas>=2.2.3
+* numpy>=2.2.5
+* nose>=1.3.7
+* munch>=4.0.0
+* yaml>=0.2.5
+* pyyaml>=6.0.2
+* pytz>=2025.2
 
 # Contributing
 Users are encouraged to contribute to this code. The hope is this repository can provide the science community with a 
