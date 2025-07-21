@@ -1,0 +1,33 @@
+# This workflow creates a GitHub release when a tag is pushed. Copied from the
+# official GitHub Actions documentation:
+#   https://github.com/marketplace/actions/create-tag-release
+# Used to automate the release process for a project, ensuring that every
+# tagged version results in a corresponding release on GitHub when synced
+# by the bitbucket pipeline for automated uploading to Zenodo.
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - '*.*.*' # Push events to matching *.*.*, i.e. 0.16.2, v1.0.0
+name: Create Release
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by GitHub Actions
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
