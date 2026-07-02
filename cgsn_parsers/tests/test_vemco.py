@@ -9,7 +9,6 @@
 import numpy as np
 import unittest
 
-from nose.plugins.attrib import attr
 from os import path
 
 from cgsn_parsers.parsers.parse_vemco import Parser
@@ -18,7 +17,6 @@ from cgsn_parsers.parsers.parse_vemco import Parser
 TESTDATA = path.join(path.dirname(__file__), 'vemco/20240621.vemco.log')
 
 
-@attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
     OOI Endurance and Pioneer moorings use a custom-built system from WHOI to

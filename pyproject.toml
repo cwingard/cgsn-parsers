@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cgsn_parsers"
+dynamic = ["version", "readme"]
+description = "Collection of parsers for converting raw data from the OOI Endurance, Global and Pioneer moorings to JSON for further work."
+requires-python = ">=3.10,<3.13"
+license = {text = "MIT"}
+authors = [{name = "Christopher Wingard", email = "chris.wingard@oregonstate.edu"}]
+keywords = ["OOI", "Endurance", "Global", "Pioneer", "raw data", "parsing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Data Parsing :: JSON :: Scientific :: OOI",
+]
+dependencies = [
+    "requests>=2.32.3",
+    "pandas>=2.2.3",
+    "numpy>=2.2.5",
+    "munch>=4.0.0",
+    "yaml>=0.2.5",
+    "pyyaml>=6.0.2",
+    "pytz>=2025.2",
+]
+
+[project.urls]
+Homepage = "https://bitbucket.org/ooicgsn/cgsn-parsers"
+
+[project.optional-dependencies]
+test = ["pytest"]
+docs = ["mkdocs", "mkdocs-material", "mkdocstrings[python]"]
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION.txt"}
+readme = {file = "README.md", content-type = "text/markdown"}
+
+[tool.setuptools.packages.find]
+include = ["cgsn_parsers*"]

@@ -9,7 +9,6 @@
 import numpy as np
 import unittest
 
-from nose.plugins.attrib import attr
 from os import path
 
 from cgsn_parsers.parsers.parse_pwrsys import Parser
@@ -25,7 +24,6 @@ TEST_DATA_PWRSYS_PSC = path.join(path.dirname(__file__), 'pwrsys/20180330.pwrsys
 TEST_DATA_PWRSYS_MPEA = path.join(path.dirname(__file__), 'pwrsys/20180405.pwrsys.log')
 
 
-@attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
     This test class will parse and compare the outputs from the two types of power systems to data loaded via the numpy

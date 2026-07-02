@@ -11,7 +11,6 @@ import json
 import unittest
 
 from munch import Munch
-from nose.plugins.attrib import attr
 from os import path
 
 from cgsn_parsers.parsers.parse_optaa import Parser
@@ -24,7 +23,6 @@ UCSPPDATA = path.join(path.dirname(__file__), 'optaa/ucspp_32213320_ACS_ACS.txt'
 PARSED = path.join(path.dirname(__file__), 'optaa/20150809_075841.optaa_cspp.json')
 
 
-@attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
     OOI Endurance, Pioneer and Global moorings use the WET Labs, Inc., Spectral

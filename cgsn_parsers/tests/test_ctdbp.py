@@ -9,7 +9,6 @@
 import numpy as np
 import unittest
 
-from nose.plugins.attrib import attr
 from os import path
 
 from cgsn_parsers.parsers.parse_ctdbp import Parser
@@ -20,7 +19,6 @@ TESTDATA_CTDBP_DOSTA = path.join(path.dirname(__file__), 'ctdbp/20161219.ctdbp2.
 TESTDATA_CTDBP_FLORT = path.join(path.dirname(__file__), 'ctdbp/20161110.ctdbp3.log')
 
 
-@attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
     OOI Endurance and Pioneer moorings use the Sea-Bird Electronics 16Plus V2 CTDs, on the Buoy, NSIF and MFN
