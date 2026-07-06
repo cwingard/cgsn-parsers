@@ -9,7 +9,6 @@
 import numpy as np
 import unittest
 
-from nose.plugins.attrib import attr
 from os import path
 
 from cgsn_parsers.parsers.parse_prtsz import Parser
@@ -19,7 +18,6 @@ RAWDATA = path.join(path.dirname(__file__), 'prtsz/prtsz.log')
 EXPECTED = path.join(path.dirname(__file__), 'prtsz/prtsz_expected.txt')
 
 
-@attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
     This unit test will parse sample log code derived from the PRTSZ Logger, and check key

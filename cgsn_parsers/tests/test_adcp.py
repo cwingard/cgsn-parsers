@@ -9,7 +9,6 @@
 import numpy as np
 import unittest
 
-from nose.plugins.attrib import attr
 from os import path
 
 from cgsn_parsers.parsers.parse_adcp import Parser
@@ -18,7 +17,6 @@ TESTDATA_PD0 = path.join(path.dirname(__file__), 'adcp/20160617.adcpt.log')
 TESTDATA_PD8 = path.join(path.dirname(__file__), 'adcp/20150515.adcp.log')
 
 
-@attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
     OOI Endurance and Pioneer moorings use the Teledyne RDI Workhorse ADCPs on the NSIF and MFN instrument frames, 

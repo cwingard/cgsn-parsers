@@ -9,7 +9,6 @@
 import numpy as np
 import unittest
 
-from nose.plugins.attrib import attr
 from os import path
 
 from cgsn_parsers.parsers.parse_nutnr import Parser
@@ -32,7 +31,6 @@ TEST_DATA_NUTNR_SUNA = path.join(path.dirname(__file__), 'nutnr/20171020.nutnr.l
 EXPECTED_DATA_NUTNR_SUNA = path.join(path.dirname(__file__), 'nutnr/D2017293.CSV')
 
 
-@attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
     OOI Endurance, Global and Pioneer moorings use the Sea-Bird Scientific (formerly Satlantic) nitrate sensors to

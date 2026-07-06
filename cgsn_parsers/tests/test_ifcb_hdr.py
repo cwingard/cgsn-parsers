@@ -10,7 +10,6 @@ import numpy as np
 import json
 import unittest
 
-from nose.plugins.attrib import attr
 from os import path
 
 from cgsn_parsers.parsers.parse_ifcb_hdr import Parser
@@ -23,7 +22,6 @@ EXPECTED = path.join(path.dirname(__file__), 'ifcb/D20230222T174812_IFCB195_hdr_
 # PARSED = path.join(path.dirname(__file__), 'optaa/20150809_075841.optaa_cspp.json')
 
 
-@attr('parse')
 class TestParsingUnit(unittest.TestCase):
     """
     OOI Pioneer MAB moorings use the McLean IFCB sensor.

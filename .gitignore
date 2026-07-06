@@ -24,3 +24,6 @@ Thumbs.db
 
 .ipynb_checkpoints
 *-checkpoint.ipynb
+
+.claude
+CLAUDE.md

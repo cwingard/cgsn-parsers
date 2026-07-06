@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-@package cgsn_parsers.parsers.parse_rbrq3
-@file cgsn_parsers/parsers/parse_rbrq3.py
+@package cgsn_parsers.parsers.parse_adcpu
+@file cgsn_parsers/parsers/parse_adcpu.py
 @author Paul Whelan
 @brief Parses ADCPU (Nortek Aquadopp) data logged by the custom built WHOI data loggers.
-
-
 """
 import os
 import re
